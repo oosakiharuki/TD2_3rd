@@ -10,7 +10,14 @@ void Box::Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProje
 }
 
 void Box::Update() {
+	if (Flag) {
+		if (20 > worldTransform_.translation_.y) {
 
+			worldTransform_.translation_.y += kSpeed;
+		}
+	}
 }
 
-void Box::Draw() {}
+void Box::Draw() {
+	model_->Draw(worldTransform_, *viewProjection_, &objColor);
+}
