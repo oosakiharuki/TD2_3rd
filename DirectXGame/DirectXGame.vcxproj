@@ -187,7 +187,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MapChip.h" />
-    <ClInclude Include="MyMath.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="makeMath.h" />
   </ItemGroup>

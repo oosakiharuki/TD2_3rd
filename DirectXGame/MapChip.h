@@ -2,7 +2,7 @@
 #include "3d/Model.h"
 #include "3d/WorldTransform.h"
 #include "3d/Camera.h"
-#include "MyMath.h"
+#include "makeMath.h"
 
 enum class MapChipType { 
 	kblank,//空白
