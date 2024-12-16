@@ -16,6 +16,10 @@ public:
 	// 描画
 	void Draw(KamataEngine::Camera *camera);
 
+    KamataEngine::Vector3 GetWorldPosition();
+
+	void SetWorldPosition(const KamataEngine::Vector3& position);
+
 private:
 	KamataEngine::Input* input_ = nullptr;
 	XINPUT_STATE state, preState;

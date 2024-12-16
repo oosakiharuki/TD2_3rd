@@ -1,7 +1,7 @@
 #pragma once
 #include <KamataEngine.h>
 #include "Player.h"
-
+#include "Rope.h"
 
 using namespace KamataEngine;
 
@@ -35,7 +35,9 @@ private:
 	Player* player2_ = nullptr;
 
 	Vector3 playerPosition[2]{
-	    {100.0f, 300.0f, 0.0f},
-        {500.0f, 300.0f, 0.0f}
+	    {0.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 0.0f}
     };
+
+	Rope* rope_ = nullptr;
 };

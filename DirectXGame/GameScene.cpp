@@ -6,6 +6,10 @@ GameScene::GameScene(){};
 GameScene::~GameScene() {
 	delete model_;
 	
+	delete player1_;
+	delete player2_;
+
+	delete rope_;
 };
 
 void GameScene::Initialize() {
@@ -25,12 +29,16 @@ void GameScene::Initialize() {
 	player2_ = new Player();
 	player2_->Initialize(playerPosition[1], model_, 2);
 	
+	rope_ = new Rope();
+	rope_->Initialize(player1_, player2_,model_);
 }
 
 void GameScene::Update() {
 	// プレイヤーの更新
 	player1_->Update();
 	player2_->Update();
+
+	rope_->Update();
 };
 
 void GameScene::Draw() {
@@ -62,6 +70,7 @@ void GameScene::Draw() {
 	player1_->Draw(&viewProjection_);
 	player2_->Draw(&viewProjection_);
 
+	rope_->Draw(&viewProjection_);
 	/// </summary>
 
 	// 3Dオブジェクト描画後処理
