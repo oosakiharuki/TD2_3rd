@@ -107,6 +107,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameScene.cpp" />
+
+    <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="Box.cpp" />
+    <ClCompile Include="BrokenBox.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapChip.cpp" />
     <ClCompile Include="MyMath.cpp" />
@@ -188,9 +192,7 @@
     <None Include="Resources\shaders\Sprite.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MapChip.h" />
-    <ClInclude Include="MyMath.h" />
-    <ClInclude Include="GameScene.h" />
+
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
