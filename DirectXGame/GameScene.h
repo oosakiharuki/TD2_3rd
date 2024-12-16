@@ -1,6 +1,9 @@
 #pragma once
 #include <KamataEngine.h>
 #include "MapChip.h"
+#include "AABB.h"
+#include "Box.h"
+#include "BrokenBox.h"
 
 using namespace KamataEngine;
 
@@ -31,4 +34,5 @@ private:
 	// uint32_t texture = 0;
 
 	MapChip* mapchip_ = nullptr;
+	Box* box_ = nullptr;
 };

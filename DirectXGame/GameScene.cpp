@@ -6,6 +6,7 @@ GameScene::GameScene(){};
 GameScene::~GameScene() {
 	delete model_;
 	delete mapchip_;
+	delete box_;
 };
 
 void GameScene::Initialize() {
@@ -20,9 +21,15 @@ void GameScene::Initialize() {
 	mapchip_ = new MapChip();
 	mapchip_->LordCSV("Resources/stage.csv");
 	mapchip_->Initialize();
+
+	model_ = Model::Create();
+
+	box_ = new Box();
+	box_->Initialize(model_,&viewProjection_);
 }
 
 void GameScene::Update() { 
+	box_->Update();
 	mapchip_->Update();
 };
 
@@ -51,6 +58,7 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	///
 	
+	box_->Draw();
 	mapchip_->Draw();
 
 	/// </summary>
