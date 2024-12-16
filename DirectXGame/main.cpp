@@ -1,4 +1,5 @@
 #include <KamataEngine.h>
+#include "MapChip.h"
 
 using namespace KamataEngine;
 
