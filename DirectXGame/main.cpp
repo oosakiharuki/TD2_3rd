@@ -1,5 +1,6 @@
 #include "GameScene.h"
 #include <KamataEngine.h>
+#include "MapChip.h"
 
 using namespace KamataEngine;
 
