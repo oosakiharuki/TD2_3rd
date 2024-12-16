@@ -18,7 +18,7 @@ void Player::Update() {
 	// 最大速度
 	const float kMaxSpeed = 0.5f;
 
-	// プレイヤー1か2か
+	/*	// プレイヤー1か2か
 	if (playerId_ == 1) {
 		// ジョイスティックによる移動
 		if (input_->GetJoystickState(0, state)) {
@@ -57,7 +57,8 @@ void Player::Update() {
 				move.y += ry * moveSpeed_;
 			}
 		}
-	}
+	}*/
+
 
 	playerVelocity.x += move.x;
 	playerVelocity.y += move.y;
@@ -76,6 +77,7 @@ void Player::Update() {
 	worldTransform_.translation_.x += playerVelocity.x;
 	worldTransform_.translation_.y += playerVelocity.y;
 	worldTransform_.translation_.z += playerVelocity.z;
+
 }
 
 void Player::Draw(KamataEngine::Camera* camera) {
