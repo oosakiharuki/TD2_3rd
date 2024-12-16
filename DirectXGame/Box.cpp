@@ -11,7 +11,7 @@ void Box::Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProje
 
 void Box::Update() {
 	if (Flag) {
-		if (20 > worldTransform_.translation_.y) {
+		if (20.0f > worldTransform_.translation_.y) {
 
 			worldTransform_.translation_.y += kSpeed;
 		}
