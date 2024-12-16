@@ -1,6 +1,6 @@
 #pragma once
 #include <KamataEngine.h>
-
+#include "MapChip.h"
 
 using namespace KamataEngine;
 
@@ -29,4 +29,6 @@ private:
 	WorldTransform worldTransform_;
 	Camera viewProjection_;
 	// uint32_t texture = 0;
+
+	MapChip* mapchip_ = nullptr;
 };

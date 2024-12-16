@@ -5,7 +5,7 @@
 GameScene::GameScene(){};
 GameScene::~GameScene() {
 	delete model_;
-	
+	delete mapchip_;
 };
 
 void GameScene::Initialize() {
@@ -17,9 +17,14 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 	worldTransform_.Initialize();
 	
+	mapchip_ = new MapChip();
+	mapchip_->LordCSV("Resources/stage.csv");
+	mapchip_->Initialize();
 }
 
-void GameScene::Update() {  };
+void GameScene::Update() { 
+	mapchip_->Update();
+};
 
 void GameScene::Draw() {
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
@@ -46,6 +51,8 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	///
 	
+	mapchip_->Draw();
+
 	/// </summary>
 
 	// 3Dオブジェクト描画後処理

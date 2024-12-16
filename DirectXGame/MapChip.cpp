@@ -125,10 +125,7 @@ void MapChip::Update() {
 }
 
 
-void MapChip::Draw(ID3D12GraphicsCommandList* commandList) {
-
-	Model::PreDraw(commandList);
-
+void MapChip::Draw() {
 	for (std::vector<WorldTransform*> blockLine : blocks_) {
 		for (WorldTransform* block : blockLine) {
 			if (!block) {
@@ -138,6 +135,4 @@ void MapChip::Draw(ID3D12GraphicsCommandList* commandList) {
 			}
 		}
 	}
-
-	Model::PostDraw();
 }
