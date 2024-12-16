@@ -19,7 +19,7 @@ public:
 	~MapChip();
 	void Initialize();
 	void Update();
-	void Draw(ID3D12GraphicsCommandList* commandList);
+	void Draw();
 
 	void ResetMapChipData(); 
 	void LordCSV(const std::string& filePath);
