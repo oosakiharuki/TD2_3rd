@@ -31,8 +31,11 @@ private:
 	Model* model_ = nullptr;
 	WorldTransform worldTransform_;
 	Camera viewProjection_;
-	// uint32_t texture = 0;
+	uint32_t texture = 0;
+
+	std::vector<std::vector<KamataEngine::WorldTransform*>> blocks_;
+	std::list<Box*> boxes;
 
 	MapChip* mapchip_ = nullptr;
-	Box* box_ = nullptr;
+	//Box* box_ = nullptr;
 };
