@@ -6,24 +6,16 @@
 
 using namespace KamataEngine;
 
-MapChip::~MapChip() {
-	delete model_;
+MapChip::~MapChip() {}
 
-	for (std::vector<WorldTransform*> blockLine : blocks_) {
-		for (WorldTransform* block : blockLine) {
-			delete block;
-		}
-	}
-	blocks_.clear();
-}
-
-MapChip::MapChip() { model_ = Model::Create(); }
-
+MapChip::MapChip() {}
 
 
 std::map<std::string, MapChipType> mapChipTable = {
 	{"0", MapChipType::kblank},
-    {"1", MapChipType::kblock},
+    {"1", MapChipType::kWall},
+    {"2", MapChipType::kBox},
+    {"3", MapChipType::kBrokenBox },
 };
 
 void MapChip::ResetMapChipData() { 
@@ -79,60 +71,4 @@ MapChipType MapChip::GetMapChipTpeByIndex(uint32_t xIndex, uint32_t yIndex) {
 
 Vector3 MapChip::GetMapChipPosition(uint32_t xIndex, uint32_t yIndex) { 
 	return Vector3(kBlockWight * xIndex,kBlockHeight * (kMapHeight - 1 - yIndex),0); 
-}
-
-
-void MapChip::Initialize() {
-
-	ViewProjection_.Initialize();
-
-	blocks_.resize(kMapHeight);
-	for (uint32_t i = 0; i < kMapWight; i++) {
-		blocks_[i].resize(kMapWight);
-	}
-
-
-	for (uint32_t i = 0; i < kMapHeight; ++i) {
-		for (uint32_t j = 0; j < kMapWight; ++j) {
-			if (GetMapChipTpeByIndex(j, i) == MapChipType::kblock) {
-				WorldTransform* worldTransform = new WorldTransform();
-				worldTransform->Initialize();
-				blocks_[i][j] = worldTransform;
-				blocks_[i][j]->translation_ = GetMapChipPosition(j, i);
-			}
-		}
-	}
-
-
-
-
-
-
-}
-
-void MapChip::Update() {
-	
-	for (std::vector<WorldTransform*> blockLine : blocks_) {
-		for (WorldTransform* block : blockLine) {
-			if (!block) {
-				continue;
-			} else {
-				block->UpdateMatrix();
-				
-			}
-		}
-	}
-}
-
-
-void MapChip::Draw() {
-	for (std::vector<WorldTransform*> blockLine : blocks_) {
-		for (WorldTransform* block : blockLine) {
-			if (!block) {
-				continue;
-			} else {
-				model_->Draw(*block, ViewProjection_);
-			}
-		}
-	}
 }

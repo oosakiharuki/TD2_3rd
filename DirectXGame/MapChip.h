@@ -6,7 +6,11 @@
 
 enum class MapChipType { 
 	kblank,//空白
-	kblock,//ブロック
+	kWall,//壁
+	kBox,//ハコ
+	kBrokenBox //壊せる箱
+	// プレイヤーの初期地点
+	// 大砲、スイッチ、ゴール地点など入れれる
 };
 
 struct MapChipData{
@@ -17,24 +21,21 @@ class MapChip{
 public:
 	MapChip();
 	~MapChip();
-	void Initialize();
-	void Update();
-	void Draw();
 
 	void ResetMapChipData(); 
 	void LordCSV(const std::string& filePath);
 	MapChipType GetMapChipTpeByIndex(uint32_t xIndex, uint32_t yIndex);
 	KamataEngine::Vector3 GetMapChipPosition(uint32_t xIndex, uint32_t yIndex);
 
+	uint32_t GetNumVirtical() { return kMapWight; }
+	uint32_t GetNumHorizontal() { return kMapHeight; }
+
 private:
 
 	KamataEngine::Model* model_;
 
-	std::vector<std::vector<KamataEngine::WorldTransform*>> blocks_;
-	KamataEngine::Camera ViewProjection_;
-
-	const uint32_t kMapWight = 16;
-	const uint32_t kMapHeight = 16;
+	const uint32_t kMapWight = 12;
+	const uint32_t kMapHeight = 12;
 
 	const float kBlockWight = 2.0f;
 	const float kBlockHeight = 2.0f;
