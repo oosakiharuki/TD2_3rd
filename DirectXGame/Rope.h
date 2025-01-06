@@ -21,8 +21,6 @@ public:
 
 private:
 	float Length(const KamataEngine::Vector3& v);
-	KamataEngine::Vector3 Normalize(const KamataEngine::Vector3& v);
-	KamataEngine::Vector3 Bezier(float t, const KamataEngine::Vector3& p0, const KamataEngine::Vector3& p1, const KamataEngine::Vector3& p2, const KamataEngine::Vector3& p3);
 
 private:
 	Player* player1_ = nullptr;
