@@ -113,8 +113,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="makeMath.cpp" />
     <ClCompile Include="MapChip.cpp" />
-    <ClCompile Include="MathUtility.cpp" />
-    <ClCompile Include="MyMath.cpp" />
     <ClCompile Include="WorldTransformEx.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Rope.cpp" />
@@ -199,8 +197,6 @@
     <ClInclude Include="Box.h" />
     <ClInclude Include="BrokenBox.h" />
     <ClInclude Include="MapChip.h" />
-    <ClInclude Include="MathUtility.h" />
-    <ClInclude Include="MyMath.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="makeMath.h" />
   </ItemGroup>

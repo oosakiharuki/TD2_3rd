@@ -1,6 +1,6 @@
 #define NOMINMAX
 #include "Rope.h"
-#include "MathUtility.h"
+#include "makeMath.h"
 #include "Player.h"
 #include <algorithm>
 #include <cassert>
