@@ -5,6 +5,8 @@
 GameScene::GameScene(){};
 GameScene::~GameScene() {
 	delete model_;
+	delete mapchip_;
+	delete box_;
 	
 	delete player1_;
 	delete player2_;
@@ -20,8 +22,15 @@ void GameScene::Initialize() {
 	
 	viewProjection_.Initialize();
 	worldTransform_.Initialize();
+	
+	mapchip_ = new MapChip();
+	mapchip_->LordCSV("Resources/stage.csv");
+	mapchip_->Initialize();
 
 	model_ = Model::Create();
+
+	box_ = new Box();
+	box_->Initialize(model_,&viewProjection_);
 
 	player1_ = new Player();
 	player1_->Initialize(playerPosition[0], model_, 1);
@@ -34,6 +43,8 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	box_->Update();
+	mapchip_->Update();
 	// プレイヤーの更新
 	player1_->Update();
 	player2_->Update();
@@ -66,6 +77,9 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	///
 	
+	box_->Draw();
+	mapchip_->Draw();
+
 	// プレイヤーの描画
 	player1_->Draw(&viewProjection_);
 	player2_->Draw(&viewProjection_);

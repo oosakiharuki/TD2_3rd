@@ -2,7 +2,7 @@
 #include "3d/Model.h"
 #include "3d/WorldTransform.h"
 #include "3d/Camera.h"
-#include "MyMath.h"
+#include "makeMath.h"
 
 enum class MapChipType { 
 	kblank,//空白
@@ -19,7 +19,7 @@ public:
 	~MapChip();
 	void Initialize();
 	void Update();
-	void Draw(ID3D12GraphicsCommandList* commandList);
+	void Draw();
 
 	void ResetMapChipData(); 
 	void LordCSV(const std::string& filePath);
