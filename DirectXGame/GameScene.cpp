@@ -43,15 +43,13 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	box_->Update();
+	mapchip_->Update();
 	// プレイヤーの更新
 	player1_->Update();
 	player2_->Update();
 
 	rope_->Update();
-};
-void GameScene::Update() { 
-	box_->Update();
-	mapchip_->Update();
 };
 
 void GameScene::Draw() {
