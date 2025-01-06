@@ -45,10 +45,38 @@ void Player::Update() {
 		// 左スティックで移動
 		worldTransform_.translation_.x += lx * speed;
 		worldTransform_.translation_.y += ly * speed;
+
+			// 入力による移動
+		if (input_->PushKey(DIK_A)) {
+			worldTransform_.translation_.x -= speed;
+		}
+		if (input_->PushKey(DIK_D)) {
+			worldTransform_.translation_.x += speed;
+		}
+		if (input_->PushKey(DIK_W)) {
+			worldTransform_.translation_.y += speed;
+		}
+		if (input_->PushKey(DIK_S)) {
+			worldTransform_.translation_.y -= speed;
+		}
 	} else if (playerId_ == 2) {
 		// 右スティックで移動
 		worldTransform_.translation_.x += rx * speed;
 		worldTransform_.translation_.y += ry * speed;
+
+		// 入力による移動
+		if (input_->PushKey(DIK_LEFT)) {
+			worldTransform_.translation_.x -= speed;
+		}
+		if (input_->PushKey(DIK_RIGHT)) {
+			worldTransform_.translation_.x += speed;
+		}
+		if (input_->PushKey(DIK_UP)) {
+			worldTransform_.translation_.y += speed;
+		}
+		if (input_->PushKey(DIK_DOWN)) {
+			worldTransform_.translation_.y -= speed;
+		}
 	}
 
 	worldTransform_.UpdateMatrix();
