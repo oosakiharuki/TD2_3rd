@@ -106,8 +106,12 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="Box.cpp" />
+    <ClCompile Include="BrokenBox.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="makeMath.cpp" />
     <ClCompile Include="MapChip.cpp" />
     <ClCompile Include="MathUtility.cpp" />
     <ClCompile Include="MyMath.cpp" />
@@ -191,10 +195,14 @@
     <None Include="Resources\shaders\Sprite.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABB.h" />
+    <ClInclude Include="Box.h" />
+    <ClInclude Include="BrokenBox.h" />
     <ClInclude Include="MapChip.h" />
     <ClInclude Include="MathUtility.h" />
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="makeMath.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h" />

@@ -1,5 +1,9 @@
 #pragma once
 #include <KamataEngine.h>
+#include "MapChip.h"
+#include "AABB.h"
+#include "Box.h"
+#include "BrokenBox.h"
 #include "Player.h"
 #include "Rope.h"
 
@@ -30,6 +34,9 @@ private:
 	WorldTransform worldTransform_;
 	Camera viewProjection_;
 	// uint32_t texture = 0;
+
+	MapChip* mapchip_ = nullptr;
+	Box* box_ = nullptr;
 
 	Player* player1_ = nullptr;
 	Player* player2_ = nullptr;
