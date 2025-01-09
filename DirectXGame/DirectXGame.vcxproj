@@ -114,6 +114,8 @@
     <ClCompile Include="makeMath.cpp" />
     <ClCompile Include="MapChip.cpp" />
     <ClCompile Include="WorldTransformEx.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Rope.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\TerrainPS.hlsl">
@@ -197,6 +199,10 @@
     <ClInclude Include="MapChip.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="makeMath.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Rope.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

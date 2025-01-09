@@ -5,7 +5,15 @@
 GameScene::GameScene(){};
 GameScene::~GameScene() {
 	delete model_;
+	delete modelPlayer_;
+	delete modelCarryRope_;
+	delete modelHopRope_;
 	delete mapchip_;
+	
+	delete player1_;
+	delete player2_;
+
+	delete rope_;
 	//delete box_;
 	for (Box* box : boxes) {
 		delete box;
@@ -32,7 +40,9 @@ void GameScene::Initialize() {
 	mapchip_->LordCSV("Resources/stage.csv");
 
 	model_ = Model::Create();
-
+	modelPlayer_ = Model::CreateFromOBJ("Player", true);
+	modelCarryRope_ = Model::CreateFromOBJ("Rope", true);
+	modelHopRope_ = Model::CreateFromOBJ("hopRope", true);
 
 	uint32_t kMapHeight = mapchip_->GetNumVirtical();
 	uint32_t kMapWight = mapchip_->GetNumHorizontal();
@@ -53,11 +63,21 @@ void GameScene::Initialize() {
 				
 				Box* box = new Box();
 				box->Initialize(model_,&viewProjection_,mapchip_->GetMapChipPosition(j, i));
+
 				boxes.push_back(box);
 			}
 		}
 	}
 
+	player1_ = new Player();
+	player1_->Initialize(playerPosition[0], modelPlayer_, 1);
+
+	player2_ = new Player();
+	player2_->Initialize(playerPosition[1], modelPlayer_, 2);
+	
+	rope_ = new Rope();
+    rope_->Initialize(player1_, player2_, input_, modelCarryRope_, modelHopRope_);
+	rope_->SetBoxes(boxes);
 
 }
 
@@ -77,6 +97,12 @@ void GameScene::Update() {
 	for (Box* box : boxes) {
 		box->Update();
 	}
+
+	// プレイヤーの更新
+	player1_->Update();
+	player2_->Update();
+
+	rope_->Update();
 
 };
 
@@ -105,7 +131,16 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	///
 	
+	// プレイヤーの描画
+	player1_->Draw(&viewProjection_);
+	player2_->Draw(&viewProjection_);
+
+	rope_->Draw(&viewProjection_);
+
+	//mapchip_->Draw();
+
 	//box_->Draw();
+
 	for (Box* box : boxes) {
 		box->Draw();
 	}
