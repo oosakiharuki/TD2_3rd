@@ -5,6 +5,8 @@
 GameScene::GameScene(){};
 GameScene::~GameScene() {
 	delete model_;
+	delete modelPlayer_;
+	delete modelRope_;
 	delete mapchip_;
 	delete box_;
 	
@@ -28,28 +30,35 @@ void GameScene::Initialize() {
 	mapchip_->Initialize();
 
 	model_ = Model::Create();
+	modelPlayer_ = Model::CreateFromOBJ("Player", true);
+	modelRope_ = Model::CreateFromOBJ("Rope", true);
 
 	box_ = new Box();
 	box_->Initialize(model_,&viewProjection_);
 
 	player1_ = new Player();
-	player1_->Initialize(playerPosition[0], model_, 1);
+	player1_->Initialize(playerPosition[0], modelPlayer_, 1);
 
 	player2_ = new Player();
-	player2_->Initialize(playerPosition[1], model_, 2);
+	player2_->Initialize(playerPosition[1], modelPlayer_, 2);
 	
 	rope_ = new Rope();
-	rope_->Initialize(player1_, player2_,model_);
+	rope_->Initialize(player1_, player2_,modelRope_);
+	//rope_->GetBox(box_);
 }
 
 void GameScene::Update() {
-	box_->Update();
-	mapchip_->Update();
 	// プレイヤーの更新
 	player1_->Update();
 	player2_->Update();
 
 	rope_->Update();
+
+	box_->Update();
+	mapchip_->Update();
+
+
+
 };
 
 void GameScene::Draw() {
@@ -77,14 +86,16 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	///
 	
-	box_->Draw();
-	mapchip_->Draw();
-
 	// プレイヤーの描画
 	player1_->Draw(&viewProjection_);
 	player2_->Draw(&viewProjection_);
 
 	rope_->Draw(&viewProjection_);
+
+	box_->Draw();
+	//mapchip_->Draw();
+
+
 	/// </summary>
 
 	// 3Dオブジェクト描画後処理

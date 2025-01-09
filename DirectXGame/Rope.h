@@ -6,6 +6,7 @@
 #include <vector>
 
 class Player;
+class Box;
 
 class Rope {
 public:
@@ -19,8 +20,14 @@ public:
 	// 描画
 	void Draw(KamataEngine::Camera* camera);
 
+	bool CheckCollisionWithBox(Box& box);
+
+	void GetBox(Box* box) {box_=box;}
+
 private:
 	float Length(const KamataEngine::Vector3& v);
+	KamataEngine::Vector3 Normalize(const KamataEngine::Vector3& v);
+	KamataEngine::Vector3 ClosestPointOnSegment(const KamataEngine::Vector3& point, const KamataEngine::Vector3& p1, const KamataEngine::Vector3& p2);
 
 private:
 	Player* player1_ = nullptr;
@@ -30,8 +37,10 @@ private:
 	KamataEngine::Vector3 controlPoint2_;
 	float slack_ = 1.0f;
 	float maxLength_ = 15.0f;
-	int segmentCount_ = 5; // ロープの分割数
+	int segmentCount_ = 10; // ロープの分割数
 
 	KamataEngine::Model* model_ = nullptr;                    // ロープの1セグメント用モデル
 	std::vector<KamataEngine::WorldTransform*> ropeSegments_; // 各セグメントのワールド情報（ポインタ）
+
+	Box* box_ = nullptr;
 };

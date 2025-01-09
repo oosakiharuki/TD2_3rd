@@ -35,6 +35,9 @@ private:
 	Camera viewProjection_;
 	// uint32_t texture = 0;
 
+	Model* modelPlayer_ = nullptr;
+	Model* modelRope_ = nullptr;
+
 	MapChip* mapchip_ = nullptr;
 	Box* box_ = nullptr;
 
@@ -42,8 +45,8 @@ private:
 	Player* player2_ = nullptr;
 
 	Vector3 playerPosition[2]{
-	    {0.0f, 0.0f, 0.0f},
-        {0.0f, 0.0f, 0.0f}
+	    {-2.0f, 3.0f, 0.0f},
+        {2.0f, 3.0f, 0.0f}
     };
 
 	Rope* rope_ = nullptr;

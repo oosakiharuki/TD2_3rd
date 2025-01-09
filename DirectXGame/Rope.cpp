@@ -1,9 +1,12 @@
 #define NOMINMAX
 #include "Rope.h"
-#include "makeMath.h"
+#include "math/MathUtility.h"
 #include "Player.h"
 #include <algorithm>
 #include <cassert>
+#include "Box.h"
+
+using namespace KamataEngine::MathUtility;
 
 Rope::~Rope() {
 	for (auto segment : ropeSegments_) {
@@ -58,6 +61,8 @@ void Rope::Update() {
 		ropeSegments_[i]->translation_ = position;
 		ropeSegments_[i]->UpdateMatrix();
 	}
+
+	//CheckCollisionWithBox(*box_);
 } 
 
 
@@ -69,6 +74,35 @@ void Rope::Draw(KamataEngine::Camera* camera) {
 
 float Rope::Length(const KamataEngine::Vector3& v) { return sqrtf((v.x * v.x) + (v.y * v.y) + (v.z * v.z)); }
 
+KamataEngine::Vector3 Rope::Normalize(const KamataEngine::Vector3& v) { 
+	float length = Length(v);
+	return KamataEngine::Vector3(v.x / length, v.y / length, v.z / length);
+}
+
+bool Rope::CheckCollisionWithBox(Box& box) { 
+	KamataEngine::Vector3 boxCenter = box.GetCenter();
+	float boxRadius = box.GetRadius();
+	for (size_t i = 0; i < ropeSegments_.size() - 1; ++i) {
+		KamataEngine::Vector3 p1 = ropeSegments_[i]->translation_;
+		KamataEngine::Vector3 p2 =
+		    ropeSegments_[i + 1]->translation_; 
+		// ボックスの円がロープの線分と交差しているかをチェック 
+		KamataEngine::Vector3 closestPoint = ClosestPointOnSegment(boxCenter, p1, p2); 
+		float distance =Length(closestPoint - boxCenter); 
+		if (distance <= boxRadius) { 
+			KamataEngine::Vector3 collisionNormal = Normalize(boxCenter - closestPoint);
+		    KamataEngine::Vector3 force = collisionNormal * (boxRadius - distance); 
+			box.ApplyForce(force); 
+			return true; // 衝突検出 
+		} 
+	} 
+	return false; // 衝突なし
+}
 
 
-
+KamataEngine::Vector3 Rope::ClosestPointOnSegment(const KamataEngine::Vector3& point, const KamataEngine::Vector3& p1, const KamataEngine::Vector3& p2) {
+	KamataEngine::Vector3 segment = p2 - p1;
+	float t = Dot(point - p1, segment) / Dot(segment, segment);
+	t = std::clamp(t, 0.0f, 1.0f);
+	return p1 + t * segment;
+}

@@ -12,6 +12,11 @@ public:
 
 	void Draw();
 
+	KamataEngine::Vector3 GetCenter() const { return worldTransform_.translation_; }
+	float GetRadius() const { return radius_; }
+
+	void ApplyForce(const KamataEngine::Vector3& force);
+
 	private:
 
 	KamataEngine::Camera* viewProjection_ = nullptr;
@@ -22,4 +27,5 @@ public:
 	float kSpeed = 0.5f;
 	bool Flag;
 
+	float radius_;
 };
