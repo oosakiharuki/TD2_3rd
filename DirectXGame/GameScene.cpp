@@ -44,16 +44,6 @@ void GameScene::Initialize() {
 	modelCarryRope_ = Model::CreateFromOBJ("Rope", true);
 	modelHopRope_ = Model::CreateFromOBJ("hopRope", true);
 
-
-	player1_ = new Player();
-	player1_->Initialize(playerPosition[0], modelPlayer_, 1);
-
-	player2_ = new Player();
-	player2_->Initialize(playerPosition[1], modelPlayer_, 2);
-	
-	rope_ = new Rope();
-    rope_->Initialize(player1_, player2_, input_, modelCarryRope_, modelHopRope_);
-
 	uint32_t kMapHeight = mapchip_->GetNumVirtical();
 	uint32_t kMapWight = mapchip_->GetNumHorizontal();
 
@@ -74,13 +64,20 @@ void GameScene::Initialize() {
 				Box* box = new Box();
 				box->Initialize(model_,&viewProjection_,mapchip_->GetMapChipPosition(j, i));
 
-
-				rope_->SetBox(box);
 				boxes.push_back(box);
 			}
 		}
 	}
 
+	player1_ = new Player();
+	player1_->Initialize(playerPosition[0], modelPlayer_, 1);
+
+	player2_ = new Player();
+	player2_->Initialize(playerPosition[1], modelPlayer_, 2);
+	
+	rope_ = new Rope();
+    rope_->Initialize(player1_, player2_, input_, modelCarryRope_, modelHopRope_);
+	rope_->SetBoxes(boxes);
 
 }
 

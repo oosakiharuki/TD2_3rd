@@ -72,10 +72,12 @@ void Rope::Update() {
 
 	if (input_->TriggerKey(DIK_SPACE) || 
 		(state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
-		if (box_->GetNowMode() == Box::Mode::Normal) {
-			box_->SetMode(Box::Mode::Hop);
-		} else if (box_->GetNowMode() == Box::Mode::Hop) {
-			box_->SetMode(Box::Mode::Normal);
+		for (Box* box : boxes_) {
+			if (box->GetNowMode() == Box::Mode::Normal) {
+				box->SetMode(Box::Mode::Hop);
+			} else if (box->GetNowMode() == Box::Mode::Hop) {
+				box->SetMode(Box::Mode::Normal);
+			}
 		}
 	}
 
@@ -83,13 +85,16 @@ void Rope::Update() {
     int iterations = 10; 
 	// 1フレームでの衝突判定回数 
 	for (int j = 0; j < iterations; ++j) { 
-		bool collisionDetected = CheckCollisionWithBox(box_); 
-		if (collisionDetected) { 
-			for (int i =0; i <= segmentCount_; ++i) { 
-				float t = i / static_cast<float>(segmentCount_); 
-				KamataEngine::Vector3 position = player1_->GetWorldPosition() * (1.0f - t) + player2_->GetWorldPosition() * t;
-	            ropeSegments_[i]->translation_ = position; ropeSegments_[i]->UpdateMatrix(); 
-			} 
+        for (Box* box : boxes_) {
+			bool collisionDetected = CheckCollisionWithBox(box);
+			if (collisionDetected) {
+				for (int i = 0; i <= segmentCount_; ++i) {
+					float t = i / static_cast<float>(segmentCount_);
+					KamataEngine::Vector3 position = player1_->GetWorldPosition() * (1.0f - t) + player2_->GetWorldPosition() * t;
+					ropeSegments_[i]->translation_ = position;
+					ropeSegments_[i]->UpdateMatrix();
+				}
+			}
 		}
 	}
 } 
@@ -97,12 +102,13 @@ void Rope::Update() {
 
 void Rope::Draw(KamataEngine::Camera* camera) {
 	for (const auto& segment : ropeSegments_) {
-		if (box_->GetNowMode() == Box::Mode::Normal) {
-	    	modelCarry_->Draw(*segment, *camera);
-		} else if (box_->GetNowMode() == Box::Mode::Hop) {
-			modelHop_->Draw(*segment, *camera);
+		for (const auto& box : boxes_) {
+			if (box->GetNowMode() == Box::Mode::Normal) {
+				modelCarry_->Draw(*segment, *camera);
+			} else if (box->GetNowMode() == Box::Mode::Hop) {
+				modelHop_->Draw(*segment, *camera);
+			}
 		}
-
 	}
 }
 

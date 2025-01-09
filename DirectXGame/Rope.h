@@ -5,6 +5,7 @@
 #include <cmath>
 #include <vector>
 #include "input/Input.h"
+#include <list>
 
 class Player;
 class Box;
@@ -23,7 +24,7 @@ public:
 
 	bool CheckCollisionWithBox(Box* box);
 
-	void SetBox(Box* box) { box_ = box; }
+	void SetBoxes(const std::list<Box*>& boxes) { boxes_ = boxes; }
 
 private:
 	float Length(const KamataEngine::Vector3& v);
@@ -46,6 +47,7 @@ private:
 	KamataEngine::Model* modelHop_ = nullptr;
 
 	std::vector<KamataEngine::WorldTransform*> ropeSegments_; // 各セグメントのワールド情報（ポインタ）
+	std::list<Box*> boxes_;
 
 	XINPUT_STATE state, preState;
 };
