@@ -42,6 +42,7 @@
     <ClCompile Include="makeMath.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Gate.cpp">
     <ClCompile Include="Electricity.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -123,6 +124,7 @@
     <ClInclude Include="makeMath.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Gate.h">
     <ClInclude Include="Electricity.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>

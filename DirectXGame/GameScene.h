@@ -4,6 +4,7 @@
 #include "AABB.h"
 #include "Box.h"
 #include "BrokenBox.h"
+#include "Gate.h"
 
 #include"Electricity.h"
 
@@ -47,6 +48,11 @@ private:
 
 	std::vector<std::vector<KamataEngine::WorldTransform*>> blocks_;
 	std::list<Box*> boxes;
+	
+	std::list<Gate*> gates;
+	std::list<Gate*> gatesList[2];
+	bool isGate = false;
+	bool isA = false;
 
 	Model* modelPlayer_ = nullptr;
 	Model* modelCarryRope_ = nullptr;

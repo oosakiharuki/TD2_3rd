@@ -17,14 +17,17 @@ GameScene::~GameScene() {
 	delete modelCarryRope_;
 	delete modelHopRope_;
 	delete mapchip_;
-	
+
 	delete player1_;
 	delete player2_;
 
 	delete rope_;
-	//delete box_;
 	for (Box* box : boxes) {
 		delete box;
+	}
+
+	for (Gate* gate : gates) {
+		delete gate;
 	}
 
 	for (std::vector<WorldTransform*> blockLine : blocks_) {
@@ -79,14 +82,31 @@ void GameScene::Initialize() {
 			if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kWall) {
 				WorldTransform* worldTransform = new WorldTransform();
 				worldTransform->Initialize();
-				blocks_[i][j] = worldTransform;
+				blocks_[i][j] = worldTransform;		
 				blocks_[i][j]->translation_ = mapchip_->GetMapChipPosition(j, i);
+				if (isGate) {
+					isGate = false;
+					isA = true;
+				}
 			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kBox) {
 				
 				Box* box = new Box();
 				box->Initialize(model_,&viewProjection_,mapchip_->GetMapChipPosition(j, i));
 
 				boxes.push_back(box);
+			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kGate) {
+				Gate* gate = new Gate();
+				gate->Initialize(model_, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
+				gates.push_back(gate);
+
+				if (!isGate) {
+					isGate = true;
+				}
+				if(isA){
+					gatesList[1].push_back(gate);
+				} else  {
+					gatesList[0].push_back(gate);
+				}
 			}
 		}
 	}
@@ -100,6 +120,7 @@ void GameScene::Initialize() {
 	rope_ = new Rope();
     rope_->Initialize(player1_, player2_, input_, modelCarryRope_, modelHopRope_);
 	rope_->SetBoxes(boxes);
+
 
 }
 
@@ -123,12 +144,29 @@ void GameScene::Update() {
 		box->Update();
 	}
 
+	for (Gate* gate : gatesList[0]) {
+		gate->Update();
+		if (input_->PushKey(DIK_1)) {
+			gate->OpenGate();
+		} else {
+			gate->CloseGate();
+		}
+	}
+
+	for (Gate* gate : gatesList[1]) {
+		gate->Update();
+		if (input_->PushKey(DIK_2)) {
+			gate->OpenGate();
+		} else {
+			gate->CloseGate();
+		}
+	}
+
 	// プレイヤーの更新
 	player1_->Update();
 	player2_->Update();
 
 	rope_->Update();
-
 
 };
 
@@ -173,6 +211,10 @@ void GameScene::Draw() {
 
 	for (Box* box : boxes) {
 		box->Draw();
+	}
+
+	for (Gate* gate : gates) {
+		gate->Draw();
 	}
 
 	for (std::vector<WorldTransform*> blockLine : blocks_) {
