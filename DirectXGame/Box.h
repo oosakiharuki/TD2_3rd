@@ -14,6 +14,7 @@ public:
 
 	KamataEngine::Vector3 GetCenter() const { return worldTransform_.translation_; }
 	float GetRadius() const { return radius_; }
+	void SetWorldPosition(KamataEngine::Vector3 position) { worldTransform_.translation_ = position; }
 
 	void ApplyForce(const KamataEngine::Vector3& force);
 
@@ -27,5 +28,5 @@ public:
 	float kSpeed = 0.5f;
 	bool Flag;
 
-	float radius_;
+	float radius_ = 1.0f;
 };

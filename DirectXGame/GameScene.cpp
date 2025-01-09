@@ -43,7 +43,7 @@ void GameScene::Initialize() {
 	player2_->Initialize(playerPosition[1], modelPlayer_, 2);
 	
 	rope_ = new Rope();
-	rope_->Initialize(player1_, player2_,modelRope_);
+	rope_->Initialize(player1_, player2_, box_, modelRope_);
 	//rope_->GetBox(box_);
 }
 

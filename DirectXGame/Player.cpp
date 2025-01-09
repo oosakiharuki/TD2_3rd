@@ -15,7 +15,7 @@ void Player::Initialize(KamataEngine::Vector3 startPosition, KamataEngine::Model
 
 void Player::Update() {
 	if (!input_->GetJoystickState(0, state)) {
-		return; // コントローラが接続されていない場合
+		
 	}
 
 	// 左スティックの入力
@@ -42,11 +42,11 @@ void Player::Update() {
 
 	// プレイヤーの移動
 	if (playerId_ == 1) {
-		// 左スティックで移動
+		// コントローラで移動（左スティック）
 		worldTransform_.translation_.x += lx * speed;
 		worldTransform_.translation_.y += ly * speed;
 
-			// 入力による移動
+		// キーボードによる移動
 		if (input_->PushKey(DIK_A)) {
 			worldTransform_.translation_.x -= speed;
 		}
@@ -60,11 +60,11 @@ void Player::Update() {
 			worldTransform_.translation_.y -= speed;
 		}
 	} else if (playerId_ == 2) {
-		// 右スティックで移動
+		// コントローラで移動（右スティック）
 		worldTransform_.translation_.x += rx * speed;
 		worldTransform_.translation_.y += ry * speed;
 
-		// 入力による移動
+		// キーボードによる移動
 		if (input_->PushKey(DIK_LEFT)) {
 			worldTransform_.translation_.x -= speed;
 		}
@@ -81,6 +81,7 @@ void Player::Update() {
 
 	worldTransform_.UpdateMatrix();
 }
+
 
 void Player::Draw(KamataEngine::Camera* camera) {
 	model_->Draw(worldTransform_, *camera); 

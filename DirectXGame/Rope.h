@@ -12,7 +12,7 @@ class Rope {
 public:
 	~Rope(); // デストラクタを追加
 	// 初期化
-	void Initialize(Player* p1, Player* p2, KamataEngine::Model* model);
+	void Initialize(Player* p1, Player* p2, Box* box, KamataEngine::Model* model);
 
 	// 更新
 	void Update();
@@ -20,9 +20,8 @@ public:
 	// 描画
 	void Draw(KamataEngine::Camera* camera);
 
-	bool CheckCollisionWithBox(Box& box);
+	bool CheckCollisionWithBox(Box* box);
 
-	void GetBox(Box* box) {box_=box;}
 
 private:
 	float Length(const KamataEngine::Vector3& v);
@@ -32,15 +31,16 @@ private:
 private:
 	Player* player1_ = nullptr;
 	Player* player2_ = nullptr;
+	Box* box_ = nullptr;
 
 	KamataEngine::Vector3 controlPoint1_;
 	KamataEngine::Vector3 controlPoint2_;
 	float slack_ = 1.0f;
 	float maxLength_ = 15.0f;
-	int segmentCount_ = 10; // ロープの分割数
+	int segmentCount_ = 20; // ロープの分割数
 
 	KamataEngine::Model* model_ = nullptr;                    // ロープの1セグメント用モデル
 	std::vector<KamataEngine::WorldTransform*> ropeSegments_; // 各セグメントのワールド情報（ポインタ）
 
-	Box* box_ = nullptr;
+
 };

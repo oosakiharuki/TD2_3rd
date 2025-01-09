@@ -15,11 +15,14 @@ Rope::~Rope() {
 	ropeSegments_.clear();
 }
 
-void Rope::Initialize(Player* p1, Player* p2, KamataEngine::Model* model) {
+void Rope::Initialize(Player* p1, Player* p2, Box* box, KamataEngine::Model* model) {
 	assert(p1);
 	player1_ = p1;
 	assert(p2);
 	player2_ = p2;
+	assert(box);
+	box_ = box;
+
 	assert(model);
 	model_ = model;
 
@@ -62,7 +65,19 @@ void Rope::Update() {
 		ropeSegments_[i]->UpdateMatrix();
 	}
 
-	//CheckCollisionWithBox(*box_);
+    // 連続衝突判定 
+    int iterations = 10; 
+	// 1フレームでの衝突判定回数 
+	for (int j = 0; j < iterations; ++j) { 
+		bool collisionDetected = CheckCollisionWithBox(box_); 
+		if (collisionDetected) { 
+			for (int i =0; i <= segmentCount_; ++i) { 
+				float t = i / static_cast<float>(segmentCount_); 
+				KamataEngine::Vector3 position = player1_->GetWorldPosition() * (1.0f - t) + player2_->GetWorldPosition() * t;
+	            ropeSegments_[i]->translation_ = position; ropeSegments_[i]->UpdateMatrix(); 
+			} 
+		}
+	}
 } 
 
 
@@ -79,30 +94,55 @@ KamataEngine::Vector3 Rope::Normalize(const KamataEngine::Vector3& v) {
 	return KamataEngine::Vector3(v.x / length, v.y / length, v.z / length);
 }
 
-bool Rope::CheckCollisionWithBox(Box& box) { 
-	KamataEngine::Vector3 boxCenter = box.GetCenter();
-	float boxRadius = box.GetRadius();
+bool Rope::CheckCollisionWithBox(Box* box) {
+	if (box == nullptr) {
+		return false; // boxがnullなら衝突なし
+	}
+
+	KamataEngine::Vector3 boxCenter = box->GetCenter();
+	float boxRadius = box->GetRadius();
+
+	// ロープの各線分をチェック
 	for (size_t i = 0; i < ropeSegments_.size() - 1; ++i) {
 		KamataEngine::Vector3 p1 = ropeSegments_[i]->translation_;
-		KamataEngine::Vector3 p2 =
-		    ropeSegments_[i + 1]->translation_; 
-		// ボックスの円がロープの線分と交差しているかをチェック 
-		KamataEngine::Vector3 closestPoint = ClosestPointOnSegment(boxCenter, p1, p2); 
-		float distance =Length(closestPoint - boxCenter); 
-		if (distance <= boxRadius) { 
+		KamataEngine::Vector3 p2 = ropeSegments_[i + 1]->translation_;
+
+		// 最近点を求める
+		KamataEngine::Vector3 closestPoint = ClosestPointOnSegment(boxCenter, p1, p2);
+		float distance = Length(closestPoint - boxCenter);
+
+		// 衝突が発生している場合
+		if (distance <= boxRadius) {
 			KamataEngine::Vector3 collisionNormal = Normalize(boxCenter - closestPoint);
-		    KamataEngine::Vector3 force = collisionNormal * (boxRadius - distance); 
-			box.ApplyForce(force); 
-			return true; // 衝突検出 
-		} 
-	} 
+			KamataEngine::Vector3 correction = collisionNormal * (boxRadius - distance) * 1.5f;
+
+			// ボックスの位置を補正
+			box->SetWorldPosition(boxCenter + correction);
+
+			// 衝突したセグメント全体に影響を与える
+			KamataEngine::Vector3 segmentDisplacement = correction * 0.5f;
+			ropeSegments_[i]->translation_ -= segmentDisplacement;
+			ropeSegments_[i + 1]->translation_ -= segmentDisplacement;
+
+			// 衝突を検出したのでtrueを返す
+			return true;
+		}
+	}
+
 	return false; // 衝突なし
 }
 
 
 KamataEngine::Vector3 Rope::ClosestPointOnSegment(const KamataEngine::Vector3& point, const KamataEngine::Vector3& p1, const KamataEngine::Vector3& p2) {
 	KamataEngine::Vector3 segment = p2 - p1;
-	float t = Dot(point - p1, segment) / Dot(segment, segment);
+	float segmentLengthSquared = Dot(segment, segment);
+
+	if (segmentLengthSquared < 1e-6f) {
+		// セグメントがほぼ点のような場合
+		return p1;
+	}
+
+	float t = Dot(point - p1, segment) / segmentLengthSquared;
 	t = std::clamp(t, 0.0f, 1.0f);
 	return p1 + t * segment;
 }

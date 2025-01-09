@@ -13,8 +13,6 @@ void Box::Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProje
 	model_ = model;
 	objColor.Initialize();
 	worldTransform_.Initialize();
-
-	radius_ = 1.0f;
 }
 
 void Box::Update() {
@@ -31,5 +29,4 @@ void Box::Update() {
 void Box::Draw() { model_->Draw(worldTransform_, *viewProjection_, &objColor); }
 
 void Box::ApplyForce(const KamataEngine::Vector3& force) { 
-	worldTransform_.translation_ += force; 
-}
+	worldTransform_.translation_ += force * kSpeed; }
