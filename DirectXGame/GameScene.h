@@ -6,6 +6,12 @@
 #include "BrokenBox.h"
 #include "Gate.h"
 
+#include"Electricity.h"
+
+#include "Player.h"
+#include "Rope.h"
+
+
 using namespace KamataEngine;
 
 class GameScene {
@@ -30,6 +36,12 @@ private:
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 	Model* model_ = nullptr;
+	//ギミック用
+	Model* modelElectricity1_ = nullptr;
+	Model* modelElectricity2_ = nullptr;
+	Model* modelWall1_ = nullptr;
+	Model* modelWall2_ = nullptr;
+
 	WorldTransform worldTransform_;
 	Camera viewProjection_;
 	uint32_t texture = 0;
@@ -42,6 +54,23 @@ private:
 	bool isGate = false;
 	bool isA = false;
 
+	Model* modelPlayer_ = nullptr;
+	Model* modelCarryRope_ = nullptr;
+	Model* modelHopRope_ = nullptr;
+
 	MapChip* mapchip_ = nullptr;
-	//Box* box_ = nullptr;
+
+	Electricity* electricityGimmick_;
+
+
+	Player* player1_ = nullptr;
+	Player* player2_ = nullptr;
+
+	Vector3 playerPosition[2]{
+	    {-2.0f, 3.0f, 0.0f},
+        {2.0f, 3.0f, 0.0f}
+    };
+
+	Rope* rope_ = nullptr;
+
 };

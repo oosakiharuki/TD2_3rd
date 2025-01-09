@@ -5,8 +5,23 @@
 GameScene::GameScene(){};
 GameScene::~GameScene() {
 	delete model_;
+
+	delete modelElectricity1_;
+	delete modelElectricity2_;
+	delete modelWall1_;
+	delete modelWall2_;
+	
+	delete electricityGimmick_;
+
+	delete modelPlayer_;
+	delete modelCarryRope_;
+	delete modelHopRope_;
 	delete mapchip_;
-	// delete box_;
+
+	delete player1_;
+	delete player2_;
+
+	delete rope_;
 	for (Box* box : boxes) {
 		delete box;
 	}
@@ -21,6 +36,7 @@ GameScene::~GameScene() {
 		}
 	}
 	blocks_.clear();
+
 };
 
 void GameScene::Initialize() {
@@ -37,6 +53,21 @@ void GameScene::Initialize() {
 
 	model_ = Model::Create();
 
+	modelElectricity1_ = Model::Create();
+	modelElectricity2_ = Model::Create();
+	modelWall1_ = Model::Create();
+	modelWall2_ = Model::Create();
+
+	
+
+	//電気ギミック
+	electricityGimmick_ = new Electricity;
+	electricityGimmick_->Initialize(modelElectricity1_, modelElectricity2_, modelWall1_, modelWall2_, &viewProjection_);
+
+
+	modelPlayer_ = Model::CreateFromOBJ("Player", true);
+	modelCarryRope_ = Model::CreateFromOBJ("Rope", true);
+	modelHopRope_ = Model::CreateFromOBJ("hopRope", true);
 
 	uint32_t kMapHeight = mapchip_->GetNumVirtical();
 	uint32_t kMapWight = mapchip_->GetNumHorizontal();
@@ -61,6 +92,7 @@ void GameScene::Initialize() {
 				
 				Box* box = new Box();
 				box->Initialize(model_,&viewProjection_,mapchip_->GetMapChipPosition(j, i));
+
 				boxes.push_back(box);
 			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kGate) {
 				Gate* gate = new Gate();
@@ -78,13 +110,26 @@ void GameScene::Initialize() {
 			}
 		}
 	}
-			
+
+	player1_ = new Player();
+	player1_->Initialize(playerPosition[0], modelPlayer_, 1);
+
+	player2_ = new Player();
+	player2_->Initialize(playerPosition[1], modelPlayer_, 2);
+	
+	rope_ = new Rope();
+    rope_->Initialize(player1_, player2_, input_, modelCarryRope_, modelHopRope_);
+	rope_->SetBoxes(boxes);
+
 
 }
 
 void GameScene::Update() { 
 	//box_->Update();
 
+	
+	
+	electricityGimmick_->Update();
 	for (std::vector<WorldTransform*> blockLine : blocks_) {
 		for (WorldTransform* block : blockLine) {
 			if (!block) {
@@ -98,7 +143,6 @@ void GameScene::Update() {
 	for (Box* box : boxes) {
 		box->Update();
 	}
-
 
 	for (Gate* gate : gatesList[0]) {
 		gate->Update();
@@ -117,6 +161,13 @@ void GameScene::Update() {
 			gate->CloseGate();
 		}
 	}
+
+	// プレイヤーの更新
+	player1_->Update();
+	player2_->Update();
+
+	rope_->Update();
+
 };
 
 void GameScene::Draw() {
@@ -144,7 +195,20 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	///
 	
+
+	
+	electricityGimmick_->Draw();
+
+	// プレイヤーの描画
+	player1_->Draw(&viewProjection_);
+	player2_->Draw(&viewProjection_);
+
+	rope_->Draw(&viewProjection_);
+
+	//mapchip_->Draw();
+
 	//box_->Draw();
+
 	for (Box* box : boxes) {
 		box->Draw();
 	}
@@ -162,6 +226,7 @@ void GameScene::Draw() {
 			}
 		}
 	}
+
 
 	/// </summary>
 
