@@ -55,8 +55,7 @@ void GameScene::Initialize() {
 	modelWall1_ = Model::Create();
 	modelWall2_ = Model::Create();
 
-	box_ = new Box();
-	box_->Initialize(model_,&viewProjection_);
+	
 
 	//電気ギミック
 	electricityGimmick_ = new Electricity;
@@ -107,7 +106,7 @@ void GameScene::Initialize() {
 void GameScene::Update() { 
 	//box_->Update();
 
-	mapchip_->Update();
+	
 	
 	electricityGimmick_->Update();
 	for (std::vector<WorldTransform*> blockLine : blocks_) {
@@ -159,7 +158,7 @@ void GameScene::Draw() {
 	///
 	
 
-	mapchip_->Draw();
+	
 	electricityGimmick_->Draw();
 
 	// プレイヤーの描画
