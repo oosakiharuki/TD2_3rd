@@ -15,13 +15,11 @@ Rope::~Rope() {
 	ropeSegments_.clear();
 }
 
-void Rope::Initialize(Player* p1, Player* p2, Box* box, KamataEngine::Input* input, KamataEngine::Model* modelCarry, KamataEngine::Model* modelHop) {
+void Rope::Initialize(Player* p1, Player* p2, KamataEngine::Input* input, KamataEngine::Model* modelCarry, KamataEngine::Model* modelHop) {
 	assert(p1);
 	player1_ = p1;
 	assert(p2);
 	player2_ = p2;
-	assert(box);
-	box_ = box;
 	assert(input);
 	input_ = input;
 

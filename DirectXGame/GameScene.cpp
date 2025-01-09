@@ -9,34 +9,41 @@ GameScene::~GameScene() {
 	delete modelCarryRope_;
 	delete modelHopRope_;
 	delete mapchip_;
-	delete box_;
 	
 	delete player1_;
 	delete player2_;
 
 	delete rope_;
+	//delete box_;
+	for (Box* box : boxes) {
+		delete box;
+	}
+
+	for (std::vector<WorldTransform*> blockLine : blocks_) {
+		for (WorldTransform* block : blockLine) {
+			delete block;
+		}
+	}
+	blocks_.clear();
 };
 
 void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
-	// texture = TextureManager::Load("white1x1.png");
+	texture = TextureManager::Load("white1x1.png");
 	
 	viewProjection_.Initialize();
 	worldTransform_.Initialize();
 	
 	mapchip_ = new MapChip();
 	mapchip_->LordCSV("Resources/stage.csv");
-	mapchip_->Initialize();
 
 	model_ = Model::Create();
 	modelPlayer_ = Model::CreateFromOBJ("Player", true);
 	modelCarryRope_ = Model::CreateFromOBJ("Rope", true);
 	modelHopRope_ = Model::CreateFromOBJ("hopRope", true);
 
-	box_ = new Box();
-	box_->Initialize(model_,&viewProjection_);
 
 	player1_ = new Player();
 	player1_->Initialize(playerPosition[0], modelPlayer_, 1);
@@ -45,20 +52,60 @@ void GameScene::Initialize() {
 	player2_->Initialize(playerPosition[1], modelPlayer_, 2);
 	
 	rope_ = new Rope();
-	rope_->Initialize(player1_, player2_, box_, input_, modelCarryRope_, modelHopRope_);
+    rope_->Initialize(player1_, player2_, input_, modelCarryRope_, modelHopRope_);
+
+	uint32_t kMapHeight = mapchip_->GetNumVirtical();
+	uint32_t kMapWight = mapchip_->GetNumHorizontal();
+
+	blocks_.resize(kMapHeight);
+	for (uint32_t i = 0; i < kMapWight; i++) {
+		blocks_[i].resize(kMapWight);
+	}
+
+	for (uint32_t i = 0; i < kMapHeight; ++i) {
+		for (uint32_t j = 0; j < kMapWight; ++j) {
+			if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kWall) {
+				WorldTransform* worldTransform = new WorldTransform();
+				worldTransform->Initialize();
+				blocks_[i][j] = worldTransform;
+				blocks_[i][j]->translation_ = mapchip_->GetMapChipPosition(j, i);
+			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kBox) {
+				
+				Box* box = new Box();
+				box->Initialize(model_,&viewProjection_,mapchip_->GetMapChipPosition(j, i));
+
+
+				rope_->SetBox(box);
+				boxes.push_back(box);
+			}
+		}
+	}
+
+
 }
 
-void GameScene::Update() {
+void GameScene::Update() { 
+	//box_->Update();
+
+	for (std::vector<WorldTransform*> blockLine : blocks_) {
+		for (WorldTransform* block : blockLine) {
+			if (!block) {
+				continue;
+			} else {
+				block->UpdateMatrix();
+			}
+		}
+	}
+
+	for (Box* box : boxes) {
+		box->Update();
+	}
+
 	// プレイヤーの更新
 	player1_->Update();
 	player2_->Update();
 
 	rope_->Update();
-
-	box_->Update();
-	mapchip_->Update();
-
-
 
 };
 
@@ -93,9 +140,23 @@ void GameScene::Draw() {
 
 	rope_->Draw(&viewProjection_);
 
-	box_->Draw();
 	//mapchip_->Draw();
 
+	//box_->Draw();
+
+	for (Box* box : boxes) {
+		box->Draw();
+	}
+
+	for (std::vector<WorldTransform*> blockLine : blocks_) {
+		for (WorldTransform* block : blockLine) {
+			if (!block) {
+				continue;
+			} else {
+				model_->Draw(*block, viewProjection_,texture);
+			}
+		}
+	}
 
 	/// </summary>
 

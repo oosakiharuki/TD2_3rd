@@ -13,7 +13,7 @@ class Rope {
 public:
 	~Rope(); // デストラクタを追加
 	// 初期化
-	void Initialize(Player* p1, Player* p2, Box* box, KamataEngine::Input* input, KamataEngine::Model* modelCarry, KamataEngine::Model* modelHop);
+	void Initialize(Player* p1, Player* p2, KamataEngine::Input* input, KamataEngine::Model* modelCarry, KamataEngine::Model* modelHop);
 
 	// 更新
 	void Update();
@@ -22,6 +22,8 @@ public:
 	void Draw(KamataEngine::Camera* camera);
 
 	bool CheckCollisionWithBox(Box* box);
+
+	void SetBox(Box* box) { box_ = box; }
 
 private:
 	float Length(const KamataEngine::Vector3& v);
