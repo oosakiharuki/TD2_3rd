@@ -15,16 +15,20 @@ Rope::~Rope() {
 	ropeSegments_.clear();
 }
 
-void Rope::Initialize(Player* p1, Player* p2, Box* box, KamataEngine::Model* model) {
+void Rope::Initialize(Player* p1, Player* p2, Box* box, KamataEngine::Input* input, KamataEngine::Model* modelCarry, KamataEngine::Model* modelHop) {
 	assert(p1);
 	player1_ = p1;
 	assert(p2);
 	player2_ = p2;
 	assert(box);
 	box_ = box;
+	assert(input);
+	input_ = input;
 
-	assert(model);
-	model_ = model;
+	assert(modelCarry);
+	modelCarry_ = modelCarry;
+	assert(modelHop);
+	modelHop_ = modelHop;
 
 	// ropeSegments_ の初期化
 	for (int i = 0; i <= segmentCount_; ++i) {
@@ -65,6 +69,18 @@ void Rope::Update() {
 		ropeSegments_[i]->UpdateMatrix();
 	}
 
+	input_->GetJoystickState(0, state);
+	input_->GetJoystickStatePrevious(0, preState);
+
+	if (input_->TriggerKey(DIK_SPACE) || 
+		(state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+		if (box_->GetNowMode() == Box::Mode::Normal) {
+			box_->SetMode(Box::Mode::Hop);
+		} else if (box_->GetNowMode() == Box::Mode::Hop) {
+			box_->SetMode(Box::Mode::Normal);
+		}
+	}
+
     // 連続衝突判定 
     int iterations = 10; 
 	// 1フレームでの衝突判定回数 
@@ -83,7 +99,12 @@ void Rope::Update() {
 
 void Rope::Draw(KamataEngine::Camera* camera) {
 	for (const auto& segment : ropeSegments_) {
-		model_->Draw(*segment, *camera);
+		if (box_->GetNowMode() == Box::Mode::Normal) {
+	    	modelCarry_->Draw(*segment, *camera);
+		} else if (box_->GetNowMode() == Box::Mode::Hop) {
+			modelHop_->Draw(*segment, *camera);
+		}
+
 	}
 }
 
@@ -113,16 +134,30 @@ bool Rope::CheckCollisionWithBox(Box* box) {
 
 		// 衝突が発生している場合
 		if (distance <= boxRadius) {
-			KamataEngine::Vector3 collisionNormal = Normalize(boxCenter - closestPoint);
-			KamataEngine::Vector3 correction = collisionNormal * (boxRadius - distance) * 1.5f;
+			if (box->GetNowMode() == Box::Mode::Normal) {
+    			KamataEngine::Vector3 collisionNormal = Normalize(boxCenter - closestPoint);
+    			KamataEngine::Vector3 correction = collisionNormal * (boxRadius - distance) * 1.5f;
 
-			// ボックスの位置を補正
-			box->SetWorldPosition(boxCenter + correction);
+    			// ボックスの位置を補正
+    			box->SetWorldPosition(boxCenter + correction);
 
-			// 衝突したセグメント全体に影響を与える
-			KamataEngine::Vector3 segmentDisplacement = correction * 0.5f;
-			ropeSegments_[i]->translation_ -= segmentDisplacement;
-			ropeSegments_[i + 1]->translation_ -= segmentDisplacement;
+    			// 衝突したセグメント全体に影響を与える
+    			KamataEngine::Vector3 segmentDisplacement = correction * 0.5f;
+    			ropeSegments_[i]->translation_ -= segmentDisplacement;
+    			ropeSegments_[i + 1]->translation_ -= segmentDisplacement;
+			} else if (box->GetNowMode() == Box::Mode::Hop) {
+				KamataEngine::Vector3 collisionNormal = Normalize(boxCenter - closestPoint);
+				KamataEngine::Vector3 correction =collisionNormal * (boxRadius - distance) *1.5f;  
+				// ボックスの位置を補正
+				box->SetWorldPosition(boxCenter + correction); 
+				// ボックスに速度ベクトルを設定 
+				box->ApplyForce(collisionNormal); 
+				// 速度を適用 
+				// // 衝突したセグメント全体に影響を与える 
+				KamataEngine::Vector3 segmentDisplacement = correction * 0.5f; ropeSegments_[i]->translation_ -=segmentDisplacement; 
+				ropeSegments_[i + 1]->translation_ -= segmentDisplacement;
+			}
+
 
 			// 衝突を検出したのでtrueを返す
 			return true;

@@ -6,7 +6,8 @@ GameScene::GameScene(){};
 GameScene::~GameScene() {
 	delete model_;
 	delete modelPlayer_;
-	delete modelRope_;
+	delete modelCarryRope_;
+	delete modelHopRope_;
 	delete mapchip_;
 	delete box_;
 	
@@ -31,7 +32,8 @@ void GameScene::Initialize() {
 
 	model_ = Model::Create();
 	modelPlayer_ = Model::CreateFromOBJ("Player", true);
-	modelRope_ = Model::CreateFromOBJ("Rope", true);
+	modelCarryRope_ = Model::CreateFromOBJ("Rope", true);
+	modelHopRope_ = Model::CreateFromOBJ("hopRope", true);
 
 	box_ = new Box();
 	box_->Initialize(model_,&viewProjection_);
@@ -43,8 +45,7 @@ void GameScene::Initialize() {
 	player2_->Initialize(playerPosition[1], modelPlayer_, 2);
 	
 	rope_ = new Rope();
-	rope_->Initialize(player1_, player2_, box_, modelRope_);
-	//rope_->GetBox(box_);
+	rope_->Initialize(player1_, player2_, box_, input_, modelCarryRope_, modelHopRope_);
 }
 
 void GameScene::Update() {

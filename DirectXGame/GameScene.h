@@ -36,7 +36,8 @@ private:
 	// uint32_t texture = 0;
 
 	Model* modelPlayer_ = nullptr;
-	Model* modelRope_ = nullptr;
+	Model* modelCarryRope_ = nullptr;
+	Model* modelHopRope_ = nullptr;
 
 	MapChip* mapchip_ = nullptr;
 	Box* box_ = nullptr;

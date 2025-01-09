@@ -4,6 +4,7 @@
 #include "3d/WorldTransform.h"
 #include <cmath>
 #include <vector>
+#include "input/Input.h"
 
 class Player;
 class Box;
@@ -12,7 +13,7 @@ class Rope {
 public:
 	~Rope(); // デストラクタを追加
 	// 初期化
-	void Initialize(Player* p1, Player* p2, Box* box, KamataEngine::Model* model);
+	void Initialize(Player* p1, Player* p2, Box* box, KamataEngine::Input* input, KamataEngine::Model* modelCarry, KamataEngine::Model* modelHop);
 
 	// 更新
 	void Update();
@@ -21,7 +22,6 @@ public:
 	void Draw(KamataEngine::Camera* camera);
 
 	bool CheckCollisionWithBox(Box* box);
-
 
 private:
 	float Length(const KamataEngine::Vector3& v);
@@ -32,6 +32,7 @@ private:
 	Player* player1_ = nullptr;
 	Player* player2_ = nullptr;
 	Box* box_ = nullptr;
+	KamataEngine::Input* input_ = nullptr;
 
 	KamataEngine::Vector3 controlPoint1_;
 	KamataEngine::Vector3 controlPoint2_;
@@ -39,8 +40,10 @@ private:
 	float maxLength_ = 15.0f;
 	int segmentCount_ = 20; // ロープの分割数
 
-	KamataEngine::Model* model_ = nullptr;                    // ロープの1セグメント用モデル
+	KamataEngine::Model* modelCarry_ = nullptr;
+	KamataEngine::Model* modelHop_ = nullptr;
+
 	std::vector<KamataEngine::WorldTransform*> ropeSegments_; // 各セグメントのワールド情報（ポインタ）
 
-
+	XINPUT_STATE state, preState;
 };

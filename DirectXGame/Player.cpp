@@ -14,28 +14,28 @@ void Player::Initialize(KamataEngine::Vector3 startPosition, KamataEngine::Model
 }
 
 void Player::Update() {
-	if (!input_->GetJoystickState(0, state)) {
-		
+	float lx = 0, ly = 0, rx = 0, ry = 0;
+
+	if (input_->GetJoystickState(0, state)) {
+		 // 左スティックの入力
+    	 lx = static_cast<float>(state.Gamepad.sThumbLX) / 32768.0f; // -1.0f～1.0f
+    	 ly = static_cast<float>(state.Gamepad.sThumbLY) / 32768.0f; // -1.0f～1.0f
+
+    	// 右スティックの入力
+    	 rx = static_cast<float>(state.Gamepad.sThumbRX) / 32768.0f; // -1.0f～1.0f
+    	 ry = static_cast<float>(state.Gamepad.sThumbRY) / 32768.0f; // -1.0f～1.0f
+
+    	// デッドゾーン処理
+    	const float deadZone = 0.2f; // スティックの感度調整
+    	if (abs(lx) < deadZone)
+    		lx = 0.0f;
+    	if (abs(ly) < deadZone)
+    		ly = 0.0f;
+    	if (abs(rx) < deadZone)
+    		rx = 0.0f;
+    	if (abs(ry) < deadZone)
+    		ry = 0.0f;
 	}
-
-	// 左スティックの入力
-	float lx = static_cast<float>(state.Gamepad.sThumbLX) / 32768.0f; // -1.0f～1.0f
-	float ly = static_cast<float>(state.Gamepad.sThumbLY) / 32768.0f; // -1.0f～1.0f
-
-	// 右スティックの入力
-	float rx = static_cast<float>(state.Gamepad.sThumbRX) / 32768.0f; // -1.0f～1.0f
-	float ry = static_cast<float>(state.Gamepad.sThumbRY) / 32768.0f; // -1.0f～1.0f
-
-	// デッドゾーン処理
-	const float deadZone = 0.2f; // スティックの感度調整
-	if (abs(lx) < deadZone)
-		lx = 0.0f;
-	if (abs(ly) < deadZone)
-		ly = 0.0f;
-	if (abs(rx) < deadZone)
-		rx = 0.0f;
-	if (abs(ry) < deadZone)
-		ry = 0.0f;
 
 	// 移動速度
 	const float speed = 0.2f;

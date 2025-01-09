@@ -18,6 +18,15 @@ public:
 
 	void ApplyForce(const KamataEngine::Vector3& force);
 
+	enum class Mode {
+		Normal,
+		Hop,
+	};
+
+	void SetMode(Mode mode) { mode_ = mode; }
+
+	Mode GetNowMode() const { return mode_; }
+
 	private:
 
 	KamataEngine::Camera* viewProjection_ = nullptr;
@@ -29,4 +38,7 @@ public:
 	bool Flag;
 
 	float radius_ = 1.0f;
+	KamataEngine::Vector3 velocity_ = {0.0f, 0.0f, 0.0f};
+
+	Mode mode_ = Mode::Normal;
 };
