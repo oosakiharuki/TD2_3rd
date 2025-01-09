@@ -5,6 +5,10 @@
 GameScene::GameScene(){};
 GameScene::~GameScene() {
 	delete model_;
+	delete modelElectricity1_;
+	delete modelElectricity2_;
+	delete modelWall1_;
+	delete modelWall2_;
 	delete mapchip_;
 	delete box_;
 	delete electricityGimmick_;
@@ -24,7 +28,10 @@ void GameScene::Initialize() {
 	mapchip_->Initialize();
 
 	model_ = Model::Create();
-
+	modelElectricity1_ = Model::Create();
+	modelElectricity2_ = Model::Create();
+	modelWall1_ = Model::Create();
+	modelWall2_ = Model::Create();
 
 	box_ = new Box();
 	box_->Initialize(model_,&viewProjection_);
