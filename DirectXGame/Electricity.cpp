@@ -32,7 +32,13 @@ void Electricity::Update() {
 	worldTransform4_.UpdateMatrix();
 }
 
-void Electricity::Draw() {}
+void Electricity::Draw() {
+	model_->Draw(worldTransform_, *viewProjection_, &objColor);
+	model2_->Draw(worldTransform_, *viewProjection_, &objColor);
+	model3_->Draw(worldTransform_, *viewProjection_, &objColor);
+	model4_->Draw(worldTransform_, *viewProjection_, &objColor);
+
+}
 //左用
 
 void Electricity::OnCollision() {

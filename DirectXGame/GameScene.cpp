@@ -7,6 +7,7 @@ GameScene::~GameScene() {
 	delete model_;
 	delete mapchip_;
 	delete box_;
+	delete electricityGimmick_;
 };
 
 void GameScene::Initialize() {
@@ -24,13 +25,20 @@ void GameScene::Initialize() {
 
 	model_ = Model::Create();
 
+
 	box_ = new Box();
 	box_->Initialize(model_,&viewProjection_);
+
+	//電気ギミック
+	electricityGimmick_ = new Electricity;
+	electricityGimmick_->Initialize(modelElectricity1_, modelElectricity2_, modelWall1_, modelWall2_, &viewProjection_);
 }
 
 void GameScene::Update() { 
 	box_->Update();
 	mapchip_->Update();
+	electricityGimmick_->Update();
+
 };
 
 void GameScene::Draw() {
@@ -60,6 +68,7 @@ void GameScene::Draw() {
 	
 	box_->Draw();
 	mapchip_->Draw();
+	electricityGimmick_->Draw();
 
 	/// </summary>
 
