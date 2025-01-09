@@ -4,6 +4,7 @@
 #include "AABB.h"
 #include "Box.h"
 #include "BrokenBox.h"
+#include "Gate.h"
 
 using namespace KamataEngine;
 
@@ -35,6 +36,11 @@ private:
 
 	std::vector<std::vector<KamataEngine::WorldTransform*>> blocks_;
 	std::list<Box*> boxes;
+	
+	std::list<Gate*> gates;
+	std::list<Gate*> gatesList[2];
+	bool isGate = false;
+	bool isA = false;
 
 	MapChip* mapchip_ = nullptr;
 	//Box* box_ = nullptr;
