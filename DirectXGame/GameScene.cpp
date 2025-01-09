@@ -5,6 +5,14 @@
 GameScene::GameScene(){};
 GameScene::~GameScene() {
 	delete model_;
+
+	delete modelElectricity1_;
+	delete modelElectricity2_;
+	delete modelWall1_;
+	delete modelWall2_;
+	
+	delete electricityGimmick_;
+
 	delete modelPlayer_;
 	delete modelCarryRope_;
 	delete modelHopRope_;
@@ -25,6 +33,7 @@ GameScene::~GameScene() {
 		}
 	}
 	blocks_.clear();
+
 };
 
 void GameScene::Initialize() {
@@ -40,6 +49,20 @@ void GameScene::Initialize() {
 	mapchip_->LordCSV("Resources/stage.csv");
 
 	model_ = Model::Create();
+
+	modelElectricity1_ = Model::Create();
+	modelElectricity2_ = Model::Create();
+	modelWall1_ = Model::Create();
+	modelWall2_ = Model::Create();
+
+	box_ = new Box();
+	box_->Initialize(model_,&viewProjection_);
+
+	//電気ギミック
+	electricityGimmick_ = new Electricity;
+	electricityGimmick_->Initialize(modelElectricity1_, modelElectricity2_, modelWall1_, modelWall2_, &viewProjection_);
+
+
 	modelPlayer_ = Model::CreateFromOBJ("Player", true);
 	modelCarryRope_ = Model::CreateFromOBJ("Rope", true);
 	modelHopRope_ = Model::CreateFromOBJ("hopRope", true);
@@ -84,6 +107,9 @@ void GameScene::Initialize() {
 void GameScene::Update() { 
 	//box_->Update();
 
+	mapchip_->Update();
+	
+	electricityGimmick_->Update();
 	for (std::vector<WorldTransform*> blockLine : blocks_) {
 		for (WorldTransform* block : blockLine) {
 			if (!block) {
@@ -103,6 +129,7 @@ void GameScene::Update() {
 	player2_->Update();
 
 	rope_->Update();
+
 
 };
 
@@ -131,6 +158,10 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	///
 	
+
+	mapchip_->Draw();
+	electricityGimmick_->Draw();
+
 	// プレイヤーの描画
 	player1_->Draw(&viewProjection_);
 	player2_->Draw(&viewProjection_);
@@ -154,6 +185,7 @@ void GameScene::Draw() {
 			}
 		}
 	}
+
 
 	/// </summary>
 
