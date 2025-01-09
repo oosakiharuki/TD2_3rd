@@ -4,7 +4,12 @@
 #include "AABB.h"
 #include "Box.h"
 #include "BrokenBox.h"
+
 #include"Electricity.h"
+
+#include "Player.h"
+#include "Rope.h"
+
 
 using namespace KamataEngine;
 
@@ -38,9 +43,28 @@ private:
 
 	WorldTransform worldTransform_;
 	Camera viewProjection_;
-	// uint32_t texture = 0;
+	uint32_t texture = 0;
+
+	std::vector<std::vector<KamataEngine::WorldTransform*>> blocks_;
+	std::list<Box*> boxes;
+
+	Model* modelPlayer_ = nullptr;
+	Model* modelCarryRope_ = nullptr;
+	Model* modelHopRope_ = nullptr;
 
 	MapChip* mapchip_ = nullptr;
-	Box* box_ = nullptr;
+
 	Electricity* electricityGimmick_;
+
+
+	Player* player1_ = nullptr;
+	Player* player2_ = nullptr;
+
+	Vector3 playerPosition[2]{
+	    {-2.0f, 3.0f, 0.0f},
+        {2.0f, 3.0f, 0.0f}
+    };
+
+	Rope* rope_ = nullptr;
+
 };
