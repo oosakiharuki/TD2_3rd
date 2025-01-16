@@ -34,7 +34,7 @@ public:
 	KamataEngine::WorldTransform worldTransform_;
 	KamataEngine::ObjectColor objColor = {};
 
-	float kSpeed = 0.5f;
+	float kSpeed = 0.2f;
 	bool Flag;
 
 	float radius_ = 1.0f;
