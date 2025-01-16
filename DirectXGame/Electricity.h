@@ -4,17 +4,16 @@
 #include <3d/ObjectColor.h>
 #include <3d/WorldTransform.h>
 #include"AABB.h"
-#include"Player.h"
-
+class Player;
 class Electricity {
 public:
 	void Initialize(KamataEngine::Model* model,KamataEngine::Model*model2, KamataEngine::Camera* viewProjection);
-
+	
 	void Update();
 
 	void Draw();
 
-	void OnCollision(const Player*player);
+	void OnCollision(const Player* player);
 	// AABBを取得
 	AABB GetAABB();
 

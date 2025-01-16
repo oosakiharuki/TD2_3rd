@@ -4,9 +4,9 @@
 #include "3d/WorldTransform.h"
 #include "input/Input.h"
 #include"AABB.h"
-#include"Electricity.h"
-#include"Electricity2.h"
 
+class Electricity;
+class Electricity2;
 
 class Player {
 public:
@@ -24,8 +24,8 @@ public:
 	void SetWorldPosition(const KamataEngine::Vector3& position);
 	// AABBを取得
 	AABB GetAABB();
-	void OnCollision(const Electricity&electricity);
-	void OnCollision2(const Electricity2& electricity2);
+	void OnCollision(const Electricity* electricity);
+	void OnCollision2(const Electricity2* electricity2);
 
 private:
 	KamataEngine::Input* input_ = nullptr;

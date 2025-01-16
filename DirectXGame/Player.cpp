@@ -1,5 +1,7 @@
 #include "Player.h"
 #include <cassert>
+#include"Electricity.h"
+#include"Electricity2.h"
 
 void Player::Initialize(KamataEngine::Vector3 startPosition, KamataEngine::Model* model, int playerId) { 
 	input_ = KamataEngine::Input::GetInstance();
@@ -114,6 +116,6 @@ AABB Player::GetAABB() {
 	return aabb;
 }
 
-void Player::OnCollision(const Electricity& electricity) { (void)electricity; }
+void Player::OnCollision(const Electricity* electricity) { (void)electricity; }
 
-void Player::OnCollision2(const Electricity2& electricity2) { (void)electricity2; }
+void Player::OnCollision2(const Electricity2* electricity2) { (void)electricity2; }

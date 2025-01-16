@@ -1,4 +1,5 @@
 #include "Electricity2.h"
+#include"Player.h"
 
 void Electricity2::Initialize(KamataEngine::Model* model, KamataEngine::Model* model2, KamataEngine::Camera* viewProjection) {
 	model_ = model; // プレイヤーが触る板用
@@ -15,6 +16,7 @@ void Electricity2::Initialize(KamataEngine::Model* model, KamataEngine::Model* m
 
 void Electricity2::Update() {
 	if (Flag) {
+	
 		worldTransform2_.translation_.x += 1.0f;
 		worldTransform2_.scale_.x -= 1.0f;
 	}

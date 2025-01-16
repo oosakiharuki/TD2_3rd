@@ -58,7 +58,7 @@ private:
 	MapChip* mapchip_ = nullptr;
 
 	Electricity* electricityGimmick_;
-
+	Electricity2* electricityGimmick2_;
 
 	Player* player1_ = nullptr;
 	Player* player2_ = nullptr;

@@ -1,4 +1,5 @@
 #include "Electricity.h"
+#include"Player.h"
 
 void Electricity::Initialize(KamataEngine::Model* model, KamataEngine::Model* model2, KamataEngine::Camera* viewProjection) {
 	model_ = model;//プレイヤーが触る板用

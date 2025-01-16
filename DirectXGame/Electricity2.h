@@ -4,8 +4,8 @@
 #include <3d/Model.h>
 #include <3d/ObjectColor.h>
 #include <3d/WorldTransform.h>
-#include"Player.h"
 
+class Player;
 class Electricity2 {
 public:
 	void Initialize(KamataEngine::Model* model, KamataEngine::Model* model2, KamataEngine::Camera* viewProjection);
