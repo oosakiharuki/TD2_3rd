@@ -7,7 +7,9 @@ void BrokenBox::Initialize(KamataEngine::Model* model, KamataEngine::Camera* vie
 	objColor.Initialize();
 }
 
-void BrokenBox::Update() {}
+void BrokenBox::Update() {
+
+}
 
 void BrokenBox::Draw() { 
 	model_->Draw(worldTransform_, *viewProjection_, &objColor);
