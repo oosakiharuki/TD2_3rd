@@ -31,4 +31,5 @@ private:
 	bool isBreak;
 
 	std::list<Box*> boxes_;
+
 };

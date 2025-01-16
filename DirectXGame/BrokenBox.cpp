@@ -10,14 +10,18 @@ void BrokenBox::Initialize(KamataEngine::Model* model, KamataEngine::Camera* vie
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = KamataEngine::Vector3{10.0f, -10.0f, 0.0f};
 	objColor.Initialize();
+
 }
 
-void BrokenBox::Update() { worldTransform_.UpdateMatrix(); }
+void BrokenBox::Update() { 
+	worldTransform_.UpdateMatrix();
+}
 
 void BrokenBox::Draw() { 
 	if (!isBreak) {
-    	model_->Draw(worldTransform_, *viewProjection_, &objColor); }
+    	model_->Draw(worldTransform_, *viewProjection_, &objColor); 
 	}
+}
 
 
 KamataEngine::Vector3 BrokenBox::GetWorldPosition() { 
