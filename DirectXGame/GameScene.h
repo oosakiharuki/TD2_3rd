@@ -11,7 +11,6 @@
 #include "Player.h"
 #include "Rope.h"
 
-
 using namespace KamataEngine;
 
 class GameScene {
@@ -31,6 +30,11 @@ public:
 
 	void Draw();
 
+    /// <summary>
+	/// 衝突判定と応答
+	/// </summary>
+	void CheckAllCollisions();
+
 private:
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -41,6 +45,10 @@ private:
 	Model* modelElectricity2_ = nullptr;
 	Model* modelWall1_ = nullptr;
 	Model* modelWall2_ = nullptr;
+	Model* modelBrokenBox_ = nullptr;
+	Model* modelPlayer_ = nullptr;
+	Model* modelCarryRope_ = nullptr;
+	Model* modelHopRope_ = nullptr;
 
 	WorldTransform worldTransform_;
 	Camera viewProjection_;
@@ -54,9 +62,7 @@ private:
 	bool isGate = false;
 	bool isA = false;
 
-	Model* modelPlayer_ = nullptr;
-	Model* modelCarryRope_ = nullptr;
-	Model* modelHopRope_ = nullptr;
+
 
 	MapChip* mapchip_ = nullptr;
 
@@ -72,5 +78,6 @@ private:
     };
 
 	Rope* rope_ = nullptr;
+	BrokenBox* brokenBox_ = nullptr;
 
 };

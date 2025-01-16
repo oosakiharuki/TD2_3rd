@@ -27,6 +27,8 @@ public:
 
 	Mode GetNowMode() const { return mode_; }
 
+	KamataEngine::Vector3 GetWorldPosition();
+
 	private:
 
 	KamataEngine::Camera* viewProjection_ = nullptr;

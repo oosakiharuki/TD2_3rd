@@ -4,7 +4,6 @@
 #include "3d/WorldTransform.h"
 #include "input/Input.h"
 
-
 class Player {
 public:
 	// 初期化

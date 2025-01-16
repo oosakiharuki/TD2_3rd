@@ -10,6 +10,7 @@ GameScene::~GameScene() {
 	delete modelElectricity2_;
 	delete modelWall1_;
 	delete modelWall2_;
+	delete modelBrokenBox_;
 	
 	delete electricityGimmick_;
 
@@ -37,6 +38,8 @@ GameScene::~GameScene() {
 	}
 	blocks_.clear();
 
+	delete brokenBox_;
+
 };
 
 void GameScene::Initialize() {
@@ -57,17 +60,14 @@ void GameScene::Initialize() {
 	modelElectricity2_ = Model::Create();
 	modelWall1_ = Model::Create();
 	modelWall2_ = Model::Create();
-
-	
+	modelBrokenBox_ = Model::Create();
+	modelPlayer_ = Model::CreateFromOBJ("Player", true);
+	modelCarryRope_ = Model::CreateFromOBJ("Rope", true);
+	modelHopRope_ = Model::CreateFromOBJ("hopRope", true);
 
 	//電気ギミック
 	electricityGimmick_ = new Electricity;
 	electricityGimmick_->Initialize(modelElectricity1_, modelElectricity2_, modelWall1_, modelWall2_, &viewProjection_);
-
-
-	modelPlayer_ = Model::CreateFromOBJ("Player", true);
-	modelCarryRope_ = Model::CreateFromOBJ("Rope", true);
-	modelHopRope_ = Model::CreateFromOBJ("hopRope", true);
 
 	uint32_t kMapHeight = mapchip_->GetNumVirtical();
 	uint32_t kMapWight = mapchip_->GetNumHorizontal();
@@ -111,6 +111,8 @@ void GameScene::Initialize() {
 		}
 	}
 
+
+
 	player1_ = new Player();
 	player1_->Initialize(playerPosition[0], modelPlayer_, 1);
 
@@ -122,12 +124,15 @@ void GameScene::Initialize() {
 	rope_->SetBoxes(boxes);
 
 
+	brokenBox_ = new BrokenBox();
+	brokenBox_->Initialize(modelBrokenBox_, &viewProjection_);
+	brokenBox_->SetBoxes(boxes);
 }
 
 void GameScene::Update() { 
 	//box_->Update();
 
-	
+	CheckAllCollisions();
 	
 	electricityGimmick_->Update();
 	for (std::vector<WorldTransform*> blockLine : blocks_) {
@@ -161,6 +166,9 @@ void GameScene::Update() {
 			gate->CloseGate();
 		}
 	}
+
+
+	brokenBox_->Update();
 
 	// プレイヤーの更新
 	player1_->Update();
@@ -227,6 +235,8 @@ void GameScene::Draw() {
 		}
 	}
 
+	brokenBox_->Draw();
+
 
 	/// </summary>
 
@@ -246,4 +256,32 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::CheckAllCollisions() { 
+	KamataEngine::Vector3 posA, posB; 
+
+	float boxRadius = 1.0f;
+	float brokenBoxRadius = 1.0f;
+
+	#pragma region 壊れる箱と箱の当たり判定
+	// 壊れる箱の座標
+	posA = brokenBox_->GetWorldPosition();
+	
+	// 壊れる箱と箱全ての当たり判定
+	for (Box* box : boxes) {
+		// 箱の座標
+		posB = box->GetWorldPosition();
+    	KamataEngine::Vector3 diff = {posB.x - posA.x, posB.y - posA.y, posB.z - posA.z};
+    	float distanceSquared = diff.x * diff.x + diff.y * diff.y + diff.z * diff.z;
+
+    	float radiusSum = brokenBoxRadius + boxRadius;
+
+    	// 球と球の交差判定
+    	if (distanceSquared <= (radiusSum * radiusSum)) {
+			brokenBox_->OnCollision();
+    	}
+	}
+	#pragma endregion
+
 }
