@@ -35,6 +35,8 @@ public:
 	/// </summary>
 	void CheckAllCollisions();
 
+	bool IsFinished() const { return isFinished_; }
+
 private:
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -80,4 +82,5 @@ private:
 	Rope* rope_ = nullptr;
 	BrokenBox* brokenBox_ = nullptr;
 
+	bool isFinished_ = false;
 };
