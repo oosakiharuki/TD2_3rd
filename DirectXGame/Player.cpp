@@ -1,7 +1,8 @@
 #include "Player.h"
 #include <cassert>
+#include "MapChip.h"
 
-void Player::Initialize(KamataEngine::Vector3 startPosition, KamataEngine::Model* model, int playerId) { 
+void Player::Initialize(KamataEngine::Vector3 startPosition, KamataEngine::Model* model, int playerId, MapChip* mapChip) { 
 	input_ = KamataEngine::Input::GetInstance();
 
 	worldTransform_.Initialize();
@@ -11,6 +12,8 @@ void Player::Initialize(KamataEngine::Vector3 startPosition, KamataEngine::Model
 
 	assert(model);
 	model_ = model;
+	assert(mapChip);
+	mapChip_ = mapChip;
 }
 
 void Player::Update() {
@@ -102,4 +105,9 @@ KamataEngine::Vector3 Player::GetWorldPosition() {
 
 void Player::SetWorldPosition(const KamataEngine::Vector3& position) { 
 	worldTransform_.translation_ = position; 
+}
+
+void Player::UpdateBoundingBox() {
+	boundingBoxMin_ = worldTransform_.translation_ - KamataEngine::Vector3(1.0f, 1.0f, 1.0f); 
+	boundingBoxMax_ = worldTransform_.translation_ + KamataEngine::Vector3(1.0f, 1.0f, 1.0f);
 }
