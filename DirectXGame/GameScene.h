@@ -11,6 +11,8 @@
 #include "Player.h"
 #include "Rope.h"
 
+#include "CameraController.h"
+
 using namespace KamataEngine;
 
 class GameScene {
@@ -82,5 +84,6 @@ private:
 	Rope* rope_ = nullptr;
 	BrokenBox* brokenBox_ = nullptr;
 
+	CameraController* cameraController = nullptr;
 	bool isFinished_ = false;
 };

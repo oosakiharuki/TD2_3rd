@@ -25,6 +25,7 @@ public:
 	bool CheckCollisionWithBox(Box* box);
 
 	void SetBoxes(const std::list<Box*>& boxes) { boxes_ = boxes; }
+	const KamataEngine::WorldTransform& GetWorldTransform() { return *ropeMiddle_; }
 
 private:
 	float Length(const KamataEngine::Vector3& v);
@@ -47,6 +48,8 @@ private:
 	KamataEngine::Model* modelHop_ = nullptr;
 
 	std::vector<KamataEngine::WorldTransform*> ropeSegments_; // 各セグメントのワールド情報（ポインタ）
+	KamataEngine::WorldTransform* ropeMiddle_; //ロープの真ん中をカメラ位置にする
+
 	std::list<Box*> boxes_;
 
 	XINPUT_STATE state, preState;

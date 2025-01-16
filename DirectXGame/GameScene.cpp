@@ -40,6 +40,7 @@ GameScene::~GameScene() {
 
 	delete brokenBox_;
 
+	delete cameraController;
 };
 
 void GameScene::Initialize() {
@@ -107,6 +108,8 @@ void GameScene::Initialize() {
 				} else  {
 					gatesList[0].push_back(gate);
 				}
+			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kGate) {
+
 			}
 		}
 	}
@@ -127,6 +130,11 @@ void GameScene::Initialize() {
 	brokenBox_ = new BrokenBox();
 	brokenBox_->Initialize(modelBrokenBox_, &viewProjection_);
 	brokenBox_->SetBoxes(boxes);
+	cameraController = new CameraController();
+	cameraController->Initialize();
+	cameraController->SetTraget(rope_);
+	cameraController->Reset();
+
 }
 
 void GameScene::Update() { 
@@ -176,6 +184,7 @@ void GameScene::Update() {
 
 	rope_->Update();
 
+	cameraController->Update();
 };
 
 void GameScene::Draw() {
@@ -237,6 +246,9 @@ void GameScene::Draw() {
 
 	brokenBox_->Draw();
 
+	viewProjection_.matView = cameraController->GetViewProjection().matView;
+	viewProjection_.matProjection = cameraController->GetViewProjection().matProjection;
+	viewProjection_.TransferMatrix();
 
 	/// </summary>
 
