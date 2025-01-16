@@ -4,7 +4,7 @@
 #include "AABB.h"
 #include "Box.h"
 #include "BrokenBox.h"
-
+#include"Artillery.h"
 #include"Electricity.h"
 
 #include "Player.h"
@@ -40,6 +40,10 @@ private:
 	Model* modelElectricity2_ = nullptr;
 	Model* modelWall1_ = nullptr;
 	Model* modelWall2_ = nullptr;
+	//大砲用
+	Artillery* artillery_ = nullptr;
+	Model* modelArtillery_ = nullptr;
+	Model* modelBullet_ = nullptr;
 
 	WorldTransform worldTransform_;
 	Camera viewProjection_;
