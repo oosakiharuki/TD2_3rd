@@ -27,7 +27,9 @@ void Electricity2::Draw() {
 	model2_->Draw(worldTransform2_, *viewProjection_, &objColor);
 }
 
-void Electricity2::OnCollision() { Flag = true; }
+void Electricity2::OnCollision(const Player* player) { 
+	(void)player;
+	Flag = true; }
 
 AABB Electricity2::GetAABB() {
 	KamataEngine::Vector3 worldPos = worldTransform_.translation_;

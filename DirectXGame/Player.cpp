@@ -103,3 +103,17 @@ KamataEngine::Vector3 Player::GetWorldPosition() {
 void Player::SetWorldPosition(const KamataEngine::Vector3& position) { 
 	worldTransform_.translation_ = position; 
 }
+
+AABB Player::GetAABB() {
+	KamataEngine::Vector3 worldPos = worldTransform_.translation_;
+	AABB aabb;
+
+	aabb.min = {worldPos.x - kWidth / 2.0f, worldPos.y - kHeight / 2.0f, worldPos.z - kWidth / 2.0f};
+	aabb.max = {worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f};
+
+	return aabb;
+}
+
+void Player::OnCollision(const Electricity& electricity) { (void)electricity; }
+
+void Player::OnCollision2(const Electricity2& electricity2) { (void)electricity2; }

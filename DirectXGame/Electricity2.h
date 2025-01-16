@@ -4,6 +4,7 @@
 #include <3d/Model.h>
 #include <3d/ObjectColor.h>
 #include <3d/WorldTransform.h>
+#include"Player.h"
 
 class Electricity2 {
 public:
@@ -13,7 +14,7 @@ public:
 
 	void Draw();
 
-	void OnCollision();
+	void OnCollision(const Player* player);
 	// AABBを取得
 	AABB GetAABB();
 

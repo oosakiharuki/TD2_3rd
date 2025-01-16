@@ -6,6 +6,7 @@
 #include "BrokenBox.h"
 
 #include"Electricity.h"
+#include"Electricity2.h"
 
 #include "Player.h"
 #include "Rope.h"
@@ -29,6 +30,8 @@ public:
 	void Update();
 
 	void Draw();
+
+	void CheckAllCollision();
 
 private:
 	DirectXCommon* dxCommon_ = nullptr;

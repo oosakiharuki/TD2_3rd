@@ -205,3 +205,7 @@ void GameScene::Draw() {
 
 #pragma endregion
 }
+
+void GameScene::CheckAllCollision() { AABB aabb1, aabb2;
+
+}
