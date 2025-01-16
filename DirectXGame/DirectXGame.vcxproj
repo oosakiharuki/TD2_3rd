@@ -107,6 +107,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="Artillery.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="BrokenBox.cpp" />
     <ClCompile Include="Electricity.cpp" />
@@ -195,6 +196,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
+    <ClInclude Include="Artillery.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="BrokenBox.h" />
     <ClInclude Include="Electricity.h" />

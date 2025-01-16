@@ -34,9 +34,8 @@ void Electricity::Update() {
 
 void Electricity::Draw() {
 	model_->Draw(worldTransform_, *viewProjection_, &objColor);
-	model2_->Draw(worldTransform_, *viewProjection_, &objColor);
-	model3_->Draw(worldTransform_, *viewProjection_, &objColor);
-	model4_->Draw(worldTransform_, *viewProjection_, &objColor);
+	model2_->Draw(worldTransform2_, *viewProjection_, &objColor);
+	
 
 }
 //左用
