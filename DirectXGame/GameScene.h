@@ -11,6 +11,7 @@
 #include "Player.h"
 #include "Rope.h"
 
+#include "CameraController.h"
 
 using namespace KamataEngine;
 
@@ -73,4 +74,5 @@ private:
 
 	Rope* rope_ = nullptr;
 
+	CameraController* cameraController = nullptr;
 };

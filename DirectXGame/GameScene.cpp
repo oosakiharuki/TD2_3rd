@@ -37,6 +37,7 @@ GameScene::~GameScene() {
 	}
 	blocks_.clear();
 
+	delete cameraController;
 };
 
 void GameScene::Initialize() {
@@ -107,6 +108,8 @@ void GameScene::Initialize() {
 				} else  {
 					gatesList[0].push_back(gate);
 				}
+			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kGate) {
+
 			}
 		}
 	}
@@ -121,6 +124,11 @@ void GameScene::Initialize() {
     rope_->Initialize(player1_, player2_, input_, modelCarryRope_, modelHopRope_);
 	rope_->SetBoxes(boxes);
 
+
+	cameraController = new CameraController();
+	cameraController->Initialize();
+	cameraController->SetTraget(rope_);
+	cameraController->Reset();
 
 }
 
@@ -168,6 +176,7 @@ void GameScene::Update() {
 
 	rope_->Update();
 
+	cameraController->Update();
 };
 
 void GameScene::Draw() {
@@ -227,6 +236,9 @@ void GameScene::Draw() {
 		}
 	}
 
+	viewProjection_.matView = cameraController->GetViewProjection().matView;
+	viewProjection_.matProjection = cameraController->GetViewProjection().matProjection;
+	viewProjection_.TransferMatrix();
 
 	/// </summary>
 

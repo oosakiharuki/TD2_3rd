@@ -109,6 +109,7 @@
     <ClCompile Include="AABB.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="BrokenBox.cpp" />
+    <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="Electricity.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Gate.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="AABB.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="BrokenBox.h" />
+    <ClInclude Include="CameraController.h" />
     <ClInclude Include="Gate.h" />
     <ClInclude Include="Electricity.h" />
     <ClInclude Include="MapChip.h" />
