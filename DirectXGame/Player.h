@@ -3,7 +3,10 @@
 #include "3d/Model.h"
 #include "3d/WorldTransform.h"
 #include "input/Input.h"
+#include"AABB.h"
 
+class Electricity;
+class Electricity2;
 
 class Player {
 public:
@@ -19,6 +22,10 @@ public:
     KamataEngine::Vector3 GetWorldPosition();
 
 	void SetWorldPosition(const KamataEngine::Vector3& position);
+	// AABBを取得
+	AABB GetAABB();
+	void OnCollision(const Electricity* electricity);
+	void OnCollision2(const Electricity2* electricity2);
 
 private:
 	KamataEngine::Input* input_ = nullptr;
@@ -33,4 +40,7 @@ private:
 	KamataEngine::Vector3 playerVelocity;
 
 	int playerId_;
+	// キャラクターの当たり判定サイズ
+	static inline const float kWidth = 1.0f;
+	static inline const float kHeight = 1.0f;
 };

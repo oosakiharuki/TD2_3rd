@@ -111,6 +111,7 @@
     <ClCompile Include="BrokenBox.cpp" />
     <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="Electricity.cpp" />
+    <ClCompile Include="Electricity2.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Gate.cpp" />
     <ClCompile Include="main.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="Gate.h" />
     <ClInclude Include="Electricity.h" />
+    <ClInclude Include="Electricity2.h" />
     <ClInclude Include="MapChip.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="makeMath.h" />

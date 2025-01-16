@@ -63,7 +63,9 @@ void GameScene::Initialize() {
 
 	//電気ギミック
 	electricityGimmick_ = new Electricity;
-	electricityGimmick_->Initialize(modelElectricity1_, modelElectricity2_, modelWall1_, modelWall2_, &viewProjection_);
+	electricityGimmick_->Initialize(modelElectricity1_, modelWall1_, &viewProjection_);
+	electricityGimmick2_ = new Electricity2;
+	electricityGimmick2_->Initialize(modelElectricity2_, modelWall2_, &viewProjection_);
 
 
 	modelPlayer_ = Model::CreateFromOBJ("Player", true);
@@ -134,10 +136,11 @@ void GameScene::Initialize() {
 
 void GameScene::Update() { 
 	//box_->Update();
-
+	CheckAllCollision();
 	
 	
 	electricityGimmick_->Update();
+	electricityGimmick2_->Update();
 	for (std::vector<WorldTransform*> blockLine : blocks_) {
 		for (WorldTransform* block : blockLine) {
 			if (!block) {
@@ -207,6 +210,7 @@ void GameScene::Draw() {
 
 	
 	electricityGimmick_->Draw();
+	electricityGimmick2_->Draw();
 
 	// プレイヤーの描画
 	player1_->Draw(&viewProjection_);
@@ -258,4 +262,24 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::CheckAllCollision() { 
+
+	//左側
+	AABB aabb1, aabb2;
+	aabb1 = player1_->GetAABB();
+	aabb2 = electricityGimmick_->GetAABB();
+	if (AABB::IsCollision(aabb1, aabb2)) {
+		player1_->OnCollision(electricityGimmick_);
+		electricityGimmick_->OnCollision(player1_);
+	}
+	AABB aabb3, aabb4;
+	aabb3 = player2_->GetAABB();
+	aabb4 = electricityGimmick2_->GetAABB();
+	if (AABB::IsCollision(aabb3, aabb4)) {
+		player2_->OnCollision2(electricityGimmick2_);
+		electricityGimmick2_->OnCollision(player2_);
+	}
+
 }
