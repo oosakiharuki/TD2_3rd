@@ -117,10 +117,10 @@ void GameScene::Initialize() {
 
 
 	player1_ = new Player();
-	player1_->Initialize(playerPosition[0], modelPlayer_, 1, mapchip_);
+	player1_->Initialize(playerPosition[0], modelPlayer_, 1);
 
 	player2_ = new Player();
-	player2_->Initialize(playerPosition[1], modelPlayer_, 2, mapchip_);
+	player2_->Initialize(playerPosition[1], modelPlayer_, 2);
 	
 	rope_ = new Rope();
     rope_->Initialize(player1_, player2_, input_, modelCarryRope_, modelHopRope_);

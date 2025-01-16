@@ -77,8 +77,8 @@ private:
 	Player* player2_ = nullptr;
 
 	Vector3 playerPosition[2]{
-	    {-2.0f, 3.0f, 0.0f},
-        {2.0f, 3.0f, 0.0f}
+	    {2.5f, 3.0f, 0.0f},
+        {5.0f, 3.0f, 0.0f}
     };
 
 	Rope* rope_ = nullptr;

@@ -4,12 +4,10 @@
 #include "3d/WorldTransform.h"
 #include "input/Input.h"
 
-class MapChip;
-
 class Player {
 public:
 	// 初期化
-	void Initialize(KamataEngine::Vector3 startPosition, KamataEngine::Model* model, int playerId, MapChip* mapChip);
+	void Initialize(KamataEngine::Vector3 startPosition, KamataEngine::Model* model, int playerId);
 
 	// 更新
 	void Update();
@@ -20,14 +18,6 @@ public:
     KamataEngine::Vector3 GetWorldPosition();
 
 	void SetWorldPosition(const KamataEngine::Vector3& position);
-
-	// 境界ボックスを更新
-	void UpdateBoundingBox();
-
-	// 衝突判定
-	bool CheckCollision(const KamataEngine::Vector3& minA, const KamataEngine::Vector3& maxA, const KamataEngine::Vector3& minB, const KamataEngine::Vector3& maxB) {
-		return (minA.x <= maxB.x && maxA.x >= minB.x) && (minA.y <= maxB.y && maxA.y >= minB.y) && (minA.z <= maxB.z && maxA.z >= minB.z);
-	}
 
 private:
 	KamataEngine::Input* input_ = nullptr;
@@ -42,9 +32,4 @@ private:
 	KamataEngine::Vector3 playerVelocity;
 
 	int playerId_;
-
-	MapChip* mapChip_ = nullptr;
-
-	KamataEngine::Vector3 boundingBoxMin_;
-	KamataEngine::Vector3 boundingBoxMax_;
 };
