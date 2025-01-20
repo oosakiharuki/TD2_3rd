@@ -33,6 +33,9 @@ public:
 	uint32_t GetNumVirtical() { return kMapWight; }
 	uint32_t GetNumHorizontal() { return kMapHeight; }
 
+	float GetBlockWight() { return kBlockWight; }
+	float GetBlockHeight() { return kBlockHeight; }
+
 private:
 
 	KamataEngine::Model* model_;

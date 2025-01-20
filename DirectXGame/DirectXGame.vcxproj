@@ -117,6 +117,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="makeMath.cpp" />
     <ClCompile Include="MapChip.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="WorldTransformEx.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Rope.cpp" />
@@ -207,6 +208,7 @@
     <ClInclude Include="MapChip.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="makeMath.h" />
+    <ClInclude Include="TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h" />

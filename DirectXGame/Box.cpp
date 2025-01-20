@@ -42,3 +42,14 @@ void Box::Draw() { model_->Draw(worldTransform_, *viewProjection_, &objColor); }
 
 void Box::ApplyForce(const KamataEngine::Vector3& force) { 
 	velocity_ += force * kSpeed; }
+
+KamataEngine::Vector3 Box::GetWorldPosition() { 
+	// ワールド座標を入れる変数
+	KamataEngine::Vector3 worldPos;
+	// ワールド座標の平行移動成分を取得
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+
+	return worldPos;
+}
