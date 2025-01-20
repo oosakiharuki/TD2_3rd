@@ -118,6 +118,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="makeMath.cpp" />
     <ClCompile Include="MapChip.cpp" />
+    <ClCompile Include="SelectScene.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="WorldTransformEx.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="MapChip.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="makeMath.h" />
+    <ClInclude Include="SelectScene.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="TitleScene.h" />
   </ItemGroup>

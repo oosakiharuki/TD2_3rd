@@ -1,17 +1,20 @@
 #include <KamataEngine.h>
 #include "GameScene.h"
 #include "TitleScene.h"
+#include "SelectScene.h"
 
 using namespace KamataEngine;
 
 GameScene* gameScene = nullptr;
 TitleScene* titleScene = nullptr;
+SelectScene* selectScene = nullptr;
 
 // シーン
 enum class Scene { 
 	kUnknown = 0, 
 
 	kTitle,
+	kSelect,
 	kGame,
 };
 
@@ -112,6 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 	// 各種解放
 	delete titleScene;
+	delete selectScene;
 	delete gameScene;
 	// 3Dモデル解放
 	Model::StaticFinalize();
@@ -129,14 +133,29 @@ void ChangeScene() {
 	switch (scene) {
 	case Scene::kTitle:
 		if (titleScene->IsFinished()) {
-			scene = Scene::kGame;
+			scene = Scene::kSelect;
 
 			delete titleScene;
 			titleScene = nullptr;
 
+			selectScene = new SelectScene();
+			selectScene->Initialize(); 
+		}
+		break;
+	case Scene::kSelect:
+		if (selectScene->IsFinished()) {
+			scene = Scene::kGame;
+
 			gameScene = new GameScene();
+			gameScene->GetStage(selectScene->SetStageNum());
+						
+			delete selectScene;
+			selectScene = nullptr;
+
+			
 			gameScene->Initialize();
 		}
+
 		break;
 	case Scene::kGame:
 		if (gameScene->IsFinished()) {
@@ -157,6 +176,9 @@ void UpdateScene() {
 	case Scene::kTitle:
 		titleScene->Update();
 		break;
+	case Scene::kSelect:
+		selectScene->Update();
+		break;
 	case Scene::kGame:
 		gameScene->Update();
 		break;
@@ -167,6 +189,9 @@ void DrawScene() {
 	switch (scene) {
 	case Scene::kTitle:
 		titleScene->Draw();
+		break;
+	case Scene::kSelect:
+		selectScene->Draw();
 		break;
 	case Scene::kGame:
 		gameScene->Draw();
