@@ -42,6 +42,9 @@ public:
 
 	bool IsFinished() const { return isFinished_; }
 
+
+	void GetStage(const char* number) { stageNum = number; }
+
 private:
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -65,12 +68,12 @@ private:
 	std::list<Box*> boxes;
 	
 	std::list<Gate*> gates;
-	std::list<Gate*> gatesList[2];
+	std::list<Gate*> gatesList[2];//deleteはいらない
 	bool isGate = false;
 	bool isA = false;
 
 
-
+	const char* stageNum;
 	MapChip* mapchip_ = nullptr;
 
 	Electricity* electricityGimmick_;
