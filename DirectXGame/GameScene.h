@@ -16,7 +16,15 @@
 
 using namespace KamataEngine;
 
+class Fade;
+
 class GameScene {
+public:
+	enum class Phase {
+		kFadeIn,
+		kMain,
+		kFadeOut,
+	};
 
 public:
 	// ゲームシーン
@@ -89,4 +97,9 @@ private:
 
 	CameraController* cameraController = nullptr;
 	bool isFinished_ = false;
+
+	Fade* fade_ = nullptr;
+	float fadeTime_ = 0.5f;
+
+	Phase phase_ = Phase::kFadeIn;
 };

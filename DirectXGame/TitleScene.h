@@ -6,11 +6,19 @@
 #include "2d/Sprite.h"
 #include "3d/Camera.h"
 #include "3d/WorldTransform.h"
+#include "Fade.h"
 
 /// <summary>
 /// タイトルシーン
 /// </summry>
 class TitleScene {
+public:
+	enum class Phase {
+		kFadeIn,
+		kMain,
+		kFadeOut,
+	};
+
 public:
 	TitleScene();
 
@@ -35,4 +43,9 @@ private:
 	XINPUT_STATE state, preState;
 
 	bool finished_ = false;
+
+	Fade* fade_ = nullptr;
+	float fadeTime_ = 0.5f;
+
+	Phase phase_ = Phase::kFadeIn;
 };

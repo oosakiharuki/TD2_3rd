@@ -36,7 +36,7 @@ private:
 	std::list<Box*> boxes_;
 
 	std::list<Particle*> particles_;
-	KamataEngine::Model* modelParticle_;
+	KamataEngine::Model* modelParticle_ = nullptr;
 
     // パーティクルの最大生成数
 	int particleLimit_ = 5; 
