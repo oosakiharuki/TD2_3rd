@@ -13,6 +13,7 @@ GameScene::~GameScene() {
 	delete modelBrokenBox_;
 	
 	delete electricityGimmick_;
+	delete electricityGimmick2_;
 
 	delete modelPlayer_;
 	delete modelCarryRope_;
@@ -53,7 +54,7 @@ void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	
 	mapchip_ = new MapChip();
-	mapchip_->LordCSV("Resources/stage.csv");
+	mapchip_->LordCSV(stageNum);
 
 	model_ = Model::Create();
 
