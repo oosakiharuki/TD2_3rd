@@ -7,6 +7,7 @@
 #include "Gate.h"
 
 #include"Electricity.h"
+#include"Electricity2.h"
 
 #include "Player.h"
 #include "Rope.h"
@@ -31,6 +32,8 @@ public:
 	void Update();
 
 	void Draw();
+
+	void CheckAllCollision();
 
     /// <summary>
 	/// 衝突判定と応答
@@ -71,7 +74,7 @@ private:
 	MapChip* mapchip_ = nullptr;
 
 	Electricity* electricityGimmick_;
-
+	Electricity2* electricityGimmick2_;
 
 	Player* player1_ = nullptr;
 	Player* player2_ = nullptr;

@@ -1,14 +1,15 @@
 #pragma once
+#include "AABB.h"
 #include <3d/Camera.h>
 #include <3d/Model.h>
 #include <3d/ObjectColor.h>
 #include <3d/WorldTransform.h>
-#include"AABB.h"
+
 class Player;
-class Electricity {
+class Electricity2 {
 public:
-	void Initialize(KamataEngine::Model* model,KamataEngine::Model*model2, KamataEngine::Camera* viewProjection);
-	
+	void Initialize(KamataEngine::Model* model, KamataEngine::Model* model2, KamataEngine::Camera* viewProjection);
+
 	void Update();
 
 	void Draw();

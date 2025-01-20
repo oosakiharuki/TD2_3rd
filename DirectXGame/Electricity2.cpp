@@ -1,46 +1,39 @@
-#include "Electricity.h"
+#include "Electricity2.h"
 #include"Player.h"
 
-void Electricity::Initialize(KamataEngine::Model* model, KamataEngine::Model* model2, KamataEngine::Camera* viewProjection) {
-	model_ = model;//プレイヤーが触る板用
+void Electricity2::Initialize(KamataEngine::Model* model, KamataEngine::Model* model2, KamataEngine::Camera* viewProjection) {
+	model_ = model; // プレイヤーが触る板用
 	model2_ = model2;
 	
 
-	worldTransform_.Initialize();//プレイヤーが触る板用
+	worldTransform_.Initialize(); // プレイヤーが触る板用
 	worldTransform2_.Initialize();
 	
 
 	viewProjection_ = viewProjection;
 	objColor.Initialize();
-
 }
 
-void Electricity::Update() {
+void Electricity2::Update() {
 	if (Flag) {
-		worldTransform2_.translation_.x -= 1.0f;
+	
+		worldTransform2_.translation_.x += 1.0f;
 		worldTransform2_.scale_.x -= 1.0f;
 	}
-
-	
 	worldTransform_.UpdateMatrix();
 	worldTransform2_.UpdateMatrix();
-	
 }
 
-void Electricity::Draw() {
+void Electricity2::Draw() {
 	model_->Draw(worldTransform_, *viewProjection_, &objColor);
 	model2_->Draw(worldTransform2_, *viewProjection_, &objColor);
-	
-
 }
-//左用
 
-void Electricity::OnCollision(const Player* player) { 
+void Electricity2::OnCollision(const Player* player) { 
 	(void)player;
-	Flag = true;
-}
+	Flag = true; }
 
-AABB Electricity::GetAABB() { 
+AABB Electricity2::GetAABB() {
 	KamataEngine::Vector3 worldPos = worldTransform_.translation_;
 	AABB aabb;
 
@@ -49,6 +42,3 @@ AABB Electricity::GetAABB() {
 
 	return aabb;
 }
-
-//右側
-
