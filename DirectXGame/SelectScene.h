@@ -2,7 +2,16 @@
 #include "KamataEngine.h"
 //#include "2d/Sprite.h"
 
+class Fade;
+
 class SelectScene {
+public:
+	enum class Phase {
+		kFadeIn,
+		kMain,
+		kFadeOut,
+	};
+
 public:
 	SelectScene();
 	~SelectScene();
@@ -28,4 +37,9 @@ private:
 	uint32_t textureHandle_ = 0u;
 	KamataEngine::Vector2 texLT = {0, 0};
 	KamataEngine::Vector2 texSize = {64, 64};
+
+	Fade* fade_ = nullptr;
+	float fadeTime_ = 0.5f;
+
+	Phase phase_ = Phase::kFadeIn;
 };

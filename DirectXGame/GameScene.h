@@ -48,10 +48,13 @@ public:
 	/// </summary>
 	void CheckAllCollisions();
 
-	bool IsFinished() const { return isFinished_; }
+	bool IsFinished() const { return finished_; }
 
 
 	void GetStage(const char* number) { stageNum = number; }
+
+	// フェーズ切り替え
+	void ChangePhase();
 
 private:
 	DirectXCommon* dxCommon_ = nullptr;
@@ -99,10 +102,12 @@ private:
 	BrokenBox* brokenBox_ = nullptr;
 
 	CameraController* cameraController = nullptr;
-	bool isFinished_ = false;
+	bool finished_ = false;
 
 	Fade* fade_ = nullptr;
 	float fadeTime_ = 0.5f;
 
 	Phase phase_ = Phase::kFadeIn;
+
+	XINPUT_STATE state, preState;
 };

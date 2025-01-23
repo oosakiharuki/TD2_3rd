@@ -1,4 +1,5 @@
 #include "TitleScene.h"
+#include "Fade.h"
 
 TitleScene::TitleScene() {}
 
@@ -17,6 +18,8 @@ void TitleScene::Initialise() {
 }
 
 void TitleScene::Update() {
+	input_->GetJoystickState(0, state);
+	input_->GetJoystickStatePrevious(0, preState);
 
 	switch (phase_) {
 	case TitleScene::Phase::kFadeIn:

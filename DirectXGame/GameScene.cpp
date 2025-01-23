@@ -1,6 +1,6 @@
 #include "GameScene.h"
-
 #include <cassert>
+#include "Fade.h"
 
 GameScene::GameScene(){};
 GameScene::~GameScene() {
@@ -27,10 +27,12 @@ GameScene::~GameScene() {
 	for (Box* box : boxes) {
 		delete box;
 	}
+	boxes.clear();
 
 	for (Gate* gate : gates) {
 		delete gate;
 	}
+	gates.clear();
 
 	for (std::vector<WorldTransform*> blockLine : blocks_) {
 		for (WorldTransform* block : blockLine) {
@@ -42,6 +44,8 @@ GameScene::~GameScene() {
 	delete brokenBox_;
 
 	delete cameraController;
+
+	delete fade_;
 };
 
 void GameScene::Initialize() {
@@ -138,14 +142,17 @@ void GameScene::Initialize() {
 	cameraController->SetTraget(rope_);
 	cameraController->Reset();
 
+	fade_ = new Fade();
+	fade_->Initialize();
+	fade_->Start(Fade::Status::FadeIn, fadeTime_);
+
 }
 
 void GameScene::Update() { 
-	//box_->Update();
+	ChangePhase();
+
 	CheckAllCollision();
 	
-	
-
 	CheckAllCollisions();
 	
 	electricityGimmick_->Update();
@@ -271,7 +278,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-
+	fade_->Draw(commandList);
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
@@ -324,4 +331,32 @@ void GameScene::CheckAllCollisions() {
 	}
 	#pragma endregion
 
+}
+
+void GameScene::ChangePhase() {
+	input_->GetJoystickState(0, state);
+	input_->GetJoystickStatePrevious(0, preState);
+
+	switch (phase_) {
+	case GameScene::Phase::kFadeIn:
+		fade_->Update();
+		if (fade_->IsFinished()) {
+			fade_->Stop();
+			phase_ = Phase::kMain;
+		}
+		break;
+	case GameScene::Phase::kMain:
+		if (input_->TriggerKey(DIK_ESCAPE) || (state.Gamepad.wButtons & XINPUT_GAMEPAD_START) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_START)) {
+			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+			phase_ = Phase::kFadeOut;
+		}
+		break;
+	case GameScene::Phase::kFadeOut:
+		fade_->Update();
+		if (fade_->IsFinished()) {
+			fade_->Stop();
+			finished_ = true;
+		}
+		break;
+	}
 }

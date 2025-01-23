@@ -6,7 +6,8 @@
 #include "2d/Sprite.h"
 #include "3d/Camera.h"
 #include "3d/WorldTransform.h"
-#include "Fade.h"
+
+class Fade;
 
 /// <summary>
 /// タイトルシーン
