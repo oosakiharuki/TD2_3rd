@@ -113,6 +113,7 @@ void GameScene::Update() {
 	
 	
 	electricityGimmick_->Update();
+	artillery_->Update();
 	for (std::vector<WorldTransform*> blockLine : blocks_) {
 		for (WorldTransform* block : blockLine) {
 			if (!block) {
@@ -162,7 +163,7 @@ void GameScene::Draw() {
 	///
 	
 
-	
+	artillery_->Draw();
 	electricityGimmick_->Draw();
 
 	// プレイヤーの描画
