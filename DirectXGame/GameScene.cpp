@@ -46,6 +46,10 @@ GameScene::~GameScene() {
 	delete cameraController;
 
 	delete fade_;
+
+	delete menuSprite_;
+	delete clearSprite_;
+	delete cursorSprite_;
 };
 
 void GameScene::Initialize() {
@@ -53,6 +57,13 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 	texture = TextureManager::Load("white1x1.png");
+	menuTexture_ = TextureManager::Load("nemu.png");
+	clearTexture_ = TextureManager::Load("clear.png");
+	cursorTexture_ = TextureManager::Load("cursor.png");
+
+	menuSprite_ = Sprite::Create(menuTexture_, {0.0f, 0.0f});
+	clearSprite_ = Sprite::Create(clearTexture_, {0.0f, 0.0f});
+	cursorSprite_ = Sprite::Create(cursorTexture_, selectCursorPos);
 	
 	viewProjection_.Initialize();
 	worldTransform_.Initialize();
@@ -149,56 +160,106 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() { 
-	ChangePhase();
 
-	CheckAllCollision();
+
+	ChangePhase();
+	switch (phase_) {
+	case GameScene::Phase::kMain:
+    	CheckAllCollision();
 	
-	CheckAllCollisions();
+    	CheckAllCollisions();
 	
-	electricityGimmick_->Update();
-	electricityGimmick2_->Update();
-	for (std::vector<WorldTransform*> blockLine : blocks_) {
-		for (WorldTransform* block : blockLine) {
-			if (!block) {
-				continue;
-			} else {
-				block->UpdateMatrix();
+    	electricityGimmick_->Update();
+    	electricityGimmick2_->Update();
+    	for (std::vector<WorldTransform*> blockLine : blocks_) {
+    		for (WorldTransform* block : blockLine) {
+    			if (!block) {
+    				continue;
+    			} else {
+    				block->UpdateMatrix();
+    			}
+    		}
+    	}
+
+    	for (Box* box : boxes) {
+    		box->Update();
+    	}
+
+    	for (Gate* gate : gatesList[0]) {
+    		gate->Update();
+    		if (input_->PushKey(DIK_1)) {
+    			gate->OpenGate();
+    		} else {
+    			gate->CloseGate();
+    		}
+    	}
+
+    	for (Gate* gate : gatesList[1]) {
+    		gate->Update();
+    		if (input_->PushKey(DIK_2)) {
+    			gate->OpenGate();
+    		} else {
+    			gate->CloseGate();
+    		}
+    	}
+
+
+    	brokenBox_->Update();
+
+    	// プレイヤーの更新
+    	player1_->Update();
+    	player2_->Update();
+
+    	rope_->Update();
+
+    	cameraController->Update();
+		break;
+	default:
+		electricityGimmick_->Update();
+		electricityGimmick2_->Update();
+		for (std::vector<WorldTransform*> blockLine : blocks_) {
+			for (WorldTransform* block : blockLine) {
+				if (!block) {
+					continue;
+				} else {
+					block->UpdateMatrix();
+				}
 			}
 		}
-	}
 
-	for (Box* box : boxes) {
-		box->Update();
-	}
-
-	for (Gate* gate : gatesList[0]) {
-		gate->Update();
-		if (input_->PushKey(DIK_1)) {
-			gate->OpenGate();
-		} else {
-			gate->CloseGate();
+		for (Box* box : boxes) {
+			box->Update();
 		}
-	}
 
-	for (Gate* gate : gatesList[1]) {
-		gate->Update();
-		if (input_->PushKey(DIK_2)) {
-			gate->OpenGate();
-		} else {
-			gate->CloseGate();
+		for (Gate* gate : gatesList[0]) {
+			gate->Update();
+			if (input_->PushKey(DIK_1)) {
+				gate->OpenGate();
+			} else {
+				gate->CloseGate();
+			}
 		}
+
+		for (Gate* gate : gatesList[1]) {
+			gate->Update();
+			if (input_->PushKey(DIK_2)) {
+				gate->OpenGate();
+			} else {
+				gate->CloseGate();
+			}
+		}
+
+		brokenBox_->Update();
+
+		player1_->PlayerUpdateMatrix();
+		player2_->PlayerUpdateMatrix();
+
+		rope_->Update();
+
+    	cameraController->Update();
+		break;
 	}
 
-
-	brokenBox_->Update();
-
-	// プレイヤーの更新
-	player1_->Update();
-	player2_->Update();
-
-	rope_->Update();
-
-	cameraController->Update();
 };
 
 void GameScene::Draw() {
@@ -278,6 +339,17 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	switch (phase_) {
+	case GameScene::Phase::kMenu:
+		menuSprite_->Draw();
+		cursorSprite_->Draw();
+		break;
+	case GameScene::Phase::kClear:
+		clearSprite_->Draw();
+		cursorSprite_->Draw();
+		break;
+	}
+
 	fade_->Draw(commandList);
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -337,6 +409,8 @@ void GameScene::ChangePhase() {
 	input_->GetJoystickState(0, state);
 	input_->GetJoystickStatePrevious(0, preState);
 
+	const int deadZone = 8000;
+
 	switch (phase_) {
 	case GameScene::Phase::kFadeIn:
 		fade_->Update();
@@ -346,10 +420,61 @@ void GameScene::ChangePhase() {
 		}
 		break;
 	case GameScene::Phase::kMain:
-		if (input_->TriggerKey(DIK_ESCAPE) || (state.Gamepad.wButtons & XINPUT_GAMEPAD_START) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_START)) {
-			fade_->Start(Fade::Status::FadeOut, fadeTime_);
-			phase_ = Phase::kFadeOut;
+		if (input_->TriggerKey(DIK_ESCAPE) || 
+			(state.Gamepad.wButtons & XINPUT_GAMEPAD_START) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_START)) {
+			phase_ = Phase::kMenu;
+		} else if (clear_) {
+			phase_ = Phase::kClear;
 		}
+		break;
+	case GameScene::Phase::kMenu:
+		// selectNum の範囲を制限
+		if (selectNum < 1) {
+			selectNum = 3; // 範囲外なら最大値に戻す
+		} else if (selectNum > 3) {
+			selectNum = 1; // 範囲外なら最小値に戻す
+		}
+
+		// 下方向への入力処理
+		if (input_->TriggerKey(DIK_S) || ((state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)) ||
+		    (state.Gamepad.sThumbLY < -deadZone && preState.Gamepad.sThumbLY >= -deadZone)) {
+			selectNum++; // 選択を1つ下に進める
+		}
+
+		// 上方向への入力処理
+		if (input_->TriggerKey(DIK_W) || ((state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)) ||
+		    (state.Gamepad.sThumbLY > deadZone && preState.Gamepad.sThumbLY <= deadZone)) {
+			selectNum--; // 選択を1つ上に進める
+		}
+
+		if (selectNum == 1) {
+			selectCursorPos.y = 275.0f;
+		} else if (selectNum==2) {
+			selectCursorPos.y = 360.0f;
+		} else if (selectNum == 3) {
+			selectCursorPos.y = 450.0f;
+		}
+		cursorSprite_->SetPosition(selectCursorPos);
+
+		if (input_->TriggerKey(DIK_SPACE) || 
+			(state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+			
+			if (selectNum == 1) {
+				select_ = Select::kGoStageSelect;
+				fade_->Start(Fade::Status::FadeOut, fadeTime_);
+				phase_ = Phase::kFadeOut;
+			} else if (selectNum == 2) {
+				select_ = Select::kGoTitle;
+				fade_->Start(Fade::Status::FadeOut, fadeTime_);
+				phase_ = Phase::kFadeOut;
+			} else if (selectNum == 3) {
+				phase_ = Phase::kMain;
+			}
+		}
+		break;
+
+	case GameScene::Phase::kClear:
+
 		break;
 	case GameScene::Phase::kFadeOut:
 		fade_->Update();
