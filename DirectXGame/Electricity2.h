@@ -31,6 +31,7 @@ private:
 	
 	KamataEngine::ObjectColor objColor = {};
 	bool Flag;
+	float kSpeed = 1.0f;
 	
 	// キャラクターの当たり判定サイズ
 	static inline const float kWidth = 1.0f;

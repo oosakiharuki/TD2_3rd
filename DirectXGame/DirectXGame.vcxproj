@@ -109,6 +109,8 @@
     <ClCompile Include="AABB.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="BrokenBox.cpp" />
+    <ClCompile Include="Door1.cpp" />
+    <ClCompile Include="Door2.cpp" />
     <ClCompile Include="Electricity.cpp" />
     <ClCompile Include="Electricity2.cpp" />
     <ClCompile Include="GameScene.cpp" />
@@ -198,6 +200,8 @@
     <ClInclude Include="AABB.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="BrokenBox.h" />
+    <ClInclude Include="Door1.h" />
+    <ClInclude Include="Door2.h" />
     <ClInclude Include="Electricity.h" />
     <ClInclude Include="Electricity2.h" />
     <ClInclude Include="MapChip.h" />
