@@ -3,6 +3,8 @@
 #include <3d/Model.h>
 #include <3d/ObjectColor.h>
 #include <3d/WorldTransform.h>
+#include<list>
+class Bullet;
 class Artillery {
 public:
 	// 初期化
@@ -14,6 +16,10 @@ public:
 	// 描画
 	void Draw();
 
+	void Fire();
+	// 発射間隔
+	static const int kFireInterval = 60;
+
 private:
 	KamataEngine::Camera* viewProjection_ = nullptr;
 	KamataEngine::Model* model_ = nullptr;
@@ -22,6 +28,8 @@ private:
 	KamataEngine::WorldTransform worldTransform2_;
 	KamataEngine::ObjectColor objColor = {};
 	int Timer_;
-	bool Flag = false;
+	//bool Flag = false;
+	
+	std::list<Bullet*> bullets_;
 };
 

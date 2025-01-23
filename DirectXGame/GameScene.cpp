@@ -55,12 +55,16 @@ void GameScene::Initialize() {
 	modelWall1_ = Model::Create();
 	modelWall2_ = Model::Create();
 
-	
+	modelArtillery_ = Model::Create();
+	modelBullet_ = Model::Create();
 
 	//電気ギミック
 	electricityGimmick_ = new Electricity;
 	electricityGimmick_->Initialize(modelElectricity1_, modelElectricity2_, modelWall1_, modelWall2_, &viewProjection_);
 
+	//大砲
+	artillery_ = new Artillery;
+	artillery_->Initialize(modelArtillery_, modelBullet_, &viewProjection_);
 
 	modelPlayer_ = Model::CreateFromOBJ("Player", true);
 	modelCarryRope_ = Model::CreateFromOBJ("Rope", true);

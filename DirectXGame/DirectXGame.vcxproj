@@ -110,6 +110,7 @@
     <ClCompile Include="Artillery.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="BrokenBox.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Electricity.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="main.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="Artillery.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="BrokenBox.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Electricity.h" />
     <ClInclude Include="MapChip.h" />
     <ClInclude Include="GameScene.h" />
