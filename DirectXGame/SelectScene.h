@@ -11,6 +11,13 @@ public:
 		kMain,
 		kFadeOut,
 	};
+	enum class Stage {
+		stage1 = 1,
+		stage2,
+		stage3,
+		stage4,
+		stage5,
+	};
 
 public:
 	SelectScene();
@@ -20,6 +27,7 @@ public:
 	void Draw();
 	bool IsFinished() const { return finished_; }
 	const char* SetStageNum() { return nowStage; }
+	Stage GetStageNum() const { return stage_; }
 
 private:
 	KamataEngine::DirectXCommon* dxCommon_ = nullptr;
@@ -42,4 +50,5 @@ private:
 	float fadeTime_ = 0.5f;
 
 	Phase phase_ = Phase::kFadeIn;
+	Stage stage_ = Stage::stage1;
 };

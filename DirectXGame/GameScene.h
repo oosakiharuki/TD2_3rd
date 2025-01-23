@@ -49,6 +49,8 @@ public:
 
 	void Draw();
 
+	void GenerateBlocks();
+
 	void CheckAllCollision();
 
     /// <summary>
@@ -58,7 +60,6 @@ public:
 
 	bool IsFinished() const { return finished_; }
 
-
 	void GetStage(const char* number) { stageNum = number; }
 
 	Select GetSelect() const { return select_; }
@@ -66,9 +67,11 @@ public:
 	// フェーズ切り替え
 	void ChangePhase();
 
-	void UpdateCursorPosition(const std::vector<float>& cursorPositions, int minNum, int maxNum);
+	void UpdateCursorSelection(int maxNum, int deadZone);
 
 	void SwitchToNextStage();
+
+	void ClearObject();
 
 private:
 	DirectXCommon* dxCommon_ = nullptr;
@@ -90,10 +93,12 @@ private:
 	uint32_t texture = 0;
 	uint32_t menuTexture_ = 0;
 	uint32_t clearTexture_ = 0;
+	uint32_t clearAllTexture_ = 0;
 	uint32_t cursorTexture_ = 0;
 
 	Sprite* menuSprite_ = nullptr;
 	Sprite* clearSprite_ = nullptr;
+	Sprite* clearAllSirpte_ = nullptr;
 	Sprite* cursorSprite_ = nullptr;
 
 	std::vector<std::vector<KamataEngine::WorldTransform*>> blocks_;
@@ -104,7 +109,7 @@ private:
 	bool isGate = false;
 	bool isA = false;
 
-
+	const char* stage[5];
 	const char* stageNum;
 	MapChip* mapchip_ = nullptr;
 
@@ -136,4 +141,5 @@ private:
 	Select select_ = Select::kNone;
 
 	XINPUT_STATE state, preState;
+
 };

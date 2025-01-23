@@ -49,6 +49,7 @@ GameScene::~GameScene() {
 
 	delete menuSprite_;
 	delete clearSprite_;
+	delete clearAllSirpte_;
 	delete cursorSprite_;
 };
 
@@ -59,14 +60,23 @@ void GameScene::Initialize() {
 	texture = TextureManager::Load("white1x1.png");
 	menuTexture_ = TextureManager::Load("nemu.png");
 	clearTexture_ = TextureManager::Load("clear.png");
+	clearAllTexture_ = TextureManager::Load("clearAll.png");
 	cursorTexture_ = TextureManager::Load("cursor.png");
 
 	menuSprite_ = Sprite::Create(menuTexture_, {0.0f, 0.0f});
 	clearSprite_ = Sprite::Create(clearTexture_, {0.0f, 0.0f});
+	clearAllSirpte_ = Sprite::Create(clearAllTexture_, {0.0f, 0.0f});
 	cursorSprite_ = Sprite::Create(cursorTexture_, selectCursorPos);
 	
 	viewProjection_.Initialize();
 	worldTransform_.Initialize();
+
+	// ステージ名
+	stage[0] = "Resources/stageCsv/stage01.csv";
+	stage[1] = "Resources/stageCsv/stage02.csv";
+	stage[2] = "Resources/stageCsv/stage03.csv";
+	stage[3] = "Resources/stageCsv/stage04.csv";
+	stage[4] = "Resources/stageCsv/stage05.csv";
 	
 	mapchip_ = new MapChip();
 	mapchip_->LordCSV(stageNum);
@@ -88,49 +98,7 @@ void GameScene::Initialize() {
 	electricityGimmick2_ = new Electricity2;
 	electricityGimmick2_->Initialize(modelElectricity2_, modelWall2_, &viewProjection_);
 
-	uint32_t kMapHeight = mapchip_->GetNumVirtical();
-	uint32_t kMapWight = mapchip_->GetNumHorizontal();
-
-	blocks_.resize(kMapHeight);
-	for (uint32_t i = 0; i < kMapWight; i++) {
-		blocks_[i].resize(kMapWight);
-	}
-
-	for (uint32_t i = 0; i < kMapHeight; ++i) {
-		for (uint32_t j = 0; j < kMapWight; ++j) {
-			if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kWall) {
-				WorldTransform* worldTransform = new WorldTransform();
-				worldTransform->Initialize();
-				blocks_[i][j] = worldTransform;		
-				blocks_[i][j]->translation_ = mapchip_->GetMapChipPosition(j, i);
-				if (isGate) {
-					isGate = false;
-					isA = true;
-				}
-			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kBox) {
-				
-				Box* box = new Box();
-				box->Initialize(model_,&viewProjection_,mapchip_->GetMapChipPosition(j, i));
-
-				boxes.push_back(box);
-			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kGate) {
-				Gate* gate = new Gate();
-				gate->Initialize(model_, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
-				gates.push_back(gate);
-
-				if (!isGate) {
-					isGate = true;
-				}
-				if(isA){
-					gatesList[1].push_back(gate);
-				} else  {
-					gatesList[0].push_back(gate);
-				}
-			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kGate) {
-
-			}
-		}
-	}
+	GenerateBlocks();
 
 
 
@@ -213,6 +181,11 @@ void GameScene::Update() {
     	rope_->Update();
 
     	cameraController->Update();
+
+		if (input_->TriggerKey(DIK_C) || 
+			((state.Gamepad.wButtons & XINPUT_GAMEPAD_Y) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_Y))) {
+			clear_ = true;
+		}
 		break;
 	default:
 		electricityGimmick_->Update();
@@ -345,7 +318,11 @@ void GameScene::Draw() {
 		cursorSprite_->Draw();
 		break;
 	case GameScene::Phase::kClear:
-		clearSprite_->Draw();
+		if (stageNum == stage[4]) {
+			clearAllSirpte_->Draw();
+		} else {
+    		clearSprite_->Draw();
+		}
 		cursorSprite_->Draw();
 		break;
 	}
@@ -355,6 +332,51 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::GenerateBlocks() {
+	uint32_t kMapHeight = mapchip_->GetNumVirtical();
+	uint32_t kMapWight = mapchip_->GetNumHorizontal();
+
+	blocks_.resize(kMapHeight);
+	for (uint32_t i = 0; i < kMapWight; i++) {
+		blocks_[i].resize(kMapWight);
+	}
+
+	for (uint32_t i = 0; i < kMapHeight; ++i) {
+		for (uint32_t j = 0; j < kMapWight; ++j) {
+			if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kWall) {
+				WorldTransform* worldTransform = new WorldTransform();
+				worldTransform->Initialize();
+				blocks_[i][j] = worldTransform;
+				blocks_[i][j]->translation_ = mapchip_->GetMapChipPosition(j, i);
+				if (isGate) {
+					isGate = false;
+					isA = true;
+				}
+			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kBox) {
+
+				Box* box = new Box();
+				box->Initialize(model_, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
+
+				boxes.push_back(box);
+			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kGate) {
+				Gate* gate = new Gate();
+				gate->Initialize(model_, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
+				gates.push_back(gate);
+
+				if (!isGate) {
+					isGate = true;
+				}
+				if (isA) {
+					gatesList[1].push_back(gate);
+				} else {
+					gatesList[0].push_back(gate);
+				}
+			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kGate) {
+			}
+		}
+	}
 }
 
 void GameScene::CheckAllCollision() { 
@@ -408,7 +430,6 @@ void GameScene::CheckAllCollisions() {
 void GameScene::ChangePhase() {
 	input_->GetJoystickState(0, state);
 	input_->GetJoystickStatePrevious(0, preState);
-
 	const int deadZone = 8000;
 
 	switch (phase_) {
@@ -427,61 +448,170 @@ void GameScene::ChangePhase() {
 			phase_ = Phase::kClear;
 		}
 		break;
-	case GameScene::Phase::kMenu:
-		// selectNum の範囲を制限
-		if (selectNum < 1) {
-			selectNum = 3; // 範囲外なら最大値に戻す
-		} else if (selectNum > 3) {
-			selectNum = 1; // 範囲外なら最小値に戻す
-		}
+	case GameScene::Phase::kMenu: {
+		// カーソル位置をテーブルで管理
+		constexpr float cursorPositions[] = {275.0f, 360.0f, 450.0f};
 
-		// 下方向への入力処理
-		if (input_->TriggerKey(DIK_S) || ((state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)) ||
-		    (state.Gamepad.sThumbLY < -deadZone && preState.Gamepad.sThumbLY >= -deadZone)) {
-			selectNum++; // 選択を1つ下に進める
-		}
+		// カーソル移動処理を関数でまとめて呼び出し
+		UpdateCursorSelection(3, deadZone);
 
-		// 上方向への入力処理
-		if (input_->TriggerKey(DIK_W) || ((state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)) ||
-		    (state.Gamepad.sThumbLY > deadZone && preState.Gamepad.sThumbLY <= deadZone)) {
-			selectNum--; // 選択を1つ上に進める
-		}
-
-		if (selectNum == 1) {
-			selectCursorPos.y = 275.0f;
-		} else if (selectNum==2) {
-			selectCursorPos.y = 360.0f;
-		} else if (selectNum == 3) {
-			selectCursorPos.y = 450.0f;
-		}
+		// カーソル位置の更新
+		selectCursorPos.y = cursorPositions[selectNum - 1];
 		cursorSprite_->SetPosition(selectCursorPos);
 
-		if (input_->TriggerKey(DIK_SPACE) || 
-			(state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
-			
-			if (selectNum == 1) {
+		if (input_->TriggerKey(DIK_SPACE) 
+			|| ((state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A))) {
+			switch (selectNum) {
+			case 1:
 				select_ = Select::kGoStageSelect;
 				fade_->Start(Fade::Status::FadeOut, fadeTime_);
 				phase_ = Phase::kFadeOut;
-			} else if (selectNum == 2) {
+				break;
+			case 2:
 				select_ = Select::kGoTitle;
 				fade_->Start(Fade::Status::FadeOut, fadeTime_);
 				phase_ = Phase::kFadeOut;
-			} else if (selectNum == 3) {
+				break;
+			case 3:
 				phase_ = Phase::kMain;
+				break;
 			}
 		}
 		break;
-
+	}
 	case GameScene::Phase::kClear:
+		if (stageNum == stage[4]) {
+			// 最終ステージ後の選択
+			std::vector<float> cursorPositions = {275.0f, 360.0f};
+			// カーソル移動処理を関数でまとめて呼び出し
+			UpdateCursorSelection(2, deadZone);
 
+			// カーソル位置の更新
+			selectCursorPos.y = cursorPositions[selectNum - 1];
+			cursorSprite_->SetPosition(selectCursorPos);
+		} else {
+			// 通常ステージの選択
+			std::vector<float> cursorPositions = {275.0f, 360.0f, 450.0f};
+			// カーソル移動処理を関数でまとめて呼び出し
+			UpdateCursorSelection(3, deadZone);
+
+			// カーソル位置の更新
+			selectCursorPos.y = cursorPositions[selectNum - 1];
+			cursorSprite_->SetPosition(selectCursorPos);
+		}
+
+		if (input_->TriggerKey(DIK_SPACE) || 
+			((state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A))) {
+			if (stageNum == stage[4]) {
+				switch (selectNum) {
+				case 1:
+					select_ = Select::kGoStageSelect;
+					fade_->Start(Fade::Status::FadeOut, fadeTime_);
+					phase_ = Phase::kFadeOut;
+					break;
+				case 2:
+					select_ = Select::kGoTitle;
+					fade_->Start(Fade::Status::FadeOut, fadeTime_);
+					phase_ = Phase::kFadeOut;
+					break;
+				}
+			} else {
+				switch (selectNum) {
+				case 1:
+					select_ = Select::kGoNextStage;
+					SwitchToNextStage();
+					fade_->Start(Fade::Status::FadeOut, fadeTime_);
+					phase_ = Phase::kFadeOut;
+					break;
+				case 2:
+					select_ = Select::kGoStageSelect;
+					fade_->Start(Fade::Status::FadeOut, fadeTime_);
+					phase_ = Phase::kFadeOut;
+					break;
+				case 3:
+					select_ = Select::kGoTitle;
+					fade_->Start(Fade::Status::FadeOut, fadeTime_);
+					phase_ = Phase::kFadeOut;
+					break;
+				}
+			}
+		}
 		break;
 	case GameScene::Phase::kFadeOut:
 		fade_->Update();
 		if (fade_->IsFinished()) {
 			fade_->Stop();
-			finished_ = true;
+			switch (select_) {
+			case GameScene::Select::kGoNextStage:
+
+				mapchip_->ResetMapChipData();
+				ClearObject();
+				mapchip_->LordCSV(stageNum);
+				GenerateBlocks();
+				rope_->SetBoxes(boxes);
+				clear_ = false;
+				phase_ = Phase::kFadeIn;
+				fade_->Start(Fade::Status::FadeIn, fadeTime_);
+				select_ = Select::kNone;
+				break;
+			default:
+    			finished_ = true;
+				break;
+			}
 		}
 		break;
 	}
+}
+
+// カーソル移動を処理する関数
+void GameScene::UpdateCursorSelection(int maxNum, int deadZone) {
+	// 下方向への入力処理
+	if (input_->TriggerKey(DIK_S) || ((state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)) ||
+	    (state.Gamepad.sThumbLY < -deadZone && preState.Gamepad.sThumbLY >= -deadZone)) {
+		selectNum++;
+	}
+
+	// 上方向への入力処理
+	if (input_->TriggerKey(DIK_W) || ((state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)) ||
+	    (state.Gamepad.sThumbLY > deadZone && preState.Gamepad.sThumbLY <= deadZone)) {
+		selectNum--;
+	}
+
+	// 範囲制限（ループするように設定）
+	if (selectNum < 1) {
+		selectNum = maxNum;
+	} else if (selectNum > maxNum) {
+		selectNum = 1;
+	}
+}
+
+
+void GameScene::SwitchToNextStage() {
+
+	if (stageNum == stage[0]) {
+		stageNum = stage[1];
+	} else if (stageNum == stage[1]) {
+		stageNum = stage[2];
+	} else if (stageNum == stage[2]) {
+		stageNum = stage[3];
+	} else if (stageNum == stage[3]) {
+		stageNum = stage[4];
+	}
+}
+
+void GameScene::ClearObject() {
+	for (Box* box : boxes) {
+		delete box;
+	}
+	boxes.clear();
+	/*	for (Gate* gate : gates) {
+		delete gate;
+	}
+	gates.clear();*/
+	for (std::vector<WorldTransform*> blockLine : blocks_) {
+		for (WorldTransform* block : blockLine) {
+			delete block;
+		}
+	}
+	blocks_.clear();
 }
