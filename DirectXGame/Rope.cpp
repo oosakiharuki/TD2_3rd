@@ -33,6 +33,10 @@ void Rope::Initialize(Player* p1, Player* p2, KamataEngine::Input* input, Kamata
 		auto* segment = new KamataEngine::WorldTransform();
 		segment->Initialize();
 		ropeSegments_.push_back(segment);
+		
+		if (i == segmentCount_ / 2) {
+			ropeMiddle_ = ropeSegments_[i];
+		}
 	}
 }
 

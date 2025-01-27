@@ -30,6 +30,8 @@ public:
 	void OnCollision2(const Electricity2* electricity2);
 	
 
+	void PlayerUpdateMatrix() { worldTransform_.UpdateMatrix(); }
+
 private:
 	KamataEngine::Input* input_ = nullptr;
 	XINPUT_STATE state, preState;
