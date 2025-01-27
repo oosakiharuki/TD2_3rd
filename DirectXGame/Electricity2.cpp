@@ -1,35 +1,41 @@
 #include "Electricity2.h"
 #include"Player.h"
-#include"makeMath.h"
 
 void Electricity2::Initialize(KamataEngine::Model* model, KamataEngine::Model* model2, KamataEngine::Camera* viewProjection) {
 	model_ = model; // プレイヤーが触る板用
 	model2_ = model2;
-	viewProjection_ = viewProjection;
+	
 
 	worldTransform_.Initialize(); // プレイヤーが触る板用
-	door = new Door2();
-	door->Initialize(model2_, viewProjection_, kSpeed);
+	worldTransform2_.Initialize();
+	worldTransform2_.scale_ = {6.0f, 1.0f, 1.0f};
 
+	viewProjection_ = viewProjection;
 	objColor.Initialize();
 }
 
 void Electricity2::Update() {
-	door->Update();
-	worldTransform_.UpdateMatrix();
+	if (Flag) {
 	
+		worldTransform2_.translation_.x += kSpeed;
+		worldTransform2_.scale_.x -= 1.0f;
+	}
+	if (worldTransform2_.scale_.x <= 0) {
+		worldTransform2_.scale_.x = 0;
+		kSpeed = 0;
+	}
+	worldTransform_.UpdateMatrix();
+	worldTransform2_.UpdateMatrix();
 }
 
 void Electricity2::Draw() {
 	model_->Draw(worldTransform_, *viewProjection_, &objColor);
-	door->Draw();
+	model2_->Draw(worldTransform2_, *viewProjection_, &objColor);
 }
 
 void Electricity2::OnCollision(const Player* player) { 
 	(void)player;
-	Flag = true; 
-	door->SetFlag(Flag);
-}
+	Flag = true; }
 
 AABB Electricity2::GetAABB() {
 	KamataEngine::Vector3 worldPos = worldTransform_.translation_;

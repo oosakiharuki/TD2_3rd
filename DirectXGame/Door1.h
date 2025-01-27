@@ -15,8 +15,6 @@ public:
 
 	void OnCollision(Player*player);
 	void SetFlag(bool Flag1);
-	void SetPosition(KamataEngine::Vector3 position) { worldTransform_.translation_ = position; }
-	KamataEngine::Vector3 GetWorldPosition() { return worldTransform_.translation_; }
 
 private:
 	KamataEngine::Camera* viewProjection_ = nullptr;
@@ -30,6 +28,6 @@ private:
 	bool Flag;
 	KamataEngine::Vector3 kSpeed ;
 	// キャラクターの当たり判定サイズ
-	float kWidth ;
-	 float kHeight ;
+	static inline const float kWidth = 1.0f;
+	static inline const float kHeight = 1.0f;
 };

@@ -8,10 +8,9 @@
 class Electricity;
 class Electricity2;
 class Door1;
-class Door2;
+class Door2
 
 class Player {
-
 public:
 	// 初期化
 	void Initialize(KamataEngine::Vector3 startPosition, KamataEngine::Model* model, int playerId);

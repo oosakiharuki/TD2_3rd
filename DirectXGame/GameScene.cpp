@@ -1,6 +1,5 @@
 #include "GameScene.h"
-#include"Door1.h"
-#include"Door2.h"
+
 #include <cassert>
 
 GameScene::GameScene(){};
@@ -109,17 +108,8 @@ void GameScene::Initialize() {
 void GameScene::Update() { 
 	//box_->Update();
 	CheckAllCollision();
-	// door
-	/*左*/
-	Door1* door1 = electricityGimmick_->GetDoor1();
-	door1->OnCollision(player1_);
-	door1->OnCollision(player2_);
-	/*右*/
-	Door2* door2 = electricityGimmick2_->GetDoor2();
-	door2->OnCollision(player1_);
-	door2->OnCollision(player2_);
-
-
+	
+	
 	electricityGimmick_->Update();
 	electricityGimmick2_->Update();
 	for (std::vector<WorldTransform*> blockLine : blocks_) {
@@ -238,5 +228,4 @@ void GameScene::CheckAllCollision() {
 		electricityGimmick2_->OnCollision(player2_);
 	}
 
-	
 }
