@@ -10,6 +10,11 @@ void Electricity::Initialize(KamataEngine::Model* model, KamataEngine::Model* mo
 	door->Initialize(model2_, viewProjection_, kSpeed);
 
 	worldTransform_.Initialize();//プレイヤーが触る板用
+
+	worldTransform_.translation_.y = 5.0f;
+	//
+	
+
 	
 
 	viewProjection_ = viewProjection;
