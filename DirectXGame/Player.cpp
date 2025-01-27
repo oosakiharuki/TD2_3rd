@@ -119,3 +119,5 @@ AABB Player::GetAABB() {
 void Player::OnCollision(const Electricity* electricity) { (void)electricity; }
 
 void Player::OnCollision2(const Electricity2* electricity2) { (void)electricity2; }
+
+
