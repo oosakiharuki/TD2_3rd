@@ -1,6 +1,8 @@
 #include "GameScene.h"
 #include <cassert>
 #include "Fade.h"
+#include"Door1.h"
+#include"Door2.h"
 
 GameScene::GameScene(){};
 GameScene::~GameScene() {
@@ -134,7 +136,15 @@ void GameScene::Update() {
 	switch (phase_) {
 	case GameScene::Phase::kMain:
     	CheckAllCollision();
-	
+		// door
+		/*左*/
+		Door1* door1 = electricityGimmick_->GetDoor1();
+		door1->OnCollision(player1_);
+		door1->OnCollision(player2_);
+		/*右*/
+		Door2* door2 = electricityGimmick2_->GetDoor2();
+		door2->OnCollision(player1_);
+		door2->OnCollision(player2_);
     	CheckAllCollisions();
 	
     	electricityGimmick_->Update();
@@ -230,6 +240,7 @@ void GameScene::Update() {
 		rope_->Update();
 
     	cameraController->Update();
+
 		break;
 	}
 

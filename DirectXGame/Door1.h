@@ -13,21 +13,21 @@ public:
 
 	void Draw();
 
-	void OnCollision(Player*player);
+	void OnCollision(Player* player);
 	void SetFlag(bool Flag1);
+	void SetPosition(KamataEngine::Vector3 position) { worldTransform_.translation_ = position; }
+	KamataEngine::Vector3 GetWorldPosition() { return worldTransform_.translation_; }
 
 private:
 	KamataEngine::Camera* viewProjection_ = nullptr;
 	KamataEngine::Model* model_ = nullptr;
-	
 
 	KamataEngine::WorldTransform worldTransform_;
-	
 
 	KamataEngine::ObjectColor objColor = {};
 	bool Flag;
-	KamataEngine::Vector3 kSpeed ;
+	KamataEngine::Vector3 kSpeed;
 	// キャラクターの当たり判定サイズ
-	static inline const float kWidth = 1.0f;
-	static inline const float kHeight = 1.0f;
+	float kWidth;
+	float kHeight;
 };

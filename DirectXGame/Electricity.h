@@ -18,7 +18,7 @@ public:
 	
 	// AABBを取得
 	AABB GetAABB();
-
+	Door1* GetDoor1() { return door; }
 	
 
 private:
