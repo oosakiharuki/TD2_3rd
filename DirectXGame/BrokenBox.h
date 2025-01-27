@@ -16,4 +16,5 @@ private:
 	KamataEngine::Model* model_ = nullptr;
 	KamataEngine::WorldTransform worldTransform_;
 	KamataEngine::ObjectColor objColor = {};
+	bool flag;
 };
