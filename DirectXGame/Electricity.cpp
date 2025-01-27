@@ -11,7 +11,7 @@ void Electricity::Initialize(KamataEngine::Model* model, KamataEngine::Model* mo
 
 	worldTransform_.Initialize();//プレイヤーが触る板用
 	worldTransform_.translation_.y = 5.0f;
-
+	//
 	
 	
 	objColor.Initialize();
