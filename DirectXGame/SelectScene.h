@@ -2,7 +2,23 @@
 #include "KamataEngine.h"
 //#include "2d/Sprite.h"
 
+class Fade;
+
 class SelectScene {
+public:
+	enum class Phase {
+		kFadeIn,
+		kMain,
+		kFadeOut,
+	};
+	enum class Stage {
+		stage1 = 1,
+		stage2,
+		stage3,
+		stage4,
+		stage5,
+	};
+
 public:
 	SelectScene();
 	~SelectScene();
@@ -11,6 +27,7 @@ public:
 	void Draw();
 	bool IsFinished() const { return finished_; }
 	const char* SetStageNum() { return nowStage; }
+	Stage GetStageNum() const { return stage_; }
 
 private:
 	KamataEngine::DirectXCommon* dxCommon_ = nullptr;
@@ -28,4 +45,10 @@ private:
 	uint32_t textureHandle_ = 0u;
 	KamataEngine::Vector2 texLT = {0, 0};
 	KamataEngine::Vector2 texSize = {64, 64};
+
+	Fade* fade_ = nullptr;
+	float fadeTime_ = 0.5f;
+
+	Phase phase_ = Phase::kFadeIn;
+	Stage stage_ = Stage::stage1;
 };

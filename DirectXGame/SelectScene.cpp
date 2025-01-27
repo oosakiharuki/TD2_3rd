@@ -1,9 +1,13 @@
 #include "SelectScene.h"
+#include "Fade.h"
 
 using namespace KamataEngine;
 
 SelectScene::SelectScene() {}
-SelectScene::~SelectScene() { delete sprite_; }
+SelectScene::~SelectScene() { 
+	delete sprite_; 
+	delete fade_;
+}
 
 void SelectScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
@@ -21,39 +25,72 @@ void SelectScene::Initialize() {
 	sprite_ = Sprite::Create(textureHandle_, Vector2(0, 0));
 	sprite_->SetSize(Vector2{64, 64});
 	sprite_->SetTextureRect(texLT, texSize);
+
+	fade_ = new Fade();
+	fade_->Initialize();
+	fade_->Start(Fade::Status::FadeIn, fadeTime_);
 }
 
 void SelectScene::Update() {
+	input_->GetJoystickState(0, state);
+	input_->GetJoystickStatePrevious(0, preState);
 
-	if (number < MaxStage) {
-		if (input_->TriggerKey(DIK_D) || 
-		(state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT)) {		
-			number++;
-			texLT.x += 64;
+	// 左スティックの入力デッドゾーンの設定
+	const int deadZone = 8000;
+
+	switch (phase_) {
+	case SelectScene::Phase::kFadeIn:
+		fade_->Update();
+		if (fade_->IsFinished()) {
+			fade_->Stop();
+			phase_ = Phase::kMain;
 		}
-	}
-
-	if (number > 1) {
-		if (input_->TriggerKey(DIK_A) || 
-			(state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT)) {
-			number--;
-			texLT.x -= 64;
+		break;
+	case SelectScene::Phase::kMain:
+		// ステージ選択 (右)
+		if (number < MaxStage) {
+			if (input_->TriggerKey(DIK_D) || (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) ||
+			    (state.Gamepad.sThumbLX > deadZone && preState.Gamepad.sThumbLX <= deadZone)) {
+				number++;
+				texLT.x += 64;
+			}
 		}
-	}
-	sprite_->SetTextureRect(texLT, texSize);
 
-	
+		// ステージ選択 (左)
+		if (number > 1) {
+			if (input_->TriggerKey(DIK_A) || (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT) ||
+			    (state.Gamepad.sThumbLX < -deadZone && preState.Gamepad.sThumbLX >= -deadZone)) {
+				number--;
+				texLT.x -= 64;
+			}
+		}
 
-	if (input_->TriggerKey(DIK_SPACE) || 
-		(state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
-		nowStage = stage[number - 1];//配列に合わせるため
-		finished_ = true;
+		sprite_->SetTextureRect(texLT, texSize);
+
+		// 決定ボタン
+		if (input_->TriggerKey(DIK_SPACE) || (state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+			nowStage = stage[number - 1]; // 配列に合わせるため
+			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+			phase_ = Phase::kFadeOut;
+		}
+		break;
+	case SelectScene::Phase::kFadeOut:
+		fade_->Update();
+		if (fade_->IsFinished()) {
+			fade_->Stop();
+			finished_ = true;
+		}
+		break;
 	}
 }
 
+
 void SelectScene::Draw() { 
-	sprite_->PreDraw(dxCommon_->GetCommandList()); 
+	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList(); 
+
+	sprite_->PreDraw(commandList); 
 	sprite_->Draw();
 	sprite_->PostDraw();
 
+	fade_->Draw(commandList);
 }

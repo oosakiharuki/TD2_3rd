@@ -16,7 +16,23 @@
 
 using namespace KamataEngine;
 
+class Fade;
+
 class GameScene {
+public:
+	enum class Phase {
+		kFadeIn,
+		kMain,
+		kMenu,
+		kClear,
+		kFadeOut,
+	};
+	enum class Select {
+		kGoStageSelect,
+		kGoTitle,
+		kGoNextStage,
+		kNone,
+	};
 
 public:
 	// ゲームシーン
@@ -33,6 +49,8 @@ public:
 
 	void Draw();
 
+	void GenerateBlocks();
+
 	void CheckAllCollision();
 
     /// <summary>
@@ -40,10 +58,20 @@ public:
 	/// </summary>
 	void CheckAllCollisions();
 
-	bool IsFinished() const { return isFinished_; }
-
+	bool IsFinished() const { return finished_; }
 
 	void GetStage(const char* number) { stageNum = number; }
+
+	Select GetSelect() const { return select_; }
+
+	// フェーズ切り替え
+	void ChangePhase();
+
+	void UpdateCursorSelection(int maxNum, int deadZone);
+
+	void SwitchToNextStage();
+
+	void ClearObject();
 
 private:
 	DirectXCommon* dxCommon_ = nullptr;
@@ -63,6 +91,15 @@ private:
 	WorldTransform worldTransform_;
 	Camera viewProjection_;
 	uint32_t texture = 0;
+	uint32_t menuTexture_ = 0;
+	uint32_t clearTexture_ = 0;
+	uint32_t clearAllTexture_ = 0;
+	uint32_t cursorTexture_ = 0;
+
+	Sprite* menuSprite_ = nullptr;
+	Sprite* clearSprite_ = nullptr;
+	Sprite* clearAllSirpte_ = nullptr;
+	Sprite* cursorSprite_ = nullptr;
 
 	std::vector<std::vector<KamataEngine::WorldTransform*>> blocks_;
 	std::list<Box*> boxes;
@@ -72,7 +109,7 @@ private:
 	bool isGate = false;
 	bool isA = false;
 
-
+	const char* stage[5];
 	const char* stageNum;
 	MapChip* mapchip_ = nullptr;
 
@@ -86,10 +123,23 @@ private:
 	    {2.5f, 3.0f, 0.0f},
         {5.0f, 3.0f, 0.0f}
     };
+	Vector2 selectCursorPos = {450.0f, 275.0f};
+
+	int selectNum = 1;
 
 	Rope* rope_ = nullptr;
 	BrokenBox* brokenBox_ = nullptr;
 
 	CameraController* cameraController = nullptr;
-	bool isFinished_ = false;
+	bool finished_ = false;
+	bool clear_ = false;
+
+	Fade* fade_ = nullptr;
+	float fadeTime_ = 0.5f;
+
+	Phase phase_ = Phase::kFadeIn;
+	Select select_ = Select::kNone;
+
+	XINPUT_STATE state, preState;
+
 };

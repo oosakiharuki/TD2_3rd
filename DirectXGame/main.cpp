@@ -159,14 +159,26 @@ void ChangeScene() {
 		break;
 	case Scene::kGame:
 		if (gameScene->IsFinished()) {
-			scene = Scene::kTitle;
+    		if (gameScene->GetSelect() == GameScene::Select::kGoStageSelect) {
+    			scene = Scene::kSelect;
 
-			delete gameScene;
-			gameScene = nullptr;
+    			delete gameScene;
+    			gameScene = nullptr;
 
-			titleScene = new TitleScene();
-			titleScene->Initialise();
+    			selectScene = new SelectScene();
+    			selectScene->Initialize();
+    		}
+    		else if (gameScene->GetSelect()==GameScene::Select::kGoTitle) {
+    			scene = Scene::kTitle;
+
+    			delete gameScene;
+    			gameScene = nullptr;
+
+    			titleScene = new TitleScene();
+    			titleScene->Initialise();
+    		}
 		}
+
 		break;
 	}
 }

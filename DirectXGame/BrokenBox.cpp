@@ -2,9 +2,17 @@
 #include <cassert>
 #include "Box.h"
 
+BrokenBox::~BrokenBox() {
+	for (Particle* particle : particles_) {
+		delete particle;
+	}
+	particles_.clear();
+}
+
 void BrokenBox::Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection) {
 	assert(model);
 	model_ = model;
+	modelParticle_ = model;
 
 	viewProjection_ = viewProjection;
 	worldTransform_.Initialize();
@@ -15,11 +23,46 @@ void BrokenBox::Initialize(KamataEngine::Model* model, KamataEngine::Camera* vie
 
 void BrokenBox::Update() { 
 	worldTransform_.UpdateMatrix();
+
+	// パーティクルの更新
+	for (Particle* particle : particles_) {
+		particle->Update();
+	}
+
+	// 破壊後の処理
+	if (isBreak) {
+		// パーティクルを一定数まで生成
+		if (particleCount_ < particleLimit_) {
+			for (int i = 0; i < 5; i++) {
+				if (particleCount_ >= particleLimit_)
+					break;
+
+				Particle* particle = new Particle();
+				particle->Initialize(modelParticle_, viewProjection_, worldTransform_.translation_);
+				particles_.push_back(particle);
+				particleCount_++;
+			}
+		}
+
+		// 無効なパーティクルを削除
+		particles_.remove_if([](Particle* particle) {
+			if (!particle->IsActive()) {
+				delete particle;
+				return true;
+			}
+			return false;
+		});
+	}
 }
 
 void BrokenBox::Draw() { 
 	if (!isBreak) {
     	model_->Draw(worldTransform_, *viewProjection_, &objColor); 
+	}
+
+	// パーティクルの描画
+	for (Particle* particle : particles_) {
+		particle->Draw();
 	}
 }
 
