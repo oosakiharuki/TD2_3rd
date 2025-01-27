@@ -8,9 +8,12 @@ enum class MapChipType {
 	kblank,//空白
 	kWall,//壁
 	kBox,//ハコ
-	kBrokenBox //壊せる箱
+	kBrokenBox, //壊せる箱
 	// プレイヤーの初期地点
+	
 	// 大砲、スイッチ、ゴール地点など入れれる
+	kPlug,
+	kGate,
 };
 
 struct MapChipData{
@@ -29,6 +32,9 @@ public:
 
 	uint32_t GetNumVirtical() { return kMapWight; }
 	uint32_t GetNumHorizontal() { return kMapHeight; }
+
+	float GetBlockWight() { return kBlockWight; }
+	float GetBlockHeight() { return kBlockHeight; }
 
 private:
 

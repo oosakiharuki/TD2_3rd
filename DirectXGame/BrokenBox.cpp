@@ -1,16 +1,87 @@
 #include "BrokenBox.h"
+#include <cassert>
+#include "Box.h"
 
-void BrokenBox::Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection) {
-	model_=model;
-	viewProjection_ = viewProjection;
-	worldTransform_.Initialize();
-	objColor.Initialize();
+BrokenBox::~BrokenBox() {
+	for (Particle* particle : particles_) {
+		delete particle;
+	}
+	particles_.clear();
 }
 
-void BrokenBox::Update() {
+void BrokenBox::Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection) {
+	assert(model);
+	model_ = model;
+	modelParticle_ = model;
 
+	viewProjection_ = viewProjection;
+	worldTransform_.Initialize();
+	worldTransform_.translation_ = KamataEngine::Vector3{10.0f, -10.0f, 0.0f};
+	objColor.Initialize();
+
+}
+
+void BrokenBox::Update() { 
+	worldTransform_.UpdateMatrix();
+
+	// パーティクルの更新
+	for (Particle* particle : particles_) {
+		particle->Update();
+	}
+
+	// 破壊後の処理
+	if (isBreak) {
+		// パーティクルを一定数まで生成
+		if (particleCount_ < particleLimit_) {
+			for (int i = 0; i < 5; i++) {
+				if (particleCount_ >= particleLimit_)
+					break;
+
+				Particle* particle = new Particle();
+				particle->Initialize(modelParticle_, viewProjection_, worldTransform_.translation_);
+				particles_.push_back(particle);
+				particleCount_++;
+			}
+		}
+
+		// 無効なパーティクルを削除
+		particles_.remove_if([](Particle* particle) {
+			if (!particle->IsActive()) {
+				delete particle;
+				return true;
+			}
+			return false;
+		});
+	}
 }
 
 void BrokenBox::Draw() { 
-	model_->Draw(worldTransform_, *viewProjection_, &objColor);
+	if (!isBreak) {
+    	model_->Draw(worldTransform_, *viewProjection_, &objColor); 
+	}
+
+	// パーティクルの描画
+	for (Particle* particle : particles_) {
+		particle->Draw();
+	}
+}
+
+
+KamataEngine::Vector3 BrokenBox::GetWorldPosition() { 
+	// ワールド座標を入れる変数
+	KamataEngine::Vector3 worldPos;
+	// ワールド座標の平行移動成分を取得
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+
+	return worldPos;
+}
+
+void BrokenBox::OnCollision() {
+	for (Box* box : boxes_) {
+		if (box->GetNowMode() == Box::Mode::Hop) {
+			isBreak = true;
+		}
+	}
 }

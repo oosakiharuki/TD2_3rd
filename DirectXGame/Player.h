@@ -11,7 +11,6 @@ class Door1;
 class Door2;
 
 class Player {
-
 public:
 	// 初期化
 	void Initialize(KamataEngine::Vector3 startPosition, KamataEngine::Model* model, int playerId);
@@ -30,6 +29,8 @@ public:
 	void OnCollision(const Electricity* electricity);
 	void OnCollision2(const Electricity2* electricity2);
 	
+
+	void PlayerUpdateMatrix() { worldTransform_.UpdateMatrix(); }
 
 private:
 	KamataEngine::Input* input_ = nullptr;
