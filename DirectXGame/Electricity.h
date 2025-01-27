@@ -18,7 +18,7 @@ public:
 	
 	// AABBを取得
 	AABB GetAABB();
-
+	Door1* GetDoor1() { return door; }
 	
 
 private:
@@ -33,6 +33,7 @@ private:
 	KamataEngine::ObjectColor objColor = {};
 	bool Flag;
 	KamataEngine::Vector3 kSpeed = {1.0f, 0.0f, 0.0f};
+
 	Door1* door=nullptr ;
 	// キャラクターの当たり判定サイズ
 	static inline const float kWidth = 1.0f;
