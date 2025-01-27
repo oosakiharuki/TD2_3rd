@@ -7,6 +7,8 @@
 
 class Electricity;
 class Electricity2;
+class Door1;
+class Door2
 
 class Player {
 public:
@@ -27,6 +29,7 @@ public:
 	void OnCollision(const Electricity* electricity);
 	void OnCollision2(const Electricity2* electricity2);
 	
+
 private:
 	KamataEngine::Input* input_ = nullptr;
 	XINPUT_STATE state, preState;

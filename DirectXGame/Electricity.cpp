@@ -5,26 +5,26 @@
 void Electricity::Initialize(KamataEngine::Model* model, KamataEngine::Model* model2, KamataEngine::Camera* viewProjection) {
 	model_ = model;//プレイヤーが触る板用
 	model2_ = model2;
-	door = new Door1;
-	door->Initialize(model2_, viewProjection_, kSpeed, worldTransform2_.translation_);
+	viewProjection_ = viewProjection;
+	door = new Door1();
+	door->Initialize(model2_, viewProjection_, kSpeed);
 
 	worldTransform_.Initialize();//プレイヤーが触る板用
-	worldTransform2_.Initialize();
-	worldTransform2_.scale_ = {5.0f, 1.0f, 1.0f};
+	
 
 	viewProjection_ = viewProjection;
 	objColor.Initialize();
-
+	
 }
 
 void Electricity::Update() {
 	
-	door->SetFlag(Flag);
+	
 		door->Update();
 	
 	
 	worldTransform_.UpdateMatrix();
-	worldTransform2_.UpdateMatrix();
+	
 	
 	
 }
@@ -40,7 +40,7 @@ void Electricity::Draw() {
 void Electricity::OnCollision(const Player* player) { 
 	(void)player;
 	Flag = true;
-	
+	door->SetFlag(Flag);
 }
 
 

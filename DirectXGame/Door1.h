@@ -7,13 +7,13 @@
 class Player;
 class Door1 {
 public:
-	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection, KamataEngine::Vector3 speed, KamataEngine::Vector3 position);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection, KamataEngine::Vector3 speed);
 
 	void Update();
 
 	void Draw();
 
-	void OnCollision(const Player* player);
+	void OnCollision(Player*player);
 	void SetFlag(bool Flag1);
 
 private:
