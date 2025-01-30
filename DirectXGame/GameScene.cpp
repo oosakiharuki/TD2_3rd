@@ -170,6 +170,8 @@ void GameScene::Update() {
 		}
 		for (Door1* door : doors) {
 			door->Update();
+			door->OnCollision(player1_);
+			door->OnCollision(player2_);
 		}
 
 		for (Box* box : boxes) {
@@ -216,6 +218,8 @@ void GameScene::Update() {
 
 		for (Door1* door : doors) {
 			door->Update();
+			door->OnCollision(player1_);
+			door->OnCollision(player2_);
 		}
 
 		for (Box* box : boxes) {
