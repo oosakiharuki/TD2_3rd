@@ -49,7 +49,10 @@ void Artillery::Fire() {
 	// 新しい弾丸を作成
 	KamataEngine::Vector3 kSpeed = {1.0f, 0.0f, 0.0f};
 	Bullet* newBullet = new Bullet();
-	newBullet->Initialize(model2_, worldTransform_.translation_, kSpeed);
+	worldTransform2_.translation_.x = worldTransform_.translation_.x + 1.5f;
+	worldTransform2_.translation_.y = worldTransform_.translation_.y;
+	worldTransform2_.translation_.z = worldTransform_.translation_.z;
+	newBullet->Initialize(model2_, worldTransform2_.translation_ , kSpeed);
 
 	// 弾を登録する
 	bullets_.push_back(newBullet);
