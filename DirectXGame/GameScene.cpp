@@ -21,6 +21,7 @@ GameScene::~GameScene() {
 	delete modelCarryRope_;
 	delete modelHopRope_;
 	delete modelBom;
+	delete modelBom2;
 	delete mapchip_;
 	delete modelSwitch1_;
 	delete modelSwitch2_;
@@ -124,6 +125,7 @@ void GameScene::Initialize() {
 	modelCarryRope_ = Model::CreateFromOBJ("carryRope", true);
 	modelHopRope_ = Model::CreateFromOBJ("hopRope", true);
 	modelBom = Model::Create();
+	modelBom2 = Model::Create();
 	modelSwitch1_ = Model::CreateFromOBJ("electroSwitch1", true);
 	modelSwitch2_ = Model::CreateFromOBJ("electroSwitch2", true);
 
@@ -142,7 +144,7 @@ void GameScene::Initialize() {
 	rope_->SetBoxes(boxes);
 
 	artillery = new Artillery();
-	artillery->Initialize(modelBom, modelBom, &viewProjection_);
+	artillery->Initialize(modelBom, modelBom2, &viewProjection_);
 
 	//brokenBox_ = new BrokenBox();
 	//brokenBox_->Initialize(modelBrokenBox_, &viewProjection_);

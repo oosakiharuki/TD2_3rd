@@ -39,7 +39,7 @@ private:
 	Player* player2_ = nullptr;
 	Box* box_ = nullptr;
 	KamataEngine::Input* input_ = nullptr;
-	float radius_ = 3.5f;
+	float radius_ = 2.0f;
 	KamataEngine::Vector3 controlPoint1_;
 	KamataEngine::Vector3 controlPoint2_;
 	float slack_ = 1.0f;

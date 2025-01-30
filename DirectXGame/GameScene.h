@@ -86,7 +86,8 @@ private:
 	Model* modelElectricity2_ = nullptr;
 	Model* modelWall1_ = nullptr;
 	Model* modelWall2_ = nullptr;
-	Model* modelBom;
+	Model* modelBom=nullptr;
+	Model* modelBom2 = nullptr;
 	Model* modelBlock_ = nullptr;
 	Model* modelBrokenBox_ = nullptr;
 	Model* modelParticle_ = nullptr;

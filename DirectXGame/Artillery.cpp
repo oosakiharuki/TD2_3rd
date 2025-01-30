@@ -12,7 +12,7 @@ void Artillery::Initialize(KamataEngine::Model* model, KamataEngine::Model* mode
 }
 
 void Artillery::Update() {
-	if (!isDead) {
+	
 
 		bullets_.remove_if([](Bullet* bullet_) {
 			if (bullet_->IsDead()) {
@@ -32,14 +32,15 @@ void Artillery::Update() {
 		for (Bullet* bullet : bullets_) {
 			bullet->Update();
 		}
-	}
+	    worldTransform_.translation_={2.0f, 2.0f, 0.0f};
+	    worldTransform_.UpdateMatrix();
 }
 
 void Artillery::Draw() {
-	if (!isDead) {
+	
 
 		model_->Draw(worldTransform_, *viewProjection_, &objColor);
-	}
+	
 	for (Bullet* bullet_ : bullets_) {
 		bullet_->Draw(*viewProjection_);
 	}
@@ -47,9 +48,9 @@ void Artillery::Draw() {
 
 void Artillery::Fire() {
 	// 新しい弾丸を作成
-	KamataEngine::Vector3 kSpeed = {1.0f, 0.0f, 0.0f};
+	KamataEngine::Vector3 kSpeed = {0.5f, 0.0f, 0.0f};
 	Bullet* newBullet = new Bullet();
-	worldTransform2_.translation_.x = worldTransform_.translation_.x + 1.5f;
+	worldTransform2_.translation_.x = worldTransform_.translation_.x + 2.0f;
 	worldTransform2_.translation_.y = worldTransform_.translation_.y;
 	worldTransform2_.translation_.z = worldTransform_.translation_.z;
 	newBullet->Initialize(model2_, worldTransform2_.translation_ , kSpeed);

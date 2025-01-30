@@ -22,7 +22,7 @@ public:
 	float GetRadius() { return radius_; }
 	std::list<Bullet*> GetBullets() { return bullets_; }
 	// 発射間隔
-	static const int kFireInterval = 60;
+	static const int kFireInterval = 100;
 
 private:
 	KamataEngine::Camera* viewProjection_ = nullptr;
@@ -33,7 +33,7 @@ private:
 	KamataEngine::ObjectColor objColor = {};
 	int Timer_;
 	// bool Flag = false;
-	float radius_ = 2.0f;
+	float radius_ = 1.0f;
 	std::list<Bullet*> bullets_;
 	bool isDead=false;
 };

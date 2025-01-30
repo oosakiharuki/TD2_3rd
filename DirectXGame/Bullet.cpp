@@ -26,4 +26,4 @@ void Bullet::Draw(const KamataEngine::Camera& camera) { model_->Draw(worldTransf
 
 void Bullet::OnCollision() { isDead_ = true; }
 
-void Bullet::OnCollision2() { worldTransform_.translation_.x -= 1.0f; }
+void Bullet::OnCollision2() { worldTransform_.translation_.x -= 0.005f; }
