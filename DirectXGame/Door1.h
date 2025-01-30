@@ -32,4 +32,8 @@ private:
 	// キャラクターの当たり判定サイズ
 	static inline const float kWidth = 1.0f;
 	static inline const float kHeight = 1.0f;
+
+	//当たり判定用のサイズ
+	float sizeX = 0;
+	float sizeY = 0;
 };
