@@ -7,14 +7,16 @@
 class Player;
 class Door1 {
 public:
-	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection, KamataEngine::Vector3 speed);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection, KamataEngine::Vector3 position, KamataEngine::Vector3 speed);
+	
 
 	void Update();
 
 	void Draw();
 
 	void OnCollision(Player*player);
-	void SetFlag(bool Flag1);
+	void SetFlag(bool Flag1, bool Flag2);
+	void Vartical();
 
 private:
 	KamataEngine::Camera* viewProjection_ = nullptr;

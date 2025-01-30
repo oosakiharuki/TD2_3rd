@@ -13,6 +13,7 @@
 #include "Rope.h"
 
 #include "CameraController.h"
+#include "Door1.h"
 
 using namespace KamataEngine;
 
@@ -105,16 +106,32 @@ private:
 	std::list<Box*> boxes;
 	
 	std::list<Gate*> gates;
-	std::list<Gate*> gatesList[2];//deleteはいらない
+	std::list<Gate*> gatesList[5];//deleteはいらない
 	bool isGate = false;
-	bool isA = false;
+	uint32_t gateCount = 0u;
+	uint32_t maxGate = 5; // とりあえず五個目安
+	uint32_t playerNum = 0u;
 
 	const char* stage[5];
 	const char* stageNum;
 	MapChip* mapchip_ = nullptr;
 
-	Electricity* electricityGimmick_;
-	Electricity2* electricityGimmick2_;
+	bool isPair = false;
+	// bool isPairVartical = false;
+
+	std::list<Electricity*> electricity;
+	std::list<Electricity2*> electricity2;
+	std::list<Electricity*> electricitys[5];
+	std::list<Electricity2*> electricitys2[5];
+	uint32_t electNum = 0;
+	// uint32_t HorizonNum = 0;
+
+	std::list<Door1*> doors;
+	std::list<Door1*> doorsList[5];
+	uint32_t doorCount = 0;
+	bool left[5] = {false};
+	bool right[5] = {false};
+	bool openFlag = false;
 
 	Player* player1_ = nullptr;
 	Player* player2_ = nullptr;
@@ -128,7 +145,7 @@ private:
 	int selectNum = 1;
 
 	Rope* rope_ = nullptr;
-	BrokenBox* brokenBox_ = nullptr;
+	std::list<BrokenBox*> brokenBoxes;
 
 	CameraController* cameraController = nullptr;
 	bool finished_ = false;

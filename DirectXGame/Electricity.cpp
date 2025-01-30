@@ -1,13 +1,13 @@
 #include "Electricity.h"
 #include"Player.h"
-#include"Door1.h"
+//#include"Door1.h"
 
 void Electricity::Initialize(KamataEngine::Model* model, KamataEngine::Model* model2, KamataEngine::Camera* viewProjection) {
 	model_ = model;//プレイヤーが触る板用
 	model2_ = model2;
 	viewProjection_ = viewProjection;
-	door = new Door1();
-	door->Initialize(model2_, viewProjection_, kSpeed);
+	//door = new Door1();
+	//door->Initialize(model2_, viewProjection_, kSpeed);
 
 	worldTransform_.Initialize();//プレイヤーが触る板用
 
@@ -25,7 +25,7 @@ void Electricity::Initialize(KamataEngine::Model* model, KamataEngine::Model* mo
 void Electricity::Update() {
 	
 	
-		door->Update();
+		//door->Update();
 	
 	
 	worldTransform_.UpdateMatrix();
@@ -37,7 +37,7 @@ void Electricity::Update() {
 void Electricity::Draw() {
 	model_->Draw(worldTransform_, *viewProjection_, &objColor);
 	//model2_->Draw(worldTransform2_, *viewProjection_, &objColor);
-	door->Draw();
+	//door->Draw();
 
 }
 //左用
@@ -45,7 +45,7 @@ void Electricity::Draw() {
 void Electricity::OnCollision(const Player* player) { 
 	(void)player;
 	Flag = true;
-	door->SetFlag(Flag);
+	//door->SetFlag(Flag);
 }
 
 

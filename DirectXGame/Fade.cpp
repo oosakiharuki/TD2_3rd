@@ -3,6 +3,8 @@
 #include "base/TextureManager.h"
 #include <algorithm>
 
+Fade::~Fade() { delete sprite_; }
+
 void Fade::Initialize() {
 	textureHandle_ = KamataEngine::TextureManager::Load("fadeSprite.png");
 	sprite_ = KamataEngine::Sprite::Create(textureHandle_, {0, 0});
