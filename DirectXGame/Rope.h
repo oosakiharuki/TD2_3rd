@@ -43,7 +43,7 @@ private:
 	KamataEngine::Vector3 controlPoint1_;
 	KamataEngine::Vector3 controlPoint2_;
 	float slack_ = 1.0f;
-	float maxLength_ = 5.0f;
+	float maxLength_ = 6.0f;
 	int segmentCount_ = 11; // ロープの分割数
 
 	KamataEngine::Model* modelCarry_ = nullptr;

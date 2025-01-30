@@ -87,10 +87,16 @@ private:
 	Model* modelWall1_ = nullptr;
 	Model* modelWall2_ = nullptr;
 	Model* modelBom;
+	Model* modelBlock_ = nullptr;
 	Model* modelBrokenBox_ = nullptr;
+	Model* modelParticle_ = nullptr;
 	Model* modelPlayer_ = nullptr;
+	Model* modelPlayer1_ = nullptr;
+	Model* modelPlayer2_ = nullptr;
 	Model* modelCarryRope_ = nullptr;
 	Model* modelHopRope_ = nullptr;
+	Model* modelSwitch1_ = nullptr;
+	Model* modelSwitch2_ = nullptr;
 
 	WorldTransform worldTransform_;
 	Camera viewProjection_;
@@ -99,11 +105,13 @@ private:
 	uint32_t clearTexture_ = 0;
 	uint32_t clearAllTexture_ = 0;
 	uint32_t cursorTexture_ = 0;
+	uint32_t wallpaperTexture = 0;
 
 	Sprite* menuSprite_ = nullptr;
 	Sprite* clearSprite_ = nullptr;
 	Sprite* clearAllSirpte_ = nullptr;
 	Sprite* cursorSprite_ = nullptr;
+	Sprite* wallpaperSprite_ = nullptr;
 
 	std::vector<std::vector<KamataEngine::WorldTransform*>> blocks_;
 	std::list<Box*> boxes;

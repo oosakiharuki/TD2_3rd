@@ -26,6 +26,9 @@ void SelectScene::Initialize() {
 	sprite_->SetSize(Vector2{64, 64});
 	sprite_->SetTextureRect(texLT, texSize);
 
+	wallpaperTexture_ = KamataEngine::TextureManager::Load("wallpaper.jpg");
+	wallpaperSprite_ = KamataEngine::Sprite::Create(wallpaperTexture_, {0.0f, 0.0f});
+
 	fade_ = new Fade();
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, fadeTime_);
@@ -88,9 +91,32 @@ void SelectScene::Update() {
 void SelectScene::Draw() { 
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList(); 
 
-	sprite_->PreDraw(commandList); 
-	sprite_->Draw();
-	sprite_->PostDraw();
+	#pragma region 背景スプライト描画
+	// 背景スプライト描画前処理
+	KamataEngine::Sprite::PreDraw(commandList);
+
+	/// <summary>
+	/// ここに背景スプライトの描画処理を追加できる
+	/// </summary>
+	wallpaperSprite_->Draw();
+	// スプライト描画後処理
+	KamataEngine::Sprite::PostDraw();
+	// 深度バッファクリア
+	dxCommon_->ClearDepthBuffer();
+#pragma endregion
+
+#pragma region 前景スプライト描画
+	// 前景スプライト描画前処理
+	KamataEngine::Sprite::PreDraw(commandList);
+
+	/// <summary>
+	/// ここに前景スプライトの描画処理を追加できる
+	/// </summary>
+		sprite_->Draw();
 
 	fade_->Draw(commandList);
+	// スプライト描画後処理
+	KamataEngine::Sprite::PostDraw();
+
+#pragma endregion
 }
