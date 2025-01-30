@@ -107,12 +107,14 @@ private:
 	uint32_t clearAllTexture_ = 0;
 	uint32_t cursorTexture_ = 0;
 	uint32_t wallpaperTexture = 0;
+	uint32_t menuAttendTexture_ = 0;
 
 	Sprite* menuSprite_ = nullptr;
 	Sprite* clearSprite_ = nullptr;
 	Sprite* clearAllSirpte_ = nullptr;
 	Sprite* cursorSprite_ = nullptr;
 	Sprite* wallpaperSprite_ = nullptr;
+	Sprite* menuAttendSprite_ = nullptr;
 
 	std::vector<std::vector<KamataEngine::WorldTransform*>> blocks_;
 	std::list<Box*> boxes;

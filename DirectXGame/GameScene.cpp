@@ -78,6 +78,7 @@ GameScene::~GameScene() {
 	delete clearAllSirpte_;
 	delete cursorSprite_;
 	delete wallpaperSprite_;
+	delete menuAttendSprite_;
 };
 
 void GameScene::Initialize() {
@@ -90,12 +91,14 @@ void GameScene::Initialize() {
 	clearAllTexture_ = TextureManager::Load("clearAll.png");
 	cursorTexture_ = TextureManager::Load("cursor.png");
 	wallpaperTexture = TextureManager::Load("wallpaper.jpg");
+	menuAttendTexture_ = TextureManager::Load("menuAttend.png");
 
 	menuSprite_ = Sprite::Create(menuTexture_, {0.0f, 0.0f});
 	clearSprite_ = Sprite::Create(clearTexture_, {0.0f, 0.0f});
 	clearAllSirpte_ = Sprite::Create(clearAllTexture_, {0.0f, 0.0f});
 	cursorSprite_ = Sprite::Create(cursorTexture_, selectCursorPos);
 	wallpaperSprite_ = Sprite::Create(wallpaperTexture, {0.0f, 0.0f});
+	menuAttendSprite_ = Sprite::Create(menuAttendTexture_, {0.0f, 0.0f});
 	
 	viewProjection_.Initialize();
 	worldTransform_.Initialize();
@@ -350,6 +353,9 @@ void GameScene::Draw() {
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
 	switch (phase_) {
+	case GameScene::Phase::kMain:
+		menuAttendSprite_->Draw();
+		break;
 	case GameScene::Phase::kMenu:
 		menuSprite_->Draw();
 		cursorSprite_->Draw();
