@@ -16,10 +16,13 @@ GameScene::~GameScene() {
 	delete modelPlayer_;
 	delete modelCarryRope_;
 	delete modelHopRope_;
+	delete modelBom;
 	delete mapchip_;
 
 	delete player1_;
 	delete player2_;
+
+	delete artillery;
 
 	delete rope_;
 	for (Box* box : boxes) {
@@ -105,7 +108,7 @@ void GameScene::Initialize() {
 	modelPlayer_ = Model::CreateFromOBJ("Player", true);
 	modelCarryRope_ = Model::CreateFromOBJ("Rope", true);
 	modelHopRope_ = Model::CreateFromOBJ("hopRope", true);
-
+	modelBom = Model::Create();
 
 	GenerateBlocks();
 
@@ -121,6 +124,8 @@ void GameScene::Initialize() {
     rope_->Initialize(player1_, player2_, input_, modelCarryRope_, modelHopRope_);
 	rope_->SetBoxes(boxes);
 
+	artillery = new Artillery();
+	artillery->Initialize(modelBom, modelBom, &viewProjection_);
 
 	//brokenBox_ = new BrokenBox();
 	//brokenBox_->Initialize(modelBrokenBox_, &viewProjection_);
@@ -145,6 +150,7 @@ void GameScene::Update() {
     	CheckAllCollision();
 	
     	CheckAllCollisions();
+		CheckBulletPlayerCollision();
 	
     	for (std::vector<WorldTransform*> blockLine : blocks_) {
     		for (WorldTransform* block : blockLine) {
@@ -174,7 +180,8 @@ void GameScene::Update() {
 			brokenBox_->SetBoxes(boxes);
 			brokenBox_->Update();
 		}
-
+		//大砲
+		artillery->Update();
     	// プレイヤーの更新
     	player1_->Update();
     	player2_->Update();
@@ -219,7 +226,7 @@ void GameScene::Update() {
 			brokenBox_->SetBoxes(boxes);
 			brokenBox_->Update();
 		}
-
+		artillery->Update();
 		player1_->PlayerUpdateMatrix();
 		player2_->PlayerUpdateMatrix();
 
@@ -298,7 +305,8 @@ void GameScene::Draw() {
 	for (BrokenBox* brokenBox_ : brokenBoxes) {
 		brokenBox_->Draw();
 	}
-	
+	//大砲
+	artillery->Draw();
 	viewProjection_.matView = cameraController->GetViewProjection().matView;
 	viewProjection_.matProjection = cameraController->GetViewProjection().matProjection;
 	viewProjection_.TransferMatrix();
@@ -483,6 +491,69 @@ void GameScene::CheckAllCollisions() {
 	}
 	#pragma endregion
 
+}
+
+void GameScene::CheckBulletPlayerCollision() {
+	// 判定対象AとBの座標
+	Vector3 posA, posB;
+
+	const std::list<Bullet*>& Bullets = artillery->GetBullets();
+	// 自キャラの座標
+	posA = player1_->GetWorldPosition();
+
+	for (Bullet* bullet : Bullets) {
+		posB = bullet->GetWorldPosition();
+		// posAとposBの距離
+		float posC = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) + (posB.z - posA.z) * (posB.z - posA.z);
+
+		// 半径の差
+		float L = (player1_->GetRadius() + bullet->GetRadius()) * (player1_->GetRadius() + bullet->GetRadius());
+		// 球と球の交差判定
+		if (posC <= L) {
+			// 自キャラの衝突時コールバックを呼び出す
+			player1_->OnCollisionBullet();
+			// 敵弾の衝突時コールバックを呼び出す
+			bullet->OnCollision();
+		}
+	}
+
+	// 自キャラの座標
+	posA = player2_->GetWorldPosition();
+
+	for (Bullet* bullet : Bullets) {
+		posB = bullet->GetWorldPosition();
+		// posAとposBの距離
+		float posC = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) + (posB.z - posA.z) * (posB.z - posA.z);
+
+		// 半径の差
+		float L = (player2_->GetRadius() + bullet->GetRadius()) * (player2_->GetRadius() + bullet->GetRadius());
+		// 球と球の交差判定
+		if (posC <= L) {
+			// 自キャラの衝突時コールバックを呼び出す
+			player2_->OnCollisionBullet();
+			// 敵弾の衝突時コールバックを呼び出す
+			bullet->OnCollision();
+		}
+	}
+
+	// 自キャラの座標
+	posA = rope_->GetWorldTransform().translation_;
+
+	for (Bullet* bullet : Bullets) {
+		posB = bullet->GetWorldPosition();
+		// posAとposBの距離
+		float posC = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) + (posB.z - posA.z) * (posB.z - posA.z);
+
+		// 半径の差
+		float L = (rope_->GetRadius() + bullet->GetRadius()) * (rope_->GetRadius() + bullet->GetRadius());
+		// 球と球の交差判定
+		if (posC <= L) {
+			// 自キャラの衝突時コールバックを呼び出す
+			rope_->OnCollisionBullet();
+			// 敵弾の衝突時コールバックを呼び出す
+			bullet->OnCollision();
+		}
+	}
 }
 
 void GameScene::ChangePhase() {

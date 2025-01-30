@@ -175,6 +175,8 @@ bool Rope::CheckCollisionWithBox(Box* box) {
 	return false; // 衝突なし
 }
 
+void Rope::OnCollisionBullet() {}
+
 
 KamataEngine::Vector3 Rope::ClosestPointOnSegment(const KamataEngine::Vector3& point, const KamataEngine::Vector3& p1, const KamataEngine::Vector3& p2) {
 	KamataEngine::Vector3 segment = p2 - p1;

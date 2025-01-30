@@ -5,7 +5,8 @@
 #include "Box.h"
 #include "BrokenBox.h"
 #include "Gate.h"
-
+#include"Artillery.h"
+#include"Bullet.h"
 #include"Electricity.h"
 #include"Electricity2.h"
 
@@ -58,6 +59,7 @@ public:
 	/// 衝突判定と応答
 	/// </summary>
 	void CheckAllCollisions();
+	void CheckBulletPlayerCollision();
 
 	bool IsFinished() const { return finished_; }
 
@@ -84,6 +86,7 @@ private:
 	Model* modelElectricity2_ = nullptr;
 	Model* modelWall1_ = nullptr;
 	Model* modelWall2_ = nullptr;
+	Model* modelBom;
 	Model* modelBrokenBox_ = nullptr;
 	Model* modelPlayer_ = nullptr;
 	Model* modelCarryRope_ = nullptr;
@@ -125,10 +128,11 @@ private:
 	std::list<Electricity2*> electricitys2[5];
 	uint32_t electNum = 0;
 	// uint32_t HorizonNum = 0;
-
+	
 	std::list<Door1*> doors;
 	std::list<Door1*> doorsList[5];
 	uint32_t doorCount = 0;
+	Artillery* artillery = nullptr;
 	bool left[5] = {false};
 	bool right[5] = {false};
 	bool openFlag = false;
