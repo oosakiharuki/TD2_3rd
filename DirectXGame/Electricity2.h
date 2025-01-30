@@ -18,7 +18,9 @@ public:
 	// AABBを取得
 	AABB GetAABB();
 
-	
+	void SetPosition(KamataEngine::Vector3 position) { worldTransform_.translation_ = position; }
+	bool GetFlag() { return Flag; }
+
 
 private:
 	KamataEngine::Camera* viewProjection_ = nullptr;

@@ -12,8 +12,6 @@ GameScene::~GameScene() {
 	delete modelWall2_;
 	delete modelBrokenBox_;
 	
-	delete electricityGimmick_;
-	delete electricityGimmick2_;
 
 	delete modelPlayer_;
 	delete modelCarryRope_;
@@ -34,6 +32,19 @@ GameScene::~GameScene() {
 	}
 	gates.clear();
 
+	for (Electricity* electrical : electricity) {
+		delete electrical;
+	}
+	for (Electricity2* electrical : electricity2) {
+		delete electrical;
+	}
+
+	for (Door1* door : doors) {
+		delete door;
+	}
+	doors.clear();
+
+
 	for (std::vector<WorldTransform*> blockLine : blocks_) {
 		for (WorldTransform* block : blockLine) {
 			delete block;
@@ -41,7 +52,10 @@ GameScene::~GameScene() {
 	}
 	blocks_.clear();
 
-	delete brokenBox_;
+	for (BrokenBox* brokenBox_ : brokenBoxes) {
+		delete brokenBox_;
+	}
+	brokenBoxes.clear();
 
 	delete cameraController;
 
@@ -92,11 +106,6 @@ void GameScene::Initialize() {
 	modelCarryRope_ = Model::CreateFromOBJ("Rope", true);
 	modelHopRope_ = Model::CreateFromOBJ("hopRope", true);
 
-	//電気ギミック
-	electricityGimmick_ = new Electricity;
-	electricityGimmick_->Initialize(modelElectricity1_, modelWall1_, &viewProjection_);
-	electricityGimmick2_ = new Electricity2;
-	electricityGimmick2_->Initialize(modelElectricity2_, modelWall2_, &viewProjection_);
 
 	GenerateBlocks();
 
@@ -113,9 +122,9 @@ void GameScene::Initialize() {
 	rope_->SetBoxes(boxes);
 
 
-	brokenBox_ = new BrokenBox();
-	brokenBox_->Initialize(modelBrokenBox_, &viewProjection_);
-	brokenBox_->SetBoxes(boxes);
+	//brokenBox_ = new BrokenBox();
+	//brokenBox_->Initialize(modelBrokenBox_, &viewProjection_);
+	//brokenBox_->SetBoxes(boxes);
 	cameraController = new CameraController();
 	cameraController->Initialize();
 	cameraController->SetTraget(rope_);
@@ -137,8 +146,6 @@ void GameScene::Update() {
 	
     	CheckAllCollisions();
 	
-    	electricityGimmick_->Update();
-    	electricityGimmick2_->Update();
     	for (std::vector<WorldTransform*> blockLine : blocks_) {
     		for (WorldTransform* block : blockLine) {
     			if (!block) {
@@ -149,30 +156,24 @@ void GameScene::Update() {
     		}
     	}
 
-    	for (Box* box : boxes) {
-    		box->Update();
-    	}
+		for (Electricity* electrical : electricity) {
+			electrical->Update();
+		}
+		for (Electricity2* electrical : electricity2) {
+			electrical->Update();
+		}
+		for (Door1* door : doors) {
+			door->Update();
+		}
 
-    	for (Gate* gate : gatesList[0]) {
-    		gate->Update();
-    		if (input_->PushKey(DIK_1)) {
-    			gate->OpenGate();
-    		} else {
-    			gate->CloseGate();
-    		}
-    	}
-
-    	for (Gate* gate : gatesList[1]) {
-    		gate->Update();
-    		if (input_->PushKey(DIK_2)) {
-    			gate->OpenGate();
-    		} else {
-    			gate->CloseGate();
-    		}
-    	}
-
-
-    	brokenBox_->Update();
+		for (Box* box : boxes) {
+			box->Update();
+		}
+	
+		for (BrokenBox* brokenBox_ : brokenBoxes) {
+			brokenBox_->SetBoxes(boxes);
+			brokenBox_->Update();
+		}
 
     	// プレイヤーの更新
     	player1_->Update();
@@ -188,8 +189,6 @@ void GameScene::Update() {
 		}
 		break;
 	default:
-		electricityGimmick_->Update();
-		electricityGimmick2_->Update();
 		for (std::vector<WorldTransform*> blockLine : blocks_) {
 			for (WorldTransform* block : blockLine) {
 				if (!block) {
@@ -200,29 +199,26 @@ void GameScene::Update() {
 			}
 		}
 
+		for (Electricity* electrical : electricity) {
+			electrical->Update();
+		}
+
+		for (Electricity2* electrical : electricity2) {
+			electrical->Update();
+		}
+
+		for (Door1* door : doors) {
+			door->Update();
+		}
+
 		for (Box* box : boxes) {
 			box->Update();
 		}
 
-		for (Gate* gate : gatesList[0]) {
-			gate->Update();
-			if (input_->PushKey(DIK_1)) {
-				gate->OpenGate();
-			} else {
-				gate->CloseGate();
-			}
+		for (BrokenBox* brokenBox_ : brokenBoxes) {
+			brokenBox_->SetBoxes(boxes);
+			brokenBox_->Update();
 		}
-
-		for (Gate* gate : gatesList[1]) {
-			gate->Update();
-			if (input_->PushKey(DIK_2)) {
-				gate->OpenGate();
-			} else {
-				gate->CloseGate();
-			}
-		}
-
-		brokenBox_->Update();
 
 		player1_->PlayerUpdateMatrix();
 		player2_->PlayerUpdateMatrix();
@@ -261,10 +257,6 @@ void GameScene::Draw() {
 	///
 	
 
-	
-	electricityGimmick_->Draw();
-	electricityGimmick2_->Draw();
-
 	// プレイヤーの描画
 	player1_->Draw(&viewProjection_);
 	player2_->Draw(&viewProjection_);
@@ -277,6 +269,16 @@ void GameScene::Draw() {
 
 	for (Box* box : boxes) {
 		box->Draw();
+	}
+
+	for (Electricity* electrical : electricity) {
+		electrical->Draw();
+	}
+	for (Electricity2* electrical : electricity2) {
+		electrical->Draw();
+	}
+	for (Door1* door : doors) {
+		door->Draw();
 	}
 
 	for (Gate* gate : gates) {
@@ -293,8 +295,10 @@ void GameScene::Draw() {
 		}
 	}
 
-	brokenBox_->Draw();
-
+	for (BrokenBox* brokenBox_ : brokenBoxes) {
+		brokenBox_->Draw();
+	}
+	
 	viewProjection_.matView = cameraController->GetViewProjection().matView;
 	viewProjection_.matProjection = cameraController->GetViewProjection().matProjection;
 	viewProjection_.TransferMatrix();
@@ -350,30 +354,63 @@ void GameScene::GenerateBlocks() {
 				worldTransform->Initialize();
 				blocks_[i][j] = worldTransform;
 				blocks_[i][j]->translation_ = mapchip_->GetMapChipPosition(j, i);
-				if (isGate) {
-					isGate = false;
-					isA = true;
-				}
 			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kBox) {
 
 				Box* box = new Box();
 				box->Initialize(model_, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
 
 				boxes.push_back(box);
-			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kGate) {
-				Gate* gate = new Gate();
-				gate->Initialize(model_, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
-				gates.push_back(gate);
+			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kBrokenBox) {
+				BrokenBox* brokenBox_ = new BrokenBox();
+				brokenBox_->Initialize(model_, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
+				brokenBoxes.push_back(brokenBox_);
 
-				if (!isGate) {
-					isGate = true;
-				}
-				if (isA) {
-					gatesList[1].push_back(gate);
+			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kPlug) {
+
+				if (!isPair) {
+					// 左側
+					Electricity* elect = new Electricity;
+					elect->Initialize(model_, model_, &viewProjection_);
+					elect->SetPosition(mapchip_->GetMapChipPosition(j, i));
+					electricity.push_back(elect);
+
+					electricitys[electNum].push_back(elect);
+					isPair = true;
 				} else {
-					gatesList[0].push_back(gate);
+					// 右側
+					Electricity2* elect = new Electricity2;
+					elect->Initialize(model_, model_, &viewProjection_);
+					elect->SetPosition(mapchip_->GetMapChipPosition(j, i));
+					electricity2.push_back(elect);
+
+					electricitys2[electNum].push_back(elect);
+					isPair = false;
+					electNum++;
 				}
-			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kGate) {
+			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kDoor) {
+				Door1* door = new Door1();
+				Vector3 kSpeed = {1.0f, 0.0f, 0.0f};
+
+				door->Initialize(modelWall1_, &viewProjection_, mapchip_->GetMapChipPosition(j, i), kSpeed);
+				doors.push_back(door);
+				doorsList[doorCount].push_back(door);
+				doorCount++;
+			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kDoorVertical) {
+				Door1* door = new Door1();
+				Vector3 kSpeed = {0.0f, 1.0f, 0.0f};
+				
+				door->Initialize(modelWall1_, &viewProjection_, mapchip_->GetMapChipPosition(j, i), kSpeed);
+				door->Vartical();//向きを変える処理
+				doors.push_back(door);
+				doorsList[doorCount].push_back(door);
+				doorCount++;
+			}else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kPlayerPos) {
+				for (uint32_t num = 0; num < 2; num++) {
+					if (playerNum == num) {
+						playerPosition[num] = mapchip_->GetMapChipPosition(j, i);
+					}
+				}
+				playerNum++;
 			}
 		}
 	}
@@ -384,18 +421,37 @@ void GameScene::CheckAllCollision() {
 	//左側
 	AABB aabb1, aabb2;
 	aabb1 = player1_->GetAABB();
-	aabb2 = electricityGimmick_->GetAABB();
-	if (AABB::IsCollision(aabb1, aabb2)) {
-		player1_->OnCollision(electricityGimmick_);
-		electricityGimmick_->OnCollision(player1_);
-	}
+
 	AABB aabb3, aabb4;
 	aabb3 = player2_->GetAABB();
-	aabb4 = electricityGimmick2_->GetAABB();
-	if (AABB::IsCollision(aabb3, aabb4)) {
-		player2_->OnCollision2(electricityGimmick2_);
-		electricityGimmick2_->OnCollision(player2_);
+
+	for (uint32_t i = 0; i < maxGate; i++) {
+		//左側
+		for (Electricity* elect : electricitys[i]) {
+			aabb2 = elect->GetAABB();
+			 if (AABB::IsCollision(aabb1, aabb2)) {
+				player1_->OnCollision(elect);
+				elect->OnCollision(player1_);
+				left[i] = true;
+			}
+		}
+
+		for (Electricity2* elect : electricitys2[i]) {
+			//右側
+			aabb4 = elect->GetAABB();
+			if (AABB::IsCollision(aabb3, aabb4)) {
+				player2_->OnCollision2(elect);
+				elect->OnCollision(player2_);
+				right[i] = true;
+			}
+		}
+
+		for (Door1* door : doorsList[i]) {
+			door->SetFlag(left[i], right[i]);
+		}
+
 	}
+
    #pragma endregion
 }
 
@@ -406,22 +462,24 @@ void GameScene::CheckAllCollisions() {
 	float brokenBoxRadius = 1.0f;
 
 	#pragma region 壊れる箱と箱の当たり判定
-	// 壊れる箱の座標
-	posA = brokenBox_->GetWorldPosition();
-	
+
 	// 壊れる箱と箱全ての当たり判定
 	for (Box* box : boxes) {
-		// 箱の座標
-		posB = box->GetWorldPosition();
-    	KamataEngine::Vector3 diff = {posB.x - posA.x, posB.y - posA.y, posB.z - posA.z};
-    	float distanceSquared = diff.x * diff.x + diff.y * diff.y + diff.z * diff.z;
+		for (BrokenBox* brokenBox_ : brokenBoxes) {
+			// 壊れる箱の座標
+			posA = brokenBox_->GetWorldPosition();
+			// 箱の座標
+			posB = box->GetWorldPosition();
+			KamataEngine::Vector3 diff = {posB.x - posA.x, posB.y - posA.y, posB.z - posA.z};
+			float distanceSquared = diff.x * diff.x + diff.y * diff.y + diff.z * diff.z;
 
-    	float radiusSum = brokenBoxRadius + boxRadius;
+			float radiusSum = brokenBoxRadius + boxRadius;
 
-    	// 球と球の交差判定
-    	if (distanceSquared <= (radiusSum * radiusSum)) {
-			brokenBox_->OnCollision();
-    	}
+			// 球と球の交差判定
+			if (distanceSquared <= (radiusSum * radiusSum)) {
+				brokenBox_->OnCollision();
+			}
+		}
 	}
 	#pragma endregion
 

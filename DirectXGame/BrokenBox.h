@@ -11,7 +11,7 @@ class BrokenBox {
 public:
 	~BrokenBox();
 
-	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection, KamataEngine::Vector3 position);
 
 	void Update();
 

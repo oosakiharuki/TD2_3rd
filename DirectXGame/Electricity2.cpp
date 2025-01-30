@@ -12,6 +12,7 @@ void Electricity2::Initialize(KamataEngine::Model* model, KamataEngine::Model* m
 
 	viewProjection_ = viewProjection;
 	objColor.Initialize();
+	objColor.SetColor({1, 0, 0, 1});
 }
 
 void Electricity2::Update() {
@@ -30,7 +31,7 @@ void Electricity2::Update() {
 
 void Electricity2::Draw() {
 	model_->Draw(worldTransform_, *viewProjection_, &objColor);
-	model2_->Draw(worldTransform2_, *viewProjection_, &objColor);
+	//model2_->Draw(worldTransform2_, *viewProjection_, &objColor);
 }
 
 void Electricity2::OnCollision(const Player* player) { 

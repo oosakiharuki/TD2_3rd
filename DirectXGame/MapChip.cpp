@@ -17,7 +17,9 @@ std::map<std::string, MapChipType> mapChipTable = {
     {"2", MapChipType::kBox},
     {"3", MapChipType::kBrokenBox},
     {"4", MapChipType::kPlug},
-    {"5", MapChipType::kGate},
+    {"5", MapChipType::kDoor},
+    {"6", MapChipType::kDoorVertical},
+    {"7", MapChipType::kPlayerPos},
 };
 
 void MapChip::ResetMapChipData() { 
