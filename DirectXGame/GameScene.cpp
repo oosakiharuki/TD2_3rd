@@ -21,6 +21,8 @@ GameScene::~GameScene() {
 	delete modelCarryRope_;
 	delete modelHopRope_;
 	delete mapchip_;
+	delete modelSwitch1_;
+	delete modelSwitch2_;
 
 	delete player1_;
 	delete player2_;
@@ -39,9 +41,11 @@ GameScene::~GameScene() {
 	for (Electricity* electrical : electricity) {
 		delete electrical;
 	}
+	electricity.clear();
 	for (Electricity2* electrical : electricity2) {
 		delete electrical;
 	}
+	electricity2.clear();
 
 	for (Door1* door : doors) {
 		delete door;
@@ -69,6 +73,7 @@ GameScene::~GameScene() {
 	delete clearSprite_;
 	delete clearAllSirpte_;
 	delete cursorSprite_;
+	delete wallpaperSprite_;
 };
 
 void GameScene::Initialize() {
@@ -105,7 +110,7 @@ void GameScene::Initialize() {
 
 	modelElectricity1_ = Model::Create();
 	modelElectricity2_ = Model::Create();
-	modelWall1_ = Model::CreateFromOBJ("block", true);
+	modelWall1_ = Model::CreateFromOBJ("gate", true);
 	modelWall2_ = Model::Create();
 	modelBlock_ = Model::CreateFromOBJ("block", true);
 	modelBrokenBox_ = Model::CreateFromOBJ("brokenBlock", true);
@@ -115,7 +120,8 @@ void GameScene::Initialize() {
 	modelPlayer2_ = Model::CreateFromOBJ("player2", true);
 	modelCarryRope_ = Model::CreateFromOBJ("carryRope", true);
 	modelHopRope_ = Model::CreateFromOBJ("hopRope", true);
-
+	modelSwitch1_ = Model::CreateFromOBJ("electroSwitch1", true);
+	modelSwitch2_ = Model::CreateFromOBJ("electroSwitch2", true);
 
 	GenerateBlocks();
 
@@ -383,22 +389,34 @@ void GameScene::GenerateBlocks() {
 				if (!isPair) {
 					// 左側
 					Electricity* elect = new Electricity;
-					elect->Initialize(model_, model_, &viewProjection_);
+					elect->Initialize(modelSwitch1_, model_, &viewProjection_);
 					elect->SetPosition(mapchip_->GetMapChipPosition(j, i));
 					electricity.push_back(elect);
 
-					electricitys[electNum].push_back(elect);
+					// electricitys の配列要素の範囲チェックと初期化
+					if (electNum < 5) {
+						if (electricitys[electNum].empty()) {
+							electricitys[electNum] = std::list<Electricity*>();
+						}
+						electricitys[electNum].push_back(elect);
+					}
 					isPair = true;
 				} else {
 					// 右側
 					Electricity2* elect = new Electricity2;
-					elect->Initialize(model_, model_, &viewProjection_);
+					elect->Initialize(modelSwitch2_, model_, &viewProjection_);
 					elect->SetPosition(mapchip_->GetMapChipPosition(j, i));
 					electricity2.push_back(elect);
 
-					electricitys2[electNum].push_back(elect);
+					// electricitys2 の配列要素の範囲チェックと初期化
+					if (electNum < 5) {
+						if (electricitys2[electNum].empty()) {
+							electricitys2[electNum] = std::list<Electricity2*>();
+						}
+						electricitys2[electNum].push_back(elect);
+						electNum++;
+					}
 					isPair = false;
-					electNum++;
 				}
 			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kDoor) {
 				Door1* door = new Door1();
@@ -406,8 +424,16 @@ void GameScene::GenerateBlocks() {
 
 				door->Initialize(modelWall1_, &viewProjection_, mapchip_->GetMapChipPosition(j, i), kSpeed);
 				doors.push_back(door);
-				doorsList[doorCount].push_back(door);
-				doorCount++;
+
+				// doorCount の範囲チェック
+				if (doorCount < 5) {
+					// doorsList に要素を確保してから push_back する
+					if (doorsList[doorCount].empty()) {
+						doorsList[doorCount] = std::list<Door1*>();
+					}
+					doorsList[doorCount].push_back(door);
+					doorCount++;
+				} 
 			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kDoorVertical) {
 				Door1* door = new Door1();
 				Vector3 kSpeed = {0.0f, 1.0f, 0.0f};
@@ -671,21 +697,63 @@ void GameScene::SwitchToNextStage() {
 }
 
 void GameScene::ClearObject() {
-	for (Box* box : boxes) {
+	// Boxの解放
+	for (Box*& box : boxes) {
 		delete box;
+		box = nullptr;
 	}
 	boxes.clear();
-	for (Gate* gate : gates) {
+
+	// Gateの解放
+	for (Gate*& gate : gates) {
 		delete gate;
+		gate = nullptr;
 	}
 	gates.clear();
-	for (auto& list : gatesList) {
-		list.clear(); // gatesListもクリア
+
+	// Electricityの解放
+	for (Electricity*& electrical : electricity) {
+		delete electrical;
+		electrical = nullptr;
 	}
-	for (std::vector<WorldTransform*> blockLine : blocks_) {
-		for (WorldTransform* block : blockLine) {
-			delete block;
+	electricity.clear();
+
+	for (Electricity2*& electrical2 : electricity2) {
+		delete electrical2;
+		electrical2 = nullptr;
+	}
+	electricity2.clear();
+
+	// Doorの解放
+	for (Door1*& door : doors) {
+		delete door;
+		door = nullptr;
+	}
+	doors.clear();
+
+	// Gateリストの解放
+	for (auto& list : gatesList) {
+		for (Gate*& gate : list) {
+			delete gate;
+			gate = nullptr;
 		}
+		list.clear();
+	}
+
+	// Blocksの解放
+	for (auto& blockLine : blocks_) {
+		for (WorldTransform*& block : blockLine) {
+			delete block;
+			block = nullptr;
+		}
+		blockLine.clear();
 	}
 	blocks_.clear();
+
+	// BrokenBoxの解放
+	for (BrokenBox*& brokenBox_ : brokenBoxes) {
+		delete brokenBox_;
+		brokenBox_ = nullptr;
+	}
+	brokenBoxes.clear();
 }

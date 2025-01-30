@@ -92,6 +92,8 @@ private:
 	Model* modelPlayer2_ = nullptr;
 	Model* modelCarryRope_ = nullptr;
 	Model* modelHopRope_ = nullptr;
+	Model* modelSwitch1_ = nullptr;
+	Model* modelSwitch2_ = nullptr;
 
 	WorldTransform worldTransform_;
 	Camera viewProjection_;
