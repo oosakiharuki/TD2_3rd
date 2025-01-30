@@ -12,6 +12,7 @@ public:
 	void Draw(const KamataEngine::Camera& camera);
 	bool IsDead() const { return isDead_; }
 	void OnCollision();
+	void OnCollision2();
 	KamataEngine::Vector3 GetWorldPosition() { return worldTransform_.translation_; }
 	float GetRadius() { return radius_; }
 

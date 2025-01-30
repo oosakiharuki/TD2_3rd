@@ -17,7 +17,9 @@ public:
 	void Draw();
 
 	void Fire();
-
+	void OnCollision();
+	KamataEngine::Vector3 GetWorldPostion() { return worldTransform_.translation_; }
+	float GetRadius() { return radius_; }
 	std::list<Bullet*> GetBullets() { return bullets_; }
 	// 発射間隔
 	static const int kFireInterval = 60;
@@ -31,6 +33,7 @@ private:
 	KamataEngine::ObjectColor objColor = {};
 	int Timer_;
 	// bool Flag = false;
-
+	float radius_ = 2.0f;
 	std::list<Bullet*> bullets_;
+	bool isDead=false;
 };
