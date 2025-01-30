@@ -8,17 +8,22 @@ void Electricity2::Initialize(KamataEngine::Model* model, KamataEngine::Model* m
 
 	worldTransform_.Initialize(); // プレイヤーが触る板用
 	worldTransform2_.Initialize();
-	
+	worldTransform2_.scale_ = {6.0f, 1.0f, 1.0f};
 
 	viewProjection_ = viewProjection;
 	objColor.Initialize();
+	objColor.SetColor({1, 0, 0, 1});
 }
 
 void Electricity2::Update() {
 	if (Flag) {
 	
-		worldTransform2_.translation_.x += 1.0f;
+		worldTransform2_.translation_.x += kSpeed;
 		worldTransform2_.scale_.x -= 1.0f;
+	}
+	if (worldTransform2_.scale_.x <= 0) {
+		worldTransform2_.scale_.x = 0;
+		kSpeed = 0;
 	}
 	worldTransform_.UpdateMatrix();
 	worldTransform2_.UpdateMatrix();
@@ -26,7 +31,7 @@ void Electricity2::Update() {
 
 void Electricity2::Draw() {
 	model_->Draw(worldTransform_, *viewProjection_, &objColor);
-	model2_->Draw(worldTransform2_, *viewProjection_, &objColor);
+	//model2_->Draw(worldTransform2_, *viewProjection_, &objColor);
 }
 
 void Electricity2::OnCollision(const Player* player) { 

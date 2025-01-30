@@ -9,7 +9,7 @@ BrokenBox::~BrokenBox() {
 	particles_.clear();
 }
 
-void BrokenBox::Initialize(KamataEngine::Model* model, KamataEngine::Model* modelParticlel, KamataEngine::Camera* viewProjection) {
+void BrokenBox::Initialize(KamataEngine::Model* model, KamataEngine::Model* modelParticlel, KamataEngine::Camera* viewProjection, KamataEngine::Vector3 position) {
 	assert(model);
 	model_ = model;
 	assert(modelParticlel);
@@ -17,7 +17,7 @@ void BrokenBox::Initialize(KamataEngine::Model* model, KamataEngine::Model* mode
 
 	viewProjection_ = viewProjection;
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = KamataEngine::Vector3{10.0f, -10.0f, 0.0f};
+	worldTransform_.translation_ = position;
 	objColor.Initialize();
 
 }

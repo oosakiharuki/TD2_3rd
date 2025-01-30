@@ -4,37 +4,31 @@
 #include <3d/Model.h>
 #include <3d/ObjectColor.h>
 #include <3d/WorldTransform.h>
-
 class Player;
-class Electricity2 {
+class Door1 {
 public:
-	void Initialize(KamataEngine::Model* model, KamataEngine::Model* model2, KamataEngine::Camera* viewProjection);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection, KamataEngine::Vector3 position, KamataEngine::Vector3 speed);
+	
 
 	void Update();
 
 	void Draw();
 
-	void OnCollision(const Player* player);
-	// AABBを取得
-	AABB GetAABB();
-
-	void SetPosition(KamataEngine::Vector3 position) { worldTransform_.translation_ = position; }
-	bool GetFlag() { return Flag; }
-
+	void OnCollision(Player*player);
+	void SetFlag(bool Flag1, bool Flag2);
+	void Vartical();
 
 private:
 	KamataEngine::Camera* viewProjection_ = nullptr;
 	KamataEngine::Model* model_ = nullptr;
-	KamataEngine::Model* model2_ = nullptr;
 	
 
 	KamataEngine::WorldTransform worldTransform_;
-	KamataEngine::WorldTransform worldTransform2_;
 	
+
 	KamataEngine::ObjectColor objColor = {};
 	bool Flag;
-	float kSpeed = 1.0f;
-	
+	KamataEngine::Vector3 kSpeed ;
 	// キャラクターの当たり判定サイズ
 	static inline const float kWidth = 1.0f;
 	static inline const float kHeight = 1.0f;

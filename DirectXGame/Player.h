@@ -7,6 +7,8 @@
 
 class Electricity;
 class Electricity2;
+class Door1;
+class Door2;
 
 class Player {
 public:
@@ -26,6 +28,7 @@ public:
 	AABB GetAABB();
 	void OnCollision(const Electricity* electricity);
 	void OnCollision2(const Electricity2* electricity2);
+	
 
 	void PlayerUpdateMatrix() { worldTransform_.UpdateMatrix(); }
 

@@ -14,6 +14,7 @@ public:
 	};
 
 public:
+	~Fade();
 	void Initialize();
 
 	void Update();
