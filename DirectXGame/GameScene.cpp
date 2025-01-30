@@ -551,6 +551,24 @@ void GameScene::CheckBulletPlayerCollision() {
 			// 自キャラの衝突時コールバックを呼び出す
 			rope_->OnCollisionBullet();
 			// 敵弾の衝突時コールバックを呼び出す
+			bullet->OnCollision2();
+		}
+	}
+	// 自キャラの座標
+	posA = artillery->GetWorldPostion();
+
+	for (Bullet* bullet : Bullets) {
+		posB = bullet->GetWorldPosition();
+		// posAとposBの距離
+		float posC = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) + (posB.z - posA.z) * (posB.z - posA.z);
+
+		// 半径の差
+		float L = (artillery->GetRadius() + bullet->GetRadius()) * (artillery->GetRadius() + bullet->GetRadius());
+		// 球と球の交差判定
+		if (posC <= L) {
+			// 自キャラの衝突時コールバックを呼び出す
+			artillery->OnCollision();
+			// 敵弾の衝突時コールバックを呼び出す
 			bullet->OnCollision();
 		}
 	}
