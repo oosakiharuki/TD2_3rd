@@ -10,12 +10,16 @@ GameScene::~GameScene() {
 	delete modelElectricity2_;
 	delete modelWall1_;
 	delete modelWall2_;
+	delete modelBlock_;
 	delete modelBrokenBox_;
+	delete modelParticle_;
 	
 	delete electricityGimmick_;
 	delete electricityGimmick2_;
 
 	delete modelPlayer_;
+	delete modelPlayer1_;
+	delete modelPlayer2_;
 	delete modelCarryRope_;
 	delete modelHopRope_;
 	delete mapchip_;
@@ -62,11 +66,13 @@ void GameScene::Initialize() {
 	clearTexture_ = TextureManager::Load("clear.png");
 	clearAllTexture_ = TextureManager::Load("clearAll.png");
 	cursorTexture_ = TextureManager::Load("cursor.png");
+	wallpaperTexture = TextureManager::Load("wallpaper.jpg");
 
 	menuSprite_ = Sprite::Create(menuTexture_, {0.0f, 0.0f});
 	clearSprite_ = Sprite::Create(clearTexture_, {0.0f, 0.0f});
 	clearAllSirpte_ = Sprite::Create(clearAllTexture_, {0.0f, 0.0f});
 	cursorSprite_ = Sprite::Create(cursorTexture_, selectCursorPos);
+	wallpaperSprite_ = Sprite::Create(wallpaperTexture, {0.0f, 0.0f});
 	
 	viewProjection_.Initialize();
 	worldTransform_.Initialize();
@@ -85,11 +91,15 @@ void GameScene::Initialize() {
 
 	modelElectricity1_ = Model::Create();
 	modelElectricity2_ = Model::Create();
-	modelWall1_ = Model::Create();
+	modelWall1_ = Model::CreateFromOBJ("block", true);
 	modelWall2_ = Model::Create();
-	modelBrokenBox_ = Model::Create();
+	modelBlock_ = Model::CreateFromOBJ("block", true);
+	modelBrokenBox_ = Model::CreateFromOBJ("brokenBlock", true);
+	modelParticle_ = Model::CreateFromOBJ("debris", true);
 	modelPlayer_ = Model::CreateFromOBJ("Player", true);
-	modelCarryRope_ = Model::CreateFromOBJ("Rope", true);
+	modelPlayer1_ = Model::CreateFromOBJ("player1", true);
+	modelPlayer2_ = Model::CreateFromOBJ("player2", true);
+	modelCarryRope_ = Model::CreateFromOBJ("carryRope", true);
 	modelHopRope_ = Model::CreateFromOBJ("hopRope", true);
 
 	//電気ギミック
@@ -103,10 +113,10 @@ void GameScene::Initialize() {
 
 
 	player1_ = new Player();
-	player1_->Initialize(playerPosition[0], modelPlayer_, 1);
+	player1_->Initialize(playerPosition[0], modelPlayer1_, 1);
 
 	player2_ = new Player();
-	player2_->Initialize(playerPosition[1], modelPlayer_, 2);
+	player2_->Initialize(playerPosition[1], modelPlayer2_, 2);
 	
 	rope_ = new Rope();
     rope_->Initialize(player1_, player2_, input_, modelCarryRope_, modelHopRope_);
@@ -114,7 +124,7 @@ void GameScene::Initialize() {
 
 
 	brokenBox_ = new BrokenBox();
-	brokenBox_->Initialize(modelBrokenBox_, &viewProjection_);
+	brokenBox_->Initialize(modelBrokenBox_, modelParticle_, &viewProjection_);
 	brokenBox_->SetBoxes(boxes);
 	cameraController = new CameraController();
 	cameraController->Initialize();
@@ -245,7 +255,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-
+	wallpaperSprite_->Draw();
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -264,12 +274,12 @@ void GameScene::Draw() {
 	
 	electricityGimmick_->Draw();
 	electricityGimmick2_->Draw();
-
+	rope_->Draw(&viewProjection_);
 	// プレイヤーの描画
 	player1_->Draw(&viewProjection_);
 	player2_->Draw(&viewProjection_);
 
-	rope_->Draw(&viewProjection_);
+
 
 	//mapchip_->Draw();
 
@@ -338,10 +348,11 @@ void GameScene::GenerateBlocks() {
 	uint32_t kMapHeight = mapchip_->GetNumVirtical();
 	uint32_t kMapWight = mapchip_->GetNumHorizontal();
 
-	blocks_.resize(kMapHeight);
-	for (uint32_t i = 0; i < kMapWight; i++) {
+    blocks_.resize(kMapHeight);
+	for (uint32_t i = 0; i < kMapHeight; i++) {
 		blocks_[i].resize(kMapWight);
 	}
+
 
 	for (uint32_t i = 0; i < kMapHeight; ++i) {
 		for (uint32_t j = 0; j < kMapWight; ++j) {
@@ -357,7 +368,7 @@ void GameScene::GenerateBlocks() {
 			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kBox) {
 
 				Box* box = new Box();
-				box->Initialize(model_, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
+				box->Initialize(modelBlock_, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
 
 				boxes.push_back(box);
 			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kGate) {
@@ -604,10 +615,13 @@ void GameScene::ClearObject() {
 		delete box;
 	}
 	boxes.clear();
-	/*	for (Gate* gate : gates) {
+	for (Gate* gate : gates) {
 		delete gate;
 	}
-	gates.clear();*/
+	gates.clear();
+	for (auto& list : gatesList) {
+		list.clear(); // gatesListもクリア
+	}
 	for (std::vector<WorldTransform*> blockLine : blocks_) {
 		for (WorldTransform* block : blockLine) {
 			delete block;

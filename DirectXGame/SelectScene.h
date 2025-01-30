@@ -46,6 +46,9 @@ private:
 	KamataEngine::Vector2 texLT = {0, 0};
 	KamataEngine::Vector2 texSize = {64, 64};
 
+	uint32_t wallpaperTexture_ = 0;
+	KamataEngine::Sprite* wallpaperSprite_ = nullptr;
+
 	Fade* fade_ = nullptr;
 	float fadeTime_ = 0.5f;
 
