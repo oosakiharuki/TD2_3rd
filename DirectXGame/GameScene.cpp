@@ -124,8 +124,8 @@ void GameScene::Initialize() {
 	modelPlayer2_ = Model::CreateFromOBJ("player2", true);
 	modelCarryRope_ = Model::CreateFromOBJ("carryRope", true);
 	modelHopRope_ = Model::CreateFromOBJ("hopRope", true);
-	modelBom = Model::Create();
-	modelBom2 = Model::Create();
+	modelBom = Model::CreateFromOBJ("Artillery", true);
+	modelBom2 = Model::CreateFromOBJ("bom",true);
 	modelSwitch1_ = Model::CreateFromOBJ("electroSwitch1", true);
 	modelSwitch2_ = Model::CreateFromOBJ("electroSwitch2", true);
 

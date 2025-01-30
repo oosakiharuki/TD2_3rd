@@ -19,6 +19,7 @@ void Bullet::Update() {
 	}
 	// 座標を移動させる
 	worldTransform_.translation_ += velocity_;
+	worldTransform_.scale_ = {3.0f, 3.0f, 3.0f};
 	worldTransform_.UpdateMatrix();
 }
 
