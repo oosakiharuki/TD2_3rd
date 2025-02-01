@@ -45,11 +45,10 @@ GameScene::~GameScene() {
 	doors.clear();
 
 
-	for (std::vector<WorldTransform*> blockLine : blocks_) {
-		for (WorldTransform* block : blockLine) {
-			delete block;
-		}
+	for (MapWall* block : blocks_) {
+		delete block;		
 	}
+
 	blocks_.clear();
 
 	for (BrokenBox* brokenBox_ : brokenBoxes) {
@@ -146,14 +145,8 @@ void GameScene::Update() {
 	
     	CheckAllCollisions();
 	
-    	for (std::vector<WorldTransform*> blockLine : blocks_) {
-    		for (WorldTransform* block : blockLine) {
-    			if (!block) {
-    				continue;
-    			} else {
-    				block->UpdateMatrix();
-    			}
-    		}
+    	for (MapWall* block : blocks_) {	
+			block->Update();
     	}
 
 		for (Electricity* electrical : electricity) {
@@ -191,14 +184,8 @@ void GameScene::Update() {
 		}
 		break;
 	default:
-		for (std::vector<WorldTransform*> blockLine : blocks_) {
-			for (WorldTransform* block : blockLine) {
-				if (!block) {
-					continue;
-				} else {
-					block->UpdateMatrix();
-				}
-			}
+		for (MapWall* block : blocks_) {
+			block->Update();
 		}
 
 		for (Electricity* electrical : electricity) {
@@ -289,14 +276,8 @@ void GameScene::Draw() {
 		gate->Draw();
 	}
 
-	for (std::vector<WorldTransform*> blockLine : blocks_) {
-		for (WorldTransform* block : blockLine) {
-			if (!block) {
-				continue;
-			} else {
-				model_->Draw(*block, viewProjection_,texture);
-			}
-		}
+	for (MapWall* block : blocks_) {
+		block->Draw();
 	}
 
 	for (BrokenBox* brokenBox_ : brokenBoxes) {
@@ -346,18 +327,14 @@ void GameScene::GenerateBlocks() {
 	uint32_t kMapHeight = mapchip_->GetNumVirtical();
 	uint32_t kMapWight = mapchip_->GetNumHorizontal();
 
-	blocks_.resize(kMapHeight);
-	for (uint32_t i = 0; i < kMapWight; i++) {
-		blocks_[i].resize(kMapWight);
-	}
-
 	for (uint32_t i = 0; i < kMapHeight; ++i) {
 		for (uint32_t j = 0; j < kMapWight; ++j) {
 			if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kWall) {
-				WorldTransform* worldTransform = new WorldTransform();
-				worldTransform->Initialize();
-				blocks_[i][j] = worldTransform;
-				blocks_[i][j]->translation_ = mapchip_->GetMapChipPosition(j, i);
+
+				MapWall* block_ = new MapWall();
+				block_->Initialize(model_, texture, & viewProjection_, mapchip_->GetMapChipPosition(j, i));
+
+				blocks_.push_back(block_);
 			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kBox) {
 
 				Box* box = new Box();
@@ -433,7 +410,7 @@ void GameScene::CheckAllCollision() {
 		//左側
 		for (Electricity* elect : electricitys[i]) {
 			aabb2 = elect->GetAABB();
-			 if (AABB::IsCollision(aabb1, aabb2)) {
+			if (AABB::IsCollision(aabb1, aabb2)) {
 				player1_->OnCollision(elect);
 				elect->OnCollision(player1_);
 				left[i] = true;
@@ -454,6 +431,15 @@ void GameScene::CheckAllCollision() {
 			door->SetFlag(left[i], right[i]);
 		}
 
+		for (MapWall* block : blocks_) {
+			aabb2 = block->GetAABB();
+			if (AABB::IsCollision(aabb1, aabb2)) {
+				block->OnCollision(player1_,aabb2);
+			}
+			if (AABB::IsCollision(aabb3, aabb2)) {
+				block->OnCollision(player2_, aabb2);
+			}
+		}
 	}
 
    #pragma endregion
@@ -670,10 +656,8 @@ void GameScene::ClearObject() {
 		delete gate;
 	}
 	gates.clear();*/
-	for (std::vector<WorldTransform*> blockLine : blocks_) {
-		for (WorldTransform* block : blockLine) {
-			delete block;
-		}
+	for (MapWall* block : blocks_) {
+		delete block;
 	}
 	blocks_.clear();
 }
