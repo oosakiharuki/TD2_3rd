@@ -15,6 +15,7 @@
 
 #include "CameraController.h"
 #include "Door1.h"
+#include "MapWall.h"
 
 using namespace KamataEngine;
 
@@ -116,7 +117,8 @@ private:
 	Sprite* wallpaperSprite_ = nullptr;
 	Sprite* menuAttendSprite_ = nullptr;
 
-	std::vector<std::vector<KamataEngine::WorldTransform*>> blocks_;
+	//std::vector<std::vector<KamataEngine::WorldTransform*>> blocks_;
+	std::list<MapWall*> blocks_;
 	std::list<Box*> boxes;
 	
 	std::list<Gate*> gates;
