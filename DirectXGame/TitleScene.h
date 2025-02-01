@@ -49,4 +49,10 @@ private:
 	float fadeTime_ = 0.5f;
 
 	Phase phase_ = Phase::kFadeIn;
+
+	uint32_t wallpaperTexture_ = 0;
+	KamataEngine::Sprite* wallpaperSprite_ = nullptr;
+
+	uint32_t titleTexture_ = 0;
+	KamataEngine::Sprite* titleSprite_ = nullptr;
 };

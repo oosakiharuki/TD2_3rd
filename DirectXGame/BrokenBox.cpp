@@ -9,10 +9,11 @@ BrokenBox::~BrokenBox() {
 	particles_.clear();
 }
 
-void BrokenBox::Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection, KamataEngine::Vector3 position) {
+void BrokenBox::Initialize(KamataEngine::Model* model, KamataEngine::Model* modelParticlel, KamataEngine::Camera* viewProjection, KamataEngine::Vector3 position) {
 	assert(model);
 	model_ = model;
-	modelParticle_ = model;
+	assert(modelParticlel);
+	modelParticle_ = modelParticlel;;
 
 	viewProjection_ = viewProjection;
 	worldTransform_.Initialize();

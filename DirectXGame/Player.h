@@ -28,7 +28,8 @@ public:
 	AABB GetAABB();
 	void OnCollision(const Electricity* electricity);
 	void OnCollision2(const Electricity2* electricity2);
-	
+	void OnCollisionBullet();
+	float GetRadius() { return radius_; }
 
 	void PlayerUpdateMatrix() { worldTransform_.UpdateMatrix(); }
 
@@ -39,7 +40,7 @@ private:
 	KamataEngine::WorldTransform worldTransform_;
 
 	KamataEngine::Model* model_ = nullptr;
-
+	float radius_ = 1.0f;
 	float moveSpeed_;
 	// プレイヤーの速度
 	KamataEngine::Vector3 playerVelocity;

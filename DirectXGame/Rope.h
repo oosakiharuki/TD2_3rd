@@ -26,6 +26,8 @@ public:
 
 	void SetBoxes(const std::list<Box*>& boxes) { boxes_ = boxes; }
 	const KamataEngine::WorldTransform& GetWorldTransform() { return *ropeMiddle_; }
+	void OnCollisionBullet();
+	float GetRadius() { return radius_; }
 
 private:
 	float Length(const KamataEngine::Vector3& v);
@@ -37,11 +39,11 @@ private:
 	Player* player2_ = nullptr;
 	Box* box_ = nullptr;
 	KamataEngine::Input* input_ = nullptr;
-
+	float radius_ = 2.0f;
 	KamataEngine::Vector3 controlPoint1_;
 	KamataEngine::Vector3 controlPoint2_;
 	float slack_ = 1.0f;
-	float maxLength_ = 5.0f;
+	float maxLength_ = 6.0f;
 	int segmentCount_ = 11; // ロープの分割数
 
 	KamataEngine::Model* modelCarry_ = nullptr;

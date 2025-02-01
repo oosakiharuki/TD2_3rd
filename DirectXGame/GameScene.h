@@ -5,7 +5,8 @@
 #include "Box.h"
 #include "BrokenBox.h"
 #include "Gate.h"
-
+#include"Artillery.h"
+#include"Bullet.h"
 #include"Electricity.h"
 #include"Electricity2.h"
 
@@ -59,6 +60,7 @@ public:
 	/// 衝突判定と応答
 	/// </summary>
 	void CheckAllCollisions();
+	void CheckBulletPlayerCollision();
 
 	bool IsFinished() const { return finished_; }
 
@@ -85,10 +87,18 @@ private:
 	Model* modelElectricity2_ = nullptr;
 	Model* modelWall1_ = nullptr;
 	Model* modelWall2_ = nullptr;
+	Model* modelBom=nullptr;
+	Model* modelBom2 = nullptr;
+	Model* modelBlock_ = nullptr;
 	Model* modelBrokenBox_ = nullptr;
+	Model* modelParticle_ = nullptr;
 	Model* modelPlayer_ = nullptr;
+	Model* modelPlayer1_ = nullptr;
+	Model* modelPlayer2_ = nullptr;
 	Model* modelCarryRope_ = nullptr;
 	Model* modelHopRope_ = nullptr;
+	Model* modelSwitch1_ = nullptr;
+	Model* modelSwitch2_ = nullptr;
 
 	WorldTransform worldTransform_;
 	Camera viewProjection_;
@@ -97,11 +107,15 @@ private:
 	uint32_t clearTexture_ = 0;
 	uint32_t clearAllTexture_ = 0;
 	uint32_t cursorTexture_ = 0;
+	uint32_t wallpaperTexture = 0;
+	uint32_t menuAttendTexture_ = 0;
 
 	Sprite* menuSprite_ = nullptr;
 	Sprite* clearSprite_ = nullptr;
 	Sprite* clearAllSirpte_ = nullptr;
 	Sprite* cursorSprite_ = nullptr;
+	Sprite* wallpaperSprite_ = nullptr;
+	Sprite* menuAttendSprite_ = nullptr;
 
 	//std::vector<std::vector<KamataEngine::WorldTransform*>> blocks_;
 	std::list<MapWall*> blocks_;
@@ -127,10 +141,11 @@ private:
 	std::list<Electricity2*> electricitys2[5];
 	uint32_t electNum = 0;
 	// uint32_t HorizonNum = 0;
-
+	
 	std::list<Door1*> doors;
 	std::list<Door1*> doorsList[5];
 	uint32_t doorCount = 0;
+	Artillery* artillery = nullptr;
 	bool left[5] = {false};
 	bool right[5] = {false};
 	bool openFlag = false;
