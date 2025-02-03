@@ -12,35 +12,36 @@ void Artillery::Initialize(KamataEngine::Model* model, KamataEngine::Model* mode
 }
 
 void Artillery::Update() {
-	
 
-		bullets_.remove_if([](Bullet* bullet_) {
-			if (bullet_->IsDead()) {
-				delete bullet_;
-				return true;
-			}
-			return false;
-		});
-
-		Timer_--;
-		if (Timer_ < 0) {
-			Fire();
-			Timer_ = kFireInterval;
+	bullets_.remove_if([](Bullet* bullet_) {
+		if (bullet_->IsDead()) {
+			delete bullet_;
+			return true;
 		}
+		return false;
+	});
+	if (!isDead) {
+	Timer_--;
+	if (Timer_ < 0) {
+		Fire();
+		Timer_ = kFireInterval;
+	}
 
-		// ある一定まで行ったらフラグを戻してタイマーも戻す
-		for (Bullet* bullet : bullets_) {
-			bullet->Update();
-		}
-	    worldTransform_.translation_={2.0f, 2.0f, 0.0f};
-	    worldTransform_.UpdateMatrix();
+	// ある一定まで行ったらフラグを戻してタイマーも戻す
+	for (Bullet* bullet : bullets_) {
+		bullet->Update();
+	}
+	worldTransform_.translation_ = {2.0f, 2.0f, 0.0f};
+	worldTransform_.UpdateMatrix();
+}
 }
 
 void Artillery::Draw() {
 	
+	if (!isDead) {
 
 		model_->Draw(worldTransform_, *viewProjection_, &objColor);
-	
+	}
 	for (Bullet* bullet_ : bullets_) {
 		bullet_->Draw(*viewProjection_);
 	}
