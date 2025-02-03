@@ -458,15 +458,13 @@ void GameScene::CheckAllCollision() {
 	//左側
 	AABB aabb1, aabb2;
 	aabb1 = player1_->GetAABB();
-
-	AABB aabb3, aabb4;
-	aabb3 = player2_->GetAABB();
+	aabb2 = player2_->GetAABB();
 
 	for (uint32_t i = 0; i < maxGate; i++) {
 		//左側
 		for (Electricity* elect : electricitys[i]) {
-			aabb2 = elect->GetAABB();
-			if (AABB::IsCollision(aabb1, aabb2)) {
+			AABB ElectAABB = elect->GetAABB();
+			if (AABB::IsCollision(aabb1, ElectAABB)) {
 				player1_->OnCollision(elect);
 				elect->OnCollision(player1_);
 				left[i] = true;
@@ -475,8 +473,8 @@ void GameScene::CheckAllCollision() {
 
 		for (Electricity2* elect : electricitys2[i]) {
 			//右側
-			aabb4 = elect->GetAABB();
-			if (AABB::IsCollision(aabb3, aabb4)) {
+			AABB ElectAABB = elect->GetAABB();
+			if (AABB::IsCollision(aabb2, ElectAABB)) {
 				player2_->OnCollision2(elect);
 				elect->OnCollision(player2_);
 				right[i] = true;
@@ -484,16 +482,56 @@ void GameScene::CheckAllCollision() {
 		}
 
 		for (Door1* door : doorsList[i]) {
+			for (Box* box : boxes) {
+				door->OnCollisionBox(box);
+				door->SetCorrectionPos(player1_);
+				door->SetCorrectionPos(player2_);
+				door->Resetcorrection();
+			}
 			door->SetFlag(left[i], right[i]);
 		}
+	}
 
-		for (MapWall* block : blocks_) {
-			aabb2 = block->GetAABB();
-			if (AABB::IsCollision(aabb1, aabb2)) {
-				block->OnCollision(player1_,aabb2);
+	for (MapWall* block : blocks_) {
+		AABB wallAABB = block->GetAABB();
+		if (AABB::IsCollision(aabb1, wallAABB)) {
+			block->OnCollisionPlayer(player1_, wallAABB);
+		}
+		if (AABB::IsCollision(aabb2, wallAABB)) {
+			block->OnCollisionPlayer(player2_, wallAABB);
+		}
+
+		for (Box* box : boxes) {
+			AABB boxAABB = box->GetAABB();
+			if (AABB::IsCollision(boxAABB, wallAABB)) {
+				block->OnCollisionBox(box, wallAABB);
+
+				block->SetCorrectionPos(player1_);
+				block->SetCorrectionPos(player2_);
+				block->Resetcorrection();
 			}
-			if (AABB::IsCollision(aabb3, aabb2)) {
-				block->OnCollision(player2_, aabb2);
+		}
+	}
+
+
+	for (BrokenBox* brokenBox_ : brokenBoxes) {
+		AABB brokenBoxAABB = brokenBox_->GetAABB();
+		if (!brokenBox_->IsBreak()) {
+			if (AABB::IsCollision(aabb1, brokenBoxAABB)) {
+				brokenBox_->OnCollisionPlayer(player1_, brokenBoxAABB);
+			}
+			if (AABB::IsCollision(aabb2, brokenBoxAABB)) {
+				brokenBox_->OnCollisionPlayer(player2_, brokenBoxAABB);
+			}
+			for (Box* box : boxes) {
+				AABB boxAABB = box->GetAABB();
+				if (AABB::IsCollision(boxAABB, brokenBoxAABB) && box->GetNowMode() == Box::Mode::Normal) {
+					brokenBox_->OnCollisionBox(box, brokenBoxAABB);
+
+					brokenBox_->SetCorrectionPos(player1_);
+					brokenBox_->SetCorrectionPos(player2_);
+					brokenBox_->Resetcorrection();
+				}
 			}
 		}
 	}

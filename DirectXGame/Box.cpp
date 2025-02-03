@@ -30,11 +30,10 @@ void Box::Update() {
 		worldTransform_.translation_ += velocity_; 
 	} else if (mode_ == Mode::Hop) { 
 		// 飛ばす処理
-		worldTransform_.translation_ += velocity_; 
-		// 減衰効果を追加して徐々に減速 
-		velocity_ *= 0.98f; 
+		worldTransform_.translation_ += velocity_;
 	}
 
+	velocity_ *= 0.98f;
 	worldTransform_.UpdateMatrix();
 }
 
@@ -52,4 +51,15 @@ KamataEngine::Vector3 Box::GetWorldPosition() {
 	worldPos.z = worldTransform_.translation_.z;
 
 	return worldPos;
+}
+
+
+AABB Box::GetAABB() {
+	KamataEngine::Vector3 worldPos = worldTransform_.translation_;
+	AABB aabb;
+
+	aabb.min = {worldPos.x - kWidth, worldPos.y - kHeight, 0.0f};
+	aabb.max = {worldPos.x + kWidth, worldPos.y + kHeight, 0.0f};
+
+	return aabb;
 }
