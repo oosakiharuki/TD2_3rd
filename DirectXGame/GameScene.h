@@ -15,6 +15,7 @@
 
 #include "CameraController.h"
 #include "Door1.h"
+#include "MapWall.h"
 #include "Goal.h"
 
 using namespace KamataEngine;
@@ -68,6 +69,8 @@ public:
 
 	Select GetSelect() const { return select_; }
 
+	bool IsDead() const { return isDead; }
+
 	// フェーズ切り替え
 	void ChangePhase();
 
@@ -118,7 +121,8 @@ private:
 	Sprite* wallpaperSprite_ = nullptr;
 	Sprite* menuAttendSprite_ = nullptr;
 
-	std::vector<std::vector<KamataEngine::WorldTransform*>> blocks_;
+	//std::vector<std::vector<KamataEngine::WorldTransform*>> blocks_;
+	std::list<MapWall*> blocks_;
 	std::list<Box*> boxes;
 	
 	std::list<Gate*> gates;
@@ -134,6 +138,7 @@ private:
 
 	bool isPair = false;
 	// bool isPairVartical = false;
+	bool isDead;
 
 	std::list<Electricity*> electricity;
 	std::list<Electricity2*> electricity2;

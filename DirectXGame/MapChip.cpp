@@ -24,9 +24,9 @@ std::map<std::string, MapChipType> mapChipTable = {
 
 void MapChip::ResetMapChipData() { 
 	mapChipData_.data.clear(); 
-	mapChipData_.data.resize(kMapWight);
+	mapChipData_.data.resize(kMapWidth);
 	for (std::vector<MapChipType>& mapChipDateLine : mapChipData_.data) {
-		mapChipDateLine.resize(kMapWight);
+		mapChipDateLine.resize(kMapWidth);
 	}
 }
 
@@ -42,7 +42,7 @@ void MapChip::LordCSV(const std::string& filePath) {
 	mapchipCsv << file.rdbuf();
 	file.close();
 
-	for (uint32_t i = 0; i < kMapWight; i++) {
+	for (uint32_t i = 0; i < kMapWidth; i++) {
 		std::string line;
 		
 		getline(mapchipCsv, line);
@@ -63,7 +63,7 @@ void MapChip::LordCSV(const std::string& filePath) {
 }
 
 MapChipType MapChip::GetMapChipTpeByIndex(uint32_t xIndex, uint32_t yIndex) { 
-	if (xIndex < 0 || xIndex > kMapWight - 1) {
+	if (xIndex < 0 || xIndex > kMapWidth - 1) {
 		return MapChipType::kblank;
 	}
 	if (yIndex < 0 || yIndex > kMapHeight - 1) {
@@ -74,5 +74,5 @@ MapChipType MapChip::GetMapChipTpeByIndex(uint32_t xIndex, uint32_t yIndex) {
 }
 
 Vector3 MapChip::GetMapChipPosition(uint32_t xIndex, uint32_t yIndex) { 
-	return Vector3(kBlockWight * xIndex,kBlockHeight * (kMapHeight - 1 - yIndex),0); 
+	return Vector3(kBlockWidth * xIndex, kBlockHeight * (kMapHeight - 1 - yIndex), 0); 
 }

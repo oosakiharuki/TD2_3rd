@@ -17,77 +17,84 @@ void Player::Initialize(KamataEngine::Vector3 startPosition, KamataEngine::Model
 
 void Player::Update() {
 	float lx = 0, ly = 0, rx = 0, ry = 0;
-
-	if (input_->GetJoystickState(0, state)) {
-		 // 左スティックの入力
-    	 lx = static_cast<float>(state.Gamepad.sThumbLX) / 32768.0f; // -1.0f～1.0f
-    	 ly = static_cast<float>(state.Gamepad.sThumbLY) / 32768.0f; // -1.0f～1.0f
-
-    	// 右スティックの入力
-    	 rx = static_cast<float>(state.Gamepad.sThumbRX) / 32768.0f; // -1.0f～1.0f
-    	 ry = static_cast<float>(state.Gamepad.sThumbRY) / 32768.0f; // -1.0f～1.0f
-
-    	// デッドゾーン処理
-    	const float deadZone = 0.2f; // スティックの感度調整
-    	if (abs(lx) < deadZone)
-    		lx = 0.0f;
-    	if (abs(ly) < deadZone)
-    		ly = 0.0f;
-    	if (abs(rx) < deadZone)
-    		rx = 0.0f;
-    	if (abs(ry) < deadZone)
-    		ry = 0.0f;
+	if (HP <= 0) {
+		IsDead = true;
 	}
+	if (!IsDead) {
 
-	// 移動速度
-	const float speed = 0.2f;
+		if (input_->GetJoystickState(0, state)) {
+			// 左スティックの入力
+			lx = static_cast<float>(state.Gamepad.sThumbLX) / 32768.0f; // -1.0f～1.0f
+			ly = static_cast<float>(state.Gamepad.sThumbLY) / 32768.0f; // -1.0f～1.0f
 
-	// プレイヤーの移動
-	if (playerId_ == 1) {
-		// コントローラで移動（左スティック）
-		worldTransform_.translation_.x += lx * speed;
-		worldTransform_.translation_.y += ly * speed;
+			// 右スティックの入力
+			rx = static_cast<float>(state.Gamepad.sThumbRX) / 32768.0f; // -1.0f～1.0f
+			ry = static_cast<float>(state.Gamepad.sThumbRY) / 32768.0f; // -1.0f～1.0f
 
-		// キーボードによる移動
-		if (input_->PushKey(DIK_A)) {
-			worldTransform_.translation_.x -= speed;
+			// デッドゾーン処理
+			const float deadZone = 0.2f; // スティックの感度調整
+			if (abs(lx) < deadZone)
+				lx = 0.0f;
+			if (abs(ly) < deadZone)
+				ly = 0.0f;
+			if (abs(rx) < deadZone)
+				rx = 0.0f;
+			if (abs(ry) < deadZone)
+				ry = 0.0f;
 		}
-		if (input_->PushKey(DIK_D)) {
-			worldTransform_.translation_.x += speed;
-		}
-		if (input_->PushKey(DIK_W)) {
-			worldTransform_.translation_.y += speed;
-		}
-		if (input_->PushKey(DIK_S)) {
-			worldTransform_.translation_.y -= speed;
-		}
-	} else if (playerId_ == 2) {
-		// コントローラで移動（右スティック）
-		worldTransform_.translation_.x += rx * speed;
-		worldTransform_.translation_.y += ry * speed;
 
-		// キーボードによる移動
-		if (input_->PushKey(DIK_LEFT)) {
-			worldTransform_.translation_.x -= speed;
+		// 移動速度
+		const float speed = 0.2f;
+
+		// プレイヤーの移動
+		if (playerId_ == 1) {
+			// コントローラで移動（左スティック）
+			worldTransform_.translation_.x += lx * speed;
+			worldTransform_.translation_.y += ly * speed;
+
+			// キーボードによる移動
+			if (input_->PushKey(DIK_A)) {
+				worldTransform_.translation_.x -= speed;
+			}
+			if (input_->PushKey(DIK_D)) {
+				worldTransform_.translation_.x += speed;
+			}
+			if (input_->PushKey(DIK_W)) {
+				worldTransform_.translation_.y += speed;
+			}
+			if (input_->PushKey(DIK_S)) {
+				worldTransform_.translation_.y -= speed;
+			}
+		} else if (playerId_ == 2) {
+			// コントローラで移動（右スティック）
+			worldTransform_.translation_.x += rx * speed;
+			worldTransform_.translation_.y += ry * speed;
+
+			// キーボードによる移動
+			if (input_->PushKey(DIK_LEFT)) {
+				worldTransform_.translation_.x -= speed;
+			}
+			if (input_->PushKey(DIK_RIGHT)) {
+				worldTransform_.translation_.x += speed;
+			}
+			if (input_->PushKey(DIK_UP)) {
+				worldTransform_.translation_.y += speed;
+			}
+			if (input_->PushKey(DIK_DOWN)) {
+				worldTransform_.translation_.y -= speed;
+			}
 		}
-		if (input_->PushKey(DIK_RIGHT)) {
-			worldTransform_.translation_.x += speed;
-		}
-		if (input_->PushKey(DIK_UP)) {
-			worldTransform_.translation_.y += speed;
-		}
-		if (input_->PushKey(DIK_DOWN)) {
-			worldTransform_.translation_.y -= speed;
-		}
+
+		worldTransform_.UpdateMatrix();
 	}
-
-	worldTransform_.UpdateMatrix();
 }
 
 
 void Player::Draw(KamataEngine::Camera* camera) {
-	model_->Draw(worldTransform_, *camera); 
+	if (!IsDead) {
 
+		model_->Draw(worldTransform_, *camera);
+	}
 	
 }
 
@@ -120,6 +127,8 @@ void Player::OnCollision(const Electricity* electricity) { (void)electricity; }
 
 void Player::OnCollision2(const Electricity2* electricity2) { (void)electricity2; }
 
-void Player::OnCollisionBullet() {}
+void Player::OnCollisionBullet() { 
+	HP = HP - 1;
+}
 
 
