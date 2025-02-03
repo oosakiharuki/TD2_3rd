@@ -1,5 +1,6 @@
 #include "Door1.h"
 #include"Player.h"
+#include "Box.h"
 #include"makeMath.h"
 
 #define _USE_MATH_DEFINES
@@ -69,6 +70,63 @@ void Door1::OnCollision(Player* player) {
 		// プレイヤー位置を修正
 		player->SetWorldPosition(playerPos + correction);
 	}
+}
+
+void Door1::OnCollisionBox(Box* box) {
+	KamataEngine::Vector3 boxPos = box->GetWorldPosition();
+	AABB boxAABB = box->GetAABB();
+
+	KamataEngine::Vector3 correction = {0.0f, 0.0f, 0.0f};
+	KamataEngine::Vector3 Bound = {0.0f, 0.0f, 0.0f};
+
+
+	float doorWidth = kWidth * sizeX;
+	float doorHeight = kHeight * sizeY;
+
+	// ドアのAABBを計算
+	AABB doorAABB;
+	doorAABB.min = worldTransform_.translation_ - KamataEngine::Vector3(doorWidth, doorHeight, kHeight / 2);
+	doorAABB.max = worldTransform_.translation_ + KamataEngine::Vector3(doorWidth, doorHeight, kHeight / 2);
+	// 衝突判定
+	if (AABB::IsCollision(boxAABB, doorAABB)) {
+		//KamataEngine::Vector3 correction = {0.0f, 0.0f, 0.0f};
+		// 上下の判定
+		if (boxPos.y < worldTransform_.translation_.y - doorHeight) {
+			// プレイヤーがドアの下にいる場合
+			correction.y = doorAABB.min.y - boxAABB.max.y;
+			Bound.y = -0.1f;
+		} else if (boxPos.y > worldTransform_.translation_.y + doorHeight) {
+			// プレイヤーがドアの上にいる場合
+			correction.y = doorAABB.max.y - boxAABB.min.y;
+			Bound.y = 0.1f;
+		} else {
+			// 水平位置の調整
+			if (boxPos.x < worldTransform_.translation_.x) {
+				// プレイヤーがドアの左側にいる場合
+				correction.x = doorAABB.min.x - boxAABB.max.x;	
+				Bound.x = 0.1f;
+			} else if (boxPos.x > worldTransform_.translation_.x + doorWidth) {
+				// プレイヤーがドアの右側にいる場合
+				correction.x = doorAABB.max.x - boxAABB.min.x;
+				Bound.x = -0.1f;
+			}
+		}
+		// プレイヤー位置を修正
+		box->SetWorldPosition(boxPos + correction);
+	}
+
+	correctionPos = correction;
+
+	// ハコ位置を修正
+	box->SetWorldPosition(boxPos + correction);
+	if (box->GetNowMode() == Box::Mode::Hop) {
+		box->ApplyForce(Bound);
+	}
+}
+
+void Door1::SetCorrectionPos(Player* player) {
+	KamataEngine::Vector3 playerPos = player->GetWorldPosition();
+	player->SetWorldPosition(playerPos + correctionPos);
 }
 
 void Door1::SetFlag(bool Flag1, bool Flag2) {
