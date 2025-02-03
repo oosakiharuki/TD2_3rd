@@ -117,6 +117,7 @@
     <ClCompile Include="Electricity.cpp" />
     <ClCompile Include="Electricity2.cpp" />
     <ClCompile Include="Fade.cpp" />
+    <ClCompile Include="GameOverScene.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Gate.cpp" />
     <ClCompile Include="main.cpp" />
@@ -215,6 +216,7 @@
     <ClInclude Include="Door2.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="Fade.h" />
+    <ClInclude Include="GameOverScene.h" />
     <ClInclude Include="Gate.h" />
     <ClInclude Include="Electricity.h" />
     <ClInclude Include="Electricity2.h" />

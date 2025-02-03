@@ -32,6 +32,7 @@ public:
 	float GetRadius() { return radius_; }
 
 	void PlayerUpdateMatrix() { worldTransform_.UpdateMatrix(); }
+	bool IsGetDead() { return IsDead; }
 
 private:
 	KamataEngine::Input* input_ = nullptr;
@@ -44,7 +45,8 @@ private:
 	float moveSpeed_;
 	// プレイヤーの速度
 	KamataEngine::Vector3 playerVelocity;
-
+	bool IsDead=false;
+	int HP = 3;
 	int playerId_;
 	// キャラクターの当たり判定サイズ
 	static inline const float kWidth = 1.0f;

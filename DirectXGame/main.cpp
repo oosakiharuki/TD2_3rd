@@ -16,6 +16,8 @@ enum class Scene {
 	kTitle,
 	kSelect,
 	kGame,
+	kGemeOver,
+
 };
 
 // 現在のシーン

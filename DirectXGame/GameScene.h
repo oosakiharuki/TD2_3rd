@@ -68,6 +68,8 @@ public:
 
 	Select GetSelect() const { return select_; }
 
+	bool IsDead() const { return isDead; }
+
 	// フェーズ切り替え
 	void ChangePhase();
 
@@ -134,6 +136,7 @@ private:
 
 	bool isPair = false;
 	// bool isPairVartical = false;
+	bool isDead;
 
 	std::list<Electricity*> electricity;
 	std::list<Electricity2*> electricity2;
