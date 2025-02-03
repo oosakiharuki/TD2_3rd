@@ -11,7 +11,6 @@ class Door1;
 class Door2;
 
 class Player {
-
 public:
 	// 初期化
 	void Initialize(KamataEngine::Vector3 startPosition, KamataEngine::Model* model, int playerId);
@@ -29,7 +28,10 @@ public:
 	AABB GetAABB();
 	void OnCollision(const Electricity* electricity);
 	void OnCollision2(const Electricity2* electricity2);
-	
+	void OnCollisionBullet();
+	float GetRadius() { return radius_; }
+
+	void PlayerUpdateMatrix() { worldTransform_.UpdateMatrix(); }
 
 private:
 	KamataEngine::Input* input_ = nullptr;
@@ -38,7 +40,7 @@ private:
 	KamataEngine::WorldTransform worldTransform_;
 
 	KamataEngine::Model* model_ = nullptr;
-
+	float radius_ = 1.0f;
 	float moveSpeed_;
 	// プレイヤーの速度
 	KamataEngine::Vector3 playerVelocity;

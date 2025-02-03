@@ -3,6 +3,7 @@
 #include <3d/Model.h>
 #include <3d/ObjectColor.h>
 #include <3d/WorldTransform.h>
+#include "AABB.h"
 
 class Box {
 public:
@@ -27,6 +28,9 @@ public:
 
 	Mode GetNowMode() const { return mode_; }
 
+	KamataEngine::Vector3 GetWorldPosition();
+	AABB GetAABB();
+
 	private:
 
 	KamataEngine::Camera* viewProjection_ = nullptr;
@@ -34,11 +38,15 @@ public:
 	KamataEngine::WorldTransform worldTransform_;
 	KamataEngine::ObjectColor objColor = {};
 
-	float kSpeed = 0.5f;
+	float kSpeed = 0.2f;
 	bool Flag;
 
 	float radius_ = 1.0f;
 	KamataEngine::Vector3 velocity_ = {0.0f, 0.0f, 0.0f};
 
 	Mode mode_ = Mode::Normal;
+
+	// 当たり判定サイズ
+	static inline const float kWidth = 1.0f;
+	static inline const float kHeight = 1.0f;
 };

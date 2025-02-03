@@ -25,6 +25,9 @@ public:
 	bool CheckCollisionWithBox(Box* box);
 
 	void SetBoxes(const std::list<Box*>& boxes) { boxes_ = boxes; }
+	const KamataEngine::WorldTransform& GetWorldTransform() { return *ropeMiddle_; }
+	void OnCollisionBullet();
+	float GetRadius() { return radius_; }
 
 private:
 	float Length(const KamataEngine::Vector3& v);
@@ -36,17 +39,19 @@ private:
 	Player* player2_ = nullptr;
 	Box* box_ = nullptr;
 	KamataEngine::Input* input_ = nullptr;
-
+	float radius_ = 2.0f;
 	KamataEngine::Vector3 controlPoint1_;
 	KamataEngine::Vector3 controlPoint2_;
 	float slack_ = 1.0f;
-	float maxLength_ = 15.0f;
-	int segmentCount_ = 20; // ロープの分割数
+	float maxLength_ = 6.0f;
+	int segmentCount_ = 11; // ロープの分割数
 
 	KamataEngine::Model* modelCarry_ = nullptr;
 	KamataEngine::Model* modelHop_ = nullptr;
 
 	std::vector<KamataEngine::WorldTransform*> ropeSegments_; // 各セグメントのワールド情報（ポインタ）
+	KamataEngine::WorldTransform* ropeMiddle_; //ロープの真ん中をカメラ位置にする
+
 	std::list<Box*> boxes_;
 
 	XINPUT_STATE state, preState;

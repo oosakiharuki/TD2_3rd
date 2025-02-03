@@ -5,7 +5,6 @@
 #include <3d/WorldTransform.h>
 #include"AABB.h"
 class Player;
-class Door1;
 class Electricity {
 public:
 	void Initialize(KamataEngine::Model* model,KamataEngine::Model*model2, KamataEngine::Camera* viewProjection);
@@ -18,7 +17,9 @@ public:
 	
 	// AABBを取得
 	AABB GetAABB();
-	Door1* GetDoor1() { return door; }
+
+	void SetPosition(KamataEngine::Vector3 position) { worldTransform_.translation_ = position; }
+	bool GetFlag() { return Flag; }
 	
 
 private:
@@ -32,9 +33,8 @@ private:
 	
 	KamataEngine::ObjectColor objColor = {};
 	bool Flag;
-	KamataEngine::Vector3 kSpeed = {1.0f, 0.0f, 0.0f};
-
-	Door1* door=nullptr ;
+	//KamataEngine::Vector3 kSpeed = {1.0f, 0.0f, 0.0f};
+	//Door1* door=nullptr ;
 	// キャラクターの当たり判定サイズ
 	static inline const float kWidth = 1.0f;
 	static inline const float kHeight = 1.0f;

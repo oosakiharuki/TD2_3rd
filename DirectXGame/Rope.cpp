@@ -33,6 +33,10 @@ void Rope::Initialize(Player* p1, Player* p2, KamataEngine::Input* input, Kamata
 		auto* segment = new KamataEngine::WorldTransform();
 		segment->Initialize();
 		ropeSegments_.push_back(segment);
+		
+		if (i == segmentCount_ / 2) {
+			ropeMiddle_ = ropeSegments_[i];
+		}
 	}
 }
 
@@ -170,6 +174,8 @@ bool Rope::CheckCollisionWithBox(Box* box) {
 
 	return false; // 衝突なし
 }
+
+void Rope::OnCollisionBullet() {}
 
 
 KamataEngine::Vector3 Rope::ClosestPointOnSegment(const KamataEngine::Vector3& point, const KamataEngine::Vector3& p1, const KamataEngine::Vector3& p2) {
