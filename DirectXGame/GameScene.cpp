@@ -33,6 +33,7 @@ GameScene::~GameScene() {
 	delete artillery;
 
 	delete rope_;
+
 	for (Box* box : boxes) {
 		delete box;
 	}
@@ -56,6 +57,7 @@ GameScene::~GameScene() {
 		delete door;
 	}
 	doors.clear();
+
 
 
 	for (MapWall* block : blocks_) {
@@ -264,7 +266,6 @@ void GameScene::Update() {
     	cameraController->Update();
 		break;
 	}
-	DebugText::GetInstance()->ConsolePrintf("%f : %f\n", playerPosition[0].x, playerPosition[0].y);
 };
 
 void GameScene::Draw() {
