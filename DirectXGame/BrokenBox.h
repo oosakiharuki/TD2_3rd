@@ -19,6 +19,8 @@ public:
 
 	KamataEngine::Vector3 GetWorldPosition();
 
+	float GetRadius() const { return radius_; }
+
 	void OnCollision();
 
 	void SetBoxes(const std::list<Box*>& boxes) { boxes_ = boxes; }
@@ -32,7 +34,7 @@ private:
 	KamataEngine::ObjectColor objColor = {};
 
 	bool isBreak = false;
-
+	float radius_ = 1.0f;
 	std::list<Box*> boxes_;
 
 	std::list<Particle*> particles_;

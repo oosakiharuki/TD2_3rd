@@ -120,6 +120,7 @@
     <ClCompile Include="GameOverScene.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Gate.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="makeMath.cpp" />
     <ClCompile Include="MapChip.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="Gate.h" />
     <ClInclude Include="Electricity.h" />
     <ClInclude Include="Electricity2.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="MapChip.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="makeMath.h" />
