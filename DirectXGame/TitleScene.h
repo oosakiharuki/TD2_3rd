@@ -55,4 +55,7 @@ private:
 
 	uint32_t titleTexture_ = 0;
 	KamataEngine::Sprite* titleSprite_ = nullptr;
+
+	uint32_t bgmDataHandle_ = 0;
+	uint32_t bgmVoiceHandle = 0;
 };

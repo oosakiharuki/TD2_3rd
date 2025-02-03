@@ -3,11 +3,11 @@
 #include"Electricity.h"
 #include"Electricity2.h"
 
-void Player::Initialize(KamataEngine::Vector3 startPosition, KamataEngine::Model* model, int playerId) { 
+void Player::Initialize(KamataEngine::Model* model, int playerId) { 
 	input_ = KamataEngine::Input::GetInstance();
 
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = startPosition;
+	
 
 	playerId_ = playerId;
 

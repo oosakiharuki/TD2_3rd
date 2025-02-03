@@ -8,6 +8,8 @@ TitleScene::~TitleScene() {
 	delete fade_; 
 	delete wallpaperSprite_;
 	delete titleSprite_;
+
+	//audio_->StopWave(bgmVoiceHandle);
 }
 
 void TitleScene::Initialise() {
@@ -20,6 +22,9 @@ void TitleScene::Initialise() {
 
 	titleTexture_ = KamataEngine::TextureManager::Load("title.png");
 	titleSprite_ = KamataEngine::Sprite::Create(titleTexture_, {0.0f, 0.0f});
+
+	bgmDataHandle_ = audio_->LoadWave("bgm.wav");
+	//bgmVoiceHandle = audio_->PlayWave(bgmDataHandle_, true, 0.3f);
 
 	fade_ = new Fade();
 	fade_->Initialize();
