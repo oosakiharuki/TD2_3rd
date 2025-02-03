@@ -145,10 +145,12 @@ void GameScene::Initialize() {
 	goal_->Initialize(modelGoal_, &viewProjection_, {5.0f, 5.0f, 0.0f});
 
 	player1_ = new Player();
-	player1_->Initialize(playerPosition[0], modelPlayer1_, 1);
+	player1_->Initialize(modelPlayer1_, 1);
+	player1_->SetWorldPosition(playerPosition[0]);
 
 	player2_ = new Player();
-	player2_->Initialize(playerPosition[1], modelPlayer2_, 2);
+	player2_->Initialize(modelPlayer2_, 2);
+	player2_->SetWorldPosition(playerPosition[1]);
 	
 	rope_ = new Rope();
     rope_->Initialize(player1_, player2_, input_, modelCarryRope_, modelHopRope_);
@@ -165,9 +167,12 @@ void GameScene::Initialize() {
 	cameraController->SetTraget(rope_);
 	cameraController->Reset();
 
+	cameraController->SetMovebleaArea({27.7f, 30.3f, 15.3f, 42.7f});
+
 	fade_ = new Fade();
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, fadeTime_);
+
 
 }
 
@@ -259,7 +264,7 @@ void GameScene::Update() {
     	cameraController->Update();
 		break;
 	}
-
+	DebugText::GetInstance()->ConsolePrintf("%f : %f\n", playerPosition[0].x, playerPosition[0].y);
 };
 
 void GameScene::Draw() {
@@ -372,6 +377,7 @@ void GameScene::Draw() {
 }
 
 void GameScene::GenerateBlocks() {
+	playerNum = 0;
 	uint32_t kMapHeight = mapchip_->GetNumVirtical();
 	uint32_t kMapWight = mapchip_->GetNumHorizontal();
 
@@ -765,8 +771,12 @@ void GameScene::ChangePhase() {
 				mapchip_->ResetMapChipData();
 				ClearObject();
 				mapchip_->LordCSV(stageNum);
+
 				GenerateBlocks();
+			    player1_->SetWorldPosition(playerPosition[0]);
+			    player2_->SetWorldPosition(playerPosition[1]);
 				rope_->SetBoxes(boxes);
+
 				clear_ = false;
 				phase_ = Phase::kFadeIn;
 				fade_->Start(Fade::Status::FadeIn, fadeTime_);

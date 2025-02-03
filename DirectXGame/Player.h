@@ -13,7 +13,7 @@ class Door2;
 class Player {
 public:
 	// 初期化
-	void Initialize(KamataEngine::Vector3 startPosition, KamataEngine::Model* model, int playerId);
+	void Initialize(KamataEngine::Model* model, int playerId);
 
 	// 更新
 	void Update();

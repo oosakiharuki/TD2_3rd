@@ -159,8 +159,8 @@ private:
 	Player* player2_ = nullptr;
 
 	Vector3 playerPosition[2]{
-	    {2.5f, 3.0f, 0.0f},
-        {5.0f, 3.0f, 0.0f}
+	    {0.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 0.0f}
     };
 	Vector2 selectCursorPos = {450.0f, 275.0f};
 
