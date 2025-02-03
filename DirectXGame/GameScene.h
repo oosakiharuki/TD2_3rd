@@ -15,6 +15,7 @@
 
 #include "CameraController.h"
 #include "Door1.h"
+#include "Goal.h"
 
 using namespace KamataEngine;
 
@@ -98,6 +99,7 @@ private:
 	Model* modelHopRope_ = nullptr;
 	Model* modelSwitch1_ = nullptr;
 	Model* modelSwitch2_ = nullptr;
+	Model* modelGoal_ = nullptr;
 
 	WorldTransform worldTransform_;
 	Camera viewProjection_;
@@ -173,5 +175,8 @@ private:
 	Select select_ = Select::kNone;
 
 	XINPUT_STATE state, preState;
+
+	Goal* goal_ = nullptr;
+	std::list<Goal*> goals_;
 
 };

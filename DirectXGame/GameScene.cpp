@@ -25,6 +25,7 @@ GameScene::~GameScene() {
 	delete mapchip_;
 	delete modelSwitch1_;
 	delete modelSwitch2_;
+	delete modelGoal_;
 
 	delete player1_;
 	delete player2_;
@@ -68,6 +69,12 @@ GameScene::~GameScene() {
 		delete brokenBox_;
 	}
 	brokenBoxes.clear();
+
+	for (Goal* goal : goals_) {
+		delete goal;
+	}
+	goals_.clear();
+	delete goal_;
 
 	delete cameraController;
 
@@ -131,10 +138,12 @@ void GameScene::Initialize() {
 	modelBom2 = Model::CreateFromOBJ("bom",true);
 	modelSwitch1_ = Model::CreateFromOBJ("electroSwitch1", true);
 	modelSwitch2_ = Model::CreateFromOBJ("electroSwitch2", true);
+	modelGoal_ = Model::CreateFromOBJ("goal", true);
 
 	GenerateBlocks();
 
-
+	goal_ = new Goal();
+	goal_->Initialize(modelGoal_, &viewProjection_, {5.0f, 5.0f, 0.0f});
 
 	player1_ = new Player();
 	player1_->Initialize(playerPosition[0], modelPlayer1_, 1);
@@ -252,6 +261,8 @@ void GameScene::Update() {
 			brokenBox_->SetBoxes(boxes);
 			brokenBox_->Update();
 		}
+
+		goal_->Update();
 		artillery->Update();
 		player1_->PlayerUpdateMatrix();
 		player2_->PlayerUpdateMatrix();
@@ -333,6 +344,8 @@ void GameScene::Draw() {
 	for (BrokenBox* brokenBox_ : brokenBoxes) {
 		brokenBox_->Draw();
 	}
+	goal_->Draw();
+
 	//大砲
 	artillery->Draw();
 	viewProjection_.matView = cameraController->GetViewProjection().matView;
@@ -518,22 +531,20 @@ void GameScene::CheckAllCollision() {
 void GameScene::CheckAllCollisions() { 
 	KamataEngine::Vector3 posA, posB; 
 
-	float boxRadius = 1.0f;
-	float brokenBoxRadius = 1.0f;
-
 	#pragma region 壊れる箱と箱の当たり判定
 
 	// 壊れる箱と箱全ての当たり判定
 	for (Box* box : boxes) {
+			// 箱の座標
+			posB = box->GetWorldPosition();
 		for (BrokenBox* brokenBox_ : brokenBoxes) {
 			// 壊れる箱の座標
 			posA = brokenBox_->GetWorldPosition();
-			// 箱の座標
-			posB = box->GetWorldPosition();
+
 			KamataEngine::Vector3 diff = {posB.x - posA.x, posB.y - posA.y, posB.z - posA.z};
 			float distanceSquared = diff.x * diff.x + diff.y * diff.y + diff.z * diff.z;
 
-			float radiusSum = brokenBoxRadius + boxRadius;
+			float radiusSum = brokenBox_->GetRadius() + box->GetRadius();
 
 			// 球と球の交差判定
 			if (distanceSquared <= (radiusSum * radiusSum)) {
@@ -543,6 +554,27 @@ void GameScene::CheckAllCollisions() {
 	}
 	#pragma endregion
 
+	#pragma region ゴールと箱の当たり判定
+	// ゴールと箱の当たり判定
+	for (Box* box : boxes) {
+		// 箱の座標
+		posB = box->GetWorldPosition();
+		for (Goal* goal : goals_) {
+			// Goalの座標
+			posA = goal->GetWorldPosition();
+
+			KamataEngine::Vector3 diff = {posB.x - posA.x, posB.y - posA.y, posB.z - posA.z};
+			float distanceSquared = diff.x * diff.x + diff.y * diff.y + diff.z * diff.z;
+
+			float radiusSum = goal->GetRadius() + box->GetRadius();
+
+			// 球と球の交差判定
+			if (distanceSquared <= (radiusSum * radiusSum)) {
+				clear_ = true;
+			}
+		}
+	}
+	#pragma endregion
 }
 
 void GameScene::CheckBulletPlayerCollision() {
@@ -550,6 +582,7 @@ void GameScene::CheckBulletPlayerCollision() {
 	Vector3 posA, posB;
 
 	const std::list<Bullet*>& Bullets = artillery->GetBullets();
+
 	// 自キャラの座標
 	posA = player1_->GetWorldPosition();
 
