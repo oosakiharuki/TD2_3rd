@@ -49,8 +49,8 @@ private:
 
 	bool finished_ = false;
 	int number = 1;
-	int MaxStage = 5;
-	const char* stage[5];//MaxStageと合わせて変えてね
+	int MaxStage = 6;
+	const char* stage[20];//MaxStageと合わせて変えてね
 
 	const char* nowStage;
 	KamataEngine::Sprite* sprite_ = nullptr;

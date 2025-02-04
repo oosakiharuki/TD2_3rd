@@ -82,11 +82,7 @@ KamataEngine::Vector3 BrokenBox::GetWorldPosition() {
 }
 
 void BrokenBox::OnCollision() {
-	for (Box* box : boxes_) {
-		if (box->GetNowMode() == Box::Mode::Hop) {
-			isBreak = true;
-		}
-	}
+	isBreak = true;
 }
 
 AABB BrokenBox::GetAABB() {
