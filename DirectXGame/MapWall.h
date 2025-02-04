@@ -16,6 +16,7 @@ public:
 	void OnCollisionPlayer(Player* player, AABB aabb);
 	void OnCollisionBox(Box* box, AABB aabb);
 	void SetCorrectionPos(Player* player);
+	KamataEngine::Vector3 GetWorldPosition() { return worldTransform_.translation_; }
 
 	void Resetcorrection() { correctionPos = {0, 0, 0}; }
 

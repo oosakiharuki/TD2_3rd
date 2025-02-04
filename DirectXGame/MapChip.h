@@ -14,6 +14,8 @@ enum class MapChipType {
 	kDoor,         // ドアゲート横
 	kDoorVertical, // ドアゲート縦
 	kPlayerPos,    // プレイヤーの初期地点
+	kGoal,         // ゴール
+	kArtillery,    // 大砲
 };
 
 struct MapChipData{

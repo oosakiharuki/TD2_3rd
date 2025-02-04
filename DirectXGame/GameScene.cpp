@@ -30,7 +30,9 @@ GameScene::~GameScene() {
 	delete player1_;
 	delete player2_;
 
-	delete artillery;
+	for (Artillery* artillery : artilleries) {
+		delete artillery;
+	}
 
 	delete rope_;
 
@@ -38,11 +40,6 @@ GameScene::~GameScene() {
 		delete box;
 	}
 	boxes.clear();
-
-	for (Gate* gate : gates) {
-		delete gate;
-	}
-	gates.clear();
 
 	for (Electricity* electrical : electricity) {
 		delete electrical;
@@ -117,6 +114,7 @@ void GameScene::Initialize() {
 	stage[2] = "Resources/stageCsv/stage03.csv";
 	stage[3] = "Resources/stageCsv/stage04.csv";
 	stage[4] = "Resources/stageCsv/stage05.csv";
+	stage[5] = "Resources/stageCsv/stage06.csv";
 	
 	mapchip_ = new MapChip();
 	mapchip_->LordCSV(stageNum);
@@ -143,8 +141,8 @@ void GameScene::Initialize() {
 
 	GenerateBlocks();
 
-	goal_ = new Goal();
-	goal_->Initialize(modelGoal_, &viewProjection_, {5.0f, 5.0f, 0.0f});
+	//goal_ = new Goal();
+	//goal_->Initialize(modelGoal_, &viewProjection_, {5.0f, 5.0f, 0.0f});
 
 	player1_ = new Player();
 	player1_->Initialize(modelPlayer1_, 1);
@@ -158,8 +156,8 @@ void GameScene::Initialize() {
     rope_->Initialize(player1_, player2_, input_, modelCarryRope_, modelHopRope_);
 	rope_->SetBoxes(boxes);
 
-	artillery = new Artillery();
-	artillery->Initialize(modelBom, modelBom2, &viewProjection_);
+	//artillery = new Artillery();
+	//artillery->Initialize(modelBom, modelBom2, &viewProjection_);
 
 	//brokenBox_ = new BrokenBox();
 	//brokenBox_->Initialize(modelBrokenBox_, &viewProjection_);
@@ -214,12 +212,15 @@ void GameScene::Update() {
 			brokenBox_->Update();
 		}
 		//大砲
-		artillery->Update();
+		for (Artillery* artillery : artilleries) {
+			artillery->Update();
+		}
     	// プレイヤーの更新
     	player1_->Update();
     	player2_->Update();
 
     	rope_->Update();
+		goal_->Update();
 
     	cameraController->Update();
 
@@ -228,7 +229,7 @@ void GameScene::Update() {
 			clear_ = true;
 		}
 		break;
-	default:
+	case GameScene::Phase::kFadeIn:
 		for (MapWall* block : blocks_) {
 			block->Update();
 		}
@@ -257,13 +258,17 @@ void GameScene::Update() {
 		}
 
 		goal_->Update();
-		artillery->Update();
+		for (Artillery* artillery : artilleries) {
+			artillery->Update();
+		}
 		player1_->PlayerUpdateMatrix();
 		player2_->PlayerUpdateMatrix();
 
 		rope_->Update();
 
     	cameraController->Update();
+		break;
+	default:
 		break;
 	}
 };
@@ -320,10 +325,6 @@ void GameScene::Draw() {
 		door->Draw();
 	}
 
-	for (Gate* gate : gates) {
-		gate->Draw();
-	}
-
 	for (MapWall* block : blocks_) {
 		block->Draw();
 	}
@@ -334,7 +335,9 @@ void GameScene::Draw() {
 	goal_->Draw();
 
 	//大砲
-	artillery->Draw();
+	for (Artillery* artillery : artilleries) {
+		artillery->Draw();
+	}
 	viewProjection_.matView = cameraController->GetViewProjection().matView;
 	viewProjection_.matProjection = cameraController->GetViewProjection().matProjection;
 	viewProjection_.TransferMatrix();
@@ -361,7 +364,7 @@ void GameScene::Draw() {
 		cursorSprite_->Draw();
 		break;
 	case GameScene::Phase::kClear:
-		if (stageNum == stage[4]) {
+		if (stageNum == stage[maxStage]) {
 			clearAllSirpte_->Draw();
 		} else {
     		clearSprite_->Draw();
@@ -459,8 +462,16 @@ void GameScene::GenerateBlocks() {
 				door->Initialize(modelWall1_, &viewProjection_, mapchip_->GetMapChipPosition(j, i), kSpeed);
 				door->Vartical();//向きを変える処理
 				doors.push_back(door);
-				doorsList[doorCount].push_back(door);
-				doorCount++;
+
+				// doorCount の範囲チェック
+				if (doorCount < 5) {
+					// doorsList に要素を確保してから push_back する
+					if (doorsList[doorCount].empty()) {
+						doorsList[doorCount] = std::list<Door1*>();
+					}
+					doorsList[doorCount].push_back(door);
+					doorCount++;
+				} 
 			}else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kPlayerPos) {
 				for (uint32_t num = 0; num < 2; num++) {
 					if (playerNum == num) {
@@ -468,6 +479,15 @@ void GameScene::GenerateBlocks() {
 					}
 				}
 				playerNum++;
+			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kGoal) {
+				goal_ = new Goal();
+				goal_->Initialize(modelGoal_, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
+
+			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kArtillery) {
+				Artillery* artillery = new Artillery();
+				artillery->Initialize(modelBom, modelBom2, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
+
+				artilleries.push_back(artillery);
 			}
 		}
 	}
@@ -488,6 +508,8 @@ void GameScene::CheckAllCollision() {
 				player1_->OnCollision(elect);
 				elect->OnCollision(player1_);
 				left[i] = true;
+			} else {
+				left[i] = false;
 			}
 		}
 
@@ -498,6 +520,8 @@ void GameScene::CheckAllCollision() {
 				player2_->OnCollision2(elect);
 				elect->OnCollision(player2_);
 				right[i] = true;
+			} else {
+				right[i] = false;
 			}
 		}
 
@@ -579,6 +603,7 @@ void GameScene::CheckAllCollisions() {
 
 			// 球と球の交差判定
 			if (distanceSquared <= (radiusSum * radiusSum)) {
+				if (box->GetNowMode() == Box::Mode::Hop)
 				brokenBox_->OnCollision();
 			}
 		}
@@ -611,81 +636,123 @@ void GameScene::CheckAllCollisions() {
 void GameScene::CheckBulletPlayerCollision() {
 	// 判定対象AとBの座標
 	Vector3 posA, posB;
+	for (Artillery* artillery : artilleries) {
+		const std::list<Bullet*>& Bullets = artillery->GetBullets();
 
-	const std::list<Bullet*>& Bullets = artillery->GetBullets();
+		// 自キャラの座標
+		posA = player1_->GetWorldPosition();
 
-	// 自キャラの座標
-	posA = player1_->GetWorldPosition();
+		for (Bullet* bullet : Bullets) {
+			posB = bullet->GetWorldPosition();
+			// posAとposBの距離
+			float posC = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) + (posB.z - posA.z) * (posB.z - posA.z);
 
-	for (Bullet* bullet : Bullets) {
-		posB = bullet->GetWorldPosition();
-		// posAとposBの距離
-		float posC = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) + (posB.z - posA.z) * (posB.z - posA.z);
-
-		// 半径の差
-		float L = (player1_->GetRadius() + bullet->GetRadius()) * (player1_->GetRadius() + bullet->GetRadius());
-		// 球と球の交差判定
-		if (posC <= L) {
-			// 自キャラの衝突時コールバックを呼び出す
-			player1_->OnCollisionBullet();
-			// 敵弾の衝突時コールバックを呼び出す
-			bullet->OnCollision();
+			// 半径の差
+			float L = (player1_->GetRadius() + bullet->GetRadius()) * (player1_->GetRadius() + bullet->GetRadius());
+			// 球と球の交差判定
+			if (posC <= L) {
+				// 自キャラの衝突時コールバックを呼び出す
+				player1_->OnCollisionBullet();
+				// 敵弾の衝突時コールバックを呼び出す
+				bullet->OnCollision();
+			}
 		}
-	}
 
-	// 自キャラの座標
-	posA = player2_->GetWorldPosition();
+		// 自キャラの座標
+		posA = player2_->GetWorldPosition();
 
-	for (Bullet* bullet : Bullets) {
-		posB = bullet->GetWorldPosition();
-		// posAとposBの距離
-		float posC = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) + (posB.z - posA.z) * (posB.z - posA.z);
+		for (Bullet* bullet : Bullets) {
+			posB = bullet->GetWorldPosition();
+			// posAとposBの距離
+			float posC = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) + (posB.z - posA.z) * (posB.z - posA.z);
 
-		// 半径の差
-		float L = (player2_->GetRadius() + bullet->GetRadius()) * (player2_->GetRadius() + bullet->GetRadius());
-		// 球と球の交差判定
-		if (posC <= L) {
-			// 自キャラの衝突時コールバックを呼び出す
-			player2_->OnCollisionBullet();
-			// 敵弾の衝突時コールバックを呼び出す
-			bullet->OnCollision();
+			// 半径の差
+			float L = (player2_->GetRadius() + bullet->GetRadius()) * (player2_->GetRadius() + bullet->GetRadius());
+			// 球と球の交差判定
+			if (posC <= L) {
+				// 自キャラの衝突時コールバックを呼び出す
+				player2_->OnCollisionBullet();
+				// 敵弾の衝突時コールバックを呼び出す
+				bullet->OnCollision();
+			}
 		}
-	}
 
-	// 自キャラの座標
-	posA = rope_->GetWorldTransform().translation_;
+		// 自キャラの座標
+		posA = rope_->GetWorldTransform().translation_;
 
-	for (Bullet* bullet : Bullets) {
-		posB = bullet->GetWorldPosition();
-		// posAとposBの距離
-		float posC = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) + (posB.z - posA.z) * (posB.z - posA.z);
+		for (Bullet* bullet : Bullets) {
+			posB = bullet->GetWorldPosition();
+			// posAとposBの距離
+			float posC = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) + (posB.z - posA.z) * (posB.z - posA.z);
 
-		// 半径の差
-		float L = (rope_->GetRadius() + bullet->GetRadius()) * (rope_->GetRadius() + bullet->GetRadius());
-		// 球と球の交差判定
-		if (posC <= L) {
-			// 自キャラの衝突時コールバックを呼び出す
-			rope_->OnCollisionBullet();
-			// 敵弾の衝突時コールバックを呼び出す
-			bullet->OnCollision2();
+			// 半径の差
+			float L = (rope_->GetRadius() + bullet->GetRadius()) * (rope_->GetRadius() + bullet->GetRadius());
+			// 球と球の交差判定
+			if (posC <= L) {
+				// 自キャラの衝突時コールバックを呼び出す
+				rope_->OnCollisionBullet();
+				// 敵弾の衝突時コールバックを呼び出す
+				bullet->OnCollision2();
+			}
 		}
-	}
-	// 自キャラの座標
-	posA = artillery->GetWorldPostion();
+		// 自キャラの座標
+		posA = artillery->GetWorldPostion();
 
-	for (Bullet* bullet : Bullets) {
-		posB = bullet->GetWorldPosition();
-		// posAとposBの距離
-		float posC = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) + (posB.z - posA.z) * (posB.z - posA.z);
+		for (Bullet* bullet : Bullets) {
+			posB = bullet->GetWorldPosition();
+			// posAとposBの距離
+			float posC = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) + (posB.z - posA.z) * (posB.z - posA.z);
 
-		// 半径の差
-		float L = (artillery->GetRadius() + bullet->GetRadius()) * (artillery->GetRadius() + bullet->GetRadius());
-		// 球と球の交差判定
-		if (posC <= L) {
-			// 自キャラの衝突時コールバックを呼び出す
-			artillery->OnCollision();
-			// 敵弾の衝突時コールバックを呼び出す
-			bullet->OnCollision();
+			// 半径の差
+			float L = (artillery->GetRadius() + bullet->GetRadius()) * (artillery->GetRadius() + bullet->GetRadius());
+			// 球と球の交差判定
+			if (posC <= L) {
+				// 自キャラの衝突時コールバックを呼び出す
+				artillery->OnCollision();
+				// 敵弾の衝突時コールバックを呼び出す
+				bullet->OnCollision();
+			}
+		}
+
+		//壁と弾
+		for (MapWall* block : blocks_) {
+			posA = block->GetWorldPosition();
+
+			for (Bullet* bullet : Bullets) {
+				posB = bullet->GetWorldPosition();
+
+				// posAとposBの距離
+				float posC = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) + (posB.z - posA.z) * (posB.z - posA.z);
+
+				// 半径の差
+				float L = (1.0f + bullet->GetRadius()) * (1.0f + bullet->GetRadius());
+				// 球と壁の交差判定
+				if (posC <= L) {
+					// 敵弾の衝突時コールバックを呼び出す
+					bullet->OnCollision();
+				}
+			}
+		}
+		
+		//壊れる壁と弾
+		for (BrokenBox* brokenBox_ : brokenBoxes) {
+			posA = brokenBox_->GetWorldPosition();
+			
+			for (Bullet* bullet : Bullets) {
+				posB = bullet->GetWorldPosition();
+
+				// posAとposBの距離
+				float posC = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) + (posB.z - posA.z) * (posB.z - posA.z);
+
+				// 半径の差
+				float L = (1.0f + bullet->GetRadius()) * (1.0f + bullet->GetRadius());
+				// 球と壁の交差判定
+				if (posC <= L && !brokenBox_->IsBreak()) {
+					// 敵弾の衝突時コールバックを呼び出す
+					bullet->OnCollision();
+					brokenBox_->OnCollision();
+				}
+			}
 		}
 	}
 }
@@ -743,7 +810,7 @@ void GameScene::ChangePhase() {
 		break;
 	}
 	case GameScene::Phase::kClear:
-		if (stageNum == stage[4]) {
+		if (stageNum == stage[maxStage]) {
 			// 最終ステージ後の選択
 			std::vector<float> cursorPositions = {275.0f, 360.0f};
 			// カーソル移動処理を関数でまとめて呼び出し
@@ -765,7 +832,7 @@ void GameScene::ChangePhase() {
 
 		if (input_->TriggerKey(DIK_SPACE) || 
 			((state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A))) {
-			if (stageNum == stage[4]) {
+			if (stageNum == stage[maxStage]) {
 				switch (selectNum) {
 				case 1:
 					select_ = Select::kGoStageSelect;
@@ -854,15 +921,11 @@ void GameScene::UpdateCursorSelection(int maxNum, int deadZone) {
 
 
 void GameScene::SwitchToNextStage() {
-
-	if (stageNum == stage[0]) {
-		stageNum = stage[1];
-	} else if (stageNum == stage[1]) {
-		stageNum = stage[2];
-	} else if (stageNum == stage[2]) {
-		stageNum = stage[3];
-	} else if (stageNum == stage[3]) {
-		stageNum = stage[4];
+	for (uint32_t i = 0; i < maxStage; i++) {
+		if (stageNum == stage[i]) {
+			stageNum = stage[i + 1];
+			break;
+		}
 	}
 }
 
@@ -873,13 +936,6 @@ void GameScene::ClearObject() {
 		box = nullptr;
 	}
 	boxes.clear();
-
-	// Gateの解放
-	for (Gate*& gate : gates) {
-		delete gate;
-		gate = nullptr;
-	}
-	gates.clear();
 
 	// Electricityの解放
 	for (Electricity*& electrical : electricity) {
@@ -893,6 +949,7 @@ void GameScene::ClearObject() {
 		electrical2 = nullptr;
 	}
 	electricity2.clear();
+	electNum = 0;
 
 	// Doorの解放
 	for (Door1*& door : doors) {
@@ -900,14 +957,13 @@ void GameScene::ClearObject() {
 		door = nullptr;
 	}
 	doors.clear();
+	doorCount = 0;
 
-	// Gateリストの解放
-	for (auto& list : gatesList) {
-		for (Gate*& gate : list) {
-			delete gate;
-			gate = nullptr;
-		}
-		list.clear();
+
+	for (uint32_t i = 0; i < maxGate; i++) {
+		electricitys[i].clear();
+		electricitys2[i].clear();
+		doorsList[i].clear();
 	}
 
 	// Blocksの解放
@@ -923,4 +979,11 @@ void GameScene::ClearObject() {
 		brokenBox_ = nullptr;
 	}
 	brokenBoxes.clear();
+
+	delete goal_;
+
+	for (Artillery* artillery : artilleries) {
+		delete artillery;
+	}
+	artilleries.clear();
 }

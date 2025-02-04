@@ -20,6 +20,8 @@ std::map<std::string, MapChipType> mapChipTable = {
     {"5", MapChipType::kDoor},
     {"6", MapChipType::kDoorVertical},
     {"7", MapChipType::kPlayerPos},
+    {"8", MapChipType::kGoal},
+    {"9", MapChipType::kArtillery},
 };
 
 void MapChip::ResetMapChipData() { 
