@@ -254,7 +254,9 @@ void GameScene::Update() {
 			clear_ = true;
 		}*/
 
-
+		if (player1_->IsGetDead() || player2_->IsGetDead()) {
+			isDead = true;
+		}
 		break;
 	case GameScene::Phase::kFadeIn:
 		for (MapWall* block : blocks_) {
@@ -298,9 +300,7 @@ void GameScene::Update() {
 		rope_->Update();
 
     	cameraController->Update();
-		if (player1_->IsGetDead() || player2_->IsGetDead()) {
-			isDead = true;
-		}
+
 		break;
 	default:
 		break;
@@ -845,6 +845,10 @@ void GameScene::ChangePhase() {
 			audio_->StopWave(bgmVoiceHandle_);
 			clearVoiceHandle_ = audio_->PlayWave(clearDataHandle_, false, 0.5f);
 			phase_ = Phase::kClear;
+		} else if (isDead) {
+			audio_->StopWave(bgmVoiceHandle_);
+			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+			phase_ = Phase::kFadeOut;
 		}
 		break;
 	case GameScene::Phase::kMenu: {
