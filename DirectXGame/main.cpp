@@ -151,6 +151,7 @@ void ChangeScene() {
 
 			gameScene = new GameScene();
 			gameScene->GetStage(selectScene->SetStageNum());
+			gameScene->GetNumber(selectScene->SetNum());
 						
 			delete selectScene;
 			selectScene = nullptr;

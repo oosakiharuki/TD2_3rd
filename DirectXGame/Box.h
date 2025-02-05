@@ -31,7 +31,10 @@ public:
 	KamataEngine::Vector3 GetWorldPosition();
 	AABB GetAABB();
 
-	void RestPosition() { worldTransform_.translation_ = startPos_; }
+	void RestPosition() { 
+		velocity_ = {0, 0, 0};
+		worldTransform_.translation_ = startPos_;
+	}
 
 	private:
 

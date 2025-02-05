@@ -23,6 +23,8 @@ public:
 	void SetFlagSwitch(bool Flag);
 	void Vartical();
 
+	void ReSetClose();
+
 private:
 	KamataEngine::Camera* viewProjection_ = nullptr;
 	KamataEngine::Model* model_ = nullptr;
@@ -55,4 +57,7 @@ private:
 	bool CloseFlag = false;
 	//一瞬で押してドアが止まらないようにするFlag
 	bool doorMove = false;
+
+	KamataEngine::Vector3 ResetPosition;
+	KamataEngine::Vector3 ResetSpeed;
 };

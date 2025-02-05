@@ -27,6 +27,7 @@ public:
 	void SetStarrPosition(const KamataEngine::Vector3& position);
 
 	void ResetPosition() { worldTransform_.translation_ = startPosition_; }
+	void ReSetHp() { HP = 3; }
 	// AABBを取得
 	AABB GetAABB();
 	void OnCollision(const Electricity* electricity);

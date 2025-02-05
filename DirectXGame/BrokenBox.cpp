@@ -51,7 +51,7 @@ void BrokenBox::Update() {
 		particles_.remove_if([](Particle* particle) {
 			if (!particle->IsActive()) {
 				delete particle;
-				return true;
+				return true;				
 			}
 			return false;
 		});
@@ -83,6 +83,11 @@ KamataEngine::Vector3 BrokenBox::GetWorldPosition() {
 
 void BrokenBox::OnCollision() {
 	isBreak = true;
+}
+
+void BrokenBox::ReSetPosition() { 
+	isBreak = false;
+	particleCount_ = 0;
 }
 
 AABB BrokenBox::GetAABB() {

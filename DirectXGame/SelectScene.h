@@ -32,6 +32,7 @@ public:
 	void Draw();
 	bool IsFinished() const { return finished_; }
 	const char* SetStageNum() { return nowStage; }
+	const int SetNum() { return number - 1; }
 	Stage GetStageNum() const { return stage_; }
 
 	void CheckControl(int deadZone);
@@ -49,8 +50,8 @@ private:
 
 	bool finished_ = false;
 	int number = 1;
-	int MaxStage = 10;
-	const char* stage[20];//MaxStageと合わせて変えてね
+	int MaxStage = 15;
+	const char* stage[15];//MaxStageと合わせて変えてね
 
 	const char* nowStage;
 	KamataEngine::Sprite* sprite_ = nullptr;

@@ -67,6 +67,7 @@ public:
 	bool IsFinished() const { return finished_; }
 
 	void GetStage(const char* number) { stageNum = number; }
+	void GetNumber(const int number) { NowStage = number; }
 
 	Select GetSelect() const { return select_; }
 
@@ -131,10 +132,11 @@ private:
 	uint32_t maxGate = 5; // とりあえず五個目安
 	uint32_t playerNum = 0u;
 
-	const char* stage[20];
+	const char* stage[15];
 	const char* stageNum;
 	MapChip* mapchip_ = nullptr;
-	const uint32_t maxStage = 9;
+	int NowStage;
+	const uint32_t maxStage = 14;
 
 	bool isPair = false;
 	// bool isPairVartical = false;
@@ -201,4 +203,8 @@ private:
 	uint32_t menuButtonVoiceHandle_ = 0;
 	uint32_t clearVoiceHandle_ = 0;
 
+	uint32_t textureHandle_ = 0;
+	Sprite* sprite_ = nullptr;
+	KamataEngine::Vector2 texLT = {0, 0};
+	KamataEngine::Vector2 texSize = {368, 256};
 };

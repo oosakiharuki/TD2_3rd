@@ -9,10 +9,12 @@
 void Door1::Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection, KamataEngine::Vector3 position, KamataEngine::Vector3 speed) {
 	model_ = model;
 	kSpeed = speed;
+	ResetSpeed = speed;
 	kReturnSpeed = {0};
 	viewProjection_ = viewProjection;
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
+	ResetPosition = position;
 	worldTransform_.scale_ = {5.0f,1.0f,1.0f};
 	sizeX = worldTransform_.scale_.x;
 	sizeY = worldTransform_.scale_.y;
@@ -28,7 +30,7 @@ void Door1::Update() {
 	if (Flag) {
 		worldTransform_.translation_ -= kSpeed;
 		worldTransform_.scale_.x -= 1.0f;
-	}
+	} 
 
 	if (FlagSwitch) {
 		worldTransform_.translation_ -= kSpeed;
@@ -38,8 +40,8 @@ void Door1::Update() {
 		worldTransform_.scale_.x += 1.0f;
 	}
 
-	if (worldTransform_.scale_.x <= 0 && (FlagSwitch || Flag)) {
-		worldTransform_.scale_.x = 0;
+	if (worldTransform_.scale_.x <= -1.0f && (FlagSwitch || Flag)) {
+		worldTransform_.scale_.x = -1.0f;
 		kReturnSpeed += kSpeed;
 		kSpeed = {0};
 		doorMove = false;
@@ -51,7 +53,7 @@ void Door1::Update() {
 		doorMove = false;
 	}
 
-	if (worldTransform_.scale_.x > 0 && worldTransform_.scale_.x < 5.0f) {
+	if (worldTransform_.scale_.x > -1.0f && worldTransform_.scale_.x < 5.0f) {
 		doorMove = true;
 	}
 
@@ -182,8 +184,8 @@ void Door1::SetCorrectionPos(Player* player) {
 void Door1::SetFlag(bool Flag1, bool Flag2) {
 	if (Flag1 && Flag2) {
 		Flag = true;
-		sizeX = -1;
-		sizeY = -1;
+		sizeX = 0;
+		sizeY = 0;
 	}
 }
 
@@ -193,8 +195,8 @@ void Door1::SetFlagSwitch(bool Flag1) {
 		FlagSwitch = Flag1;
 	}
 	if (FlagSwitch) {
-		sizeX = -1;
-		sizeY = -1;
+		sizeX = 0;
+		sizeY = 0;
 		CloseFlag = true;
 	} else {
 		if (isVartical) {
@@ -213,4 +215,25 @@ void Door1::Vartical() {
 	sizeX = worldTransform_.scale_.y;
 	sizeY = worldTransform_.scale_.x;
 	isVartical = true;
+}
+
+void Door1::ReSetClose() {
+
+	worldTransform_.scale_ = {5.0f, 1.0f, 1.0f};
+	worldTransform_.translation_ = ResetPosition;
+
+	if (isVartical) {
+		sizeX = worldTransform_.scale_.y;
+		sizeY = worldTransform_.scale_.x;
+	} else {
+		sizeX = worldTransform_.scale_.x;
+		sizeY = worldTransform_.scale_.y;
+	}
+		
+	kSpeed = ResetSpeed;	
+	kReturnSpeed = {0};
+
+	Flag = false;
+	FlagSwitch = false; 
+
 }

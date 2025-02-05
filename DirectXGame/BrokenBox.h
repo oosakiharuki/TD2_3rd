@@ -32,6 +32,7 @@ public:
 	void OnCollisionBox(Box* box, AABB aabb);
 	void SetCorrectionPos(Player* player);
 	void Resetcorrection() { correctionPos = {0, 0, 0}; }
+	void ReSetPosition();
 
 private:
 	KamataEngine::Camera* viewProjection_ = nullptr;
