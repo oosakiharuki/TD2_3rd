@@ -125,6 +125,11 @@ void GameScene::Initialize() {
 	stage[7] = "Resources/stageCsv/stage08.csv";
 	stage[8] = "Resources/stageCsv/stage09.csv";
 	stage[9] = "Resources/stageCsv/stage10.csv";
+	stage[10] = "Resources/stageCsv/stage11.csv";
+	stage[11] = "Resources/stageCsv/stage12.csv";
+	stage[12] = "Resources/stageCsv/stage13.csv";
+	stage[13] = "Resources/stageCsv/stage14.csv";
+	stage[14] = "Resources/stageCsv/stage15.csv";
 	
 	mapchip_ = new MapChip();
 	mapchip_->LordCSV(stageNum);
@@ -194,7 +199,11 @@ void GameScene::Initialize() {
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, fadeTime_);
 
-
+	textureHandle_ = TextureManager::Load("numbersSheet_UI.png");
+	sprite_ = Sprite::Create(textureHandle_, Vector2(12, 12));
+	sprite_->SetSize(Vector2{92, 64});
+	texLT.x += 368 * (float)NowStage;
+	sprite_->SetTextureRect(texLT, texSize);
 }
 
 void GameScene::Update() { 
@@ -230,6 +239,18 @@ void GameScene::Update() {
 				box->RestPosition();
 				player1_->ResetPosition();
 				player2_->ResetPosition();
+				player1_->ReSetHp();
+				player2_->ReSetHp();
+				for (uint32_t i = 0; i < maxGate; i++) {
+					right[i] = false;
+					left[i] = false;
+				}
+				for (Door1* door : doors) {
+					door->ReSetClose();
+				}
+				for (BrokenBox* brokenBox_ : brokenBoxes){
+					brokenBox_->ReSetPosition();				
+				}
 			}
 		}
 	
@@ -397,7 +418,8 @@ void GameScene::Draw() {
 
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
-	/// </summary>
+	/// </summary>	
+	sprite_->Draw();
 	switch (phase_) {
 	case GameScene::Phase::kMain:
 		menuAttendSprite_->Draw();
@@ -1014,6 +1036,10 @@ void GameScene::SwitchToNextStage() {
 	for (uint32_t i = 0; i < maxStage; i++) {
 		if (stageNum == stage[i]) {
 			stageNum = stage[i + 1];
+			texLT.x += 368;
+			sprite_->SetTextureRect(texLT, texSize);
+			player1_->ReSetHp();
+			player2_->ReSetHp();
 			break;
 		}
 	}
