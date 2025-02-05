@@ -102,6 +102,7 @@ private:
 	Model* modelHopRope_ = nullptr;
 	Model* modelSwitch1_ = nullptr;
 	Model* modelSwitch2_ = nullptr;
+	Model* modelBoxSwitch_ = nullptr;
 	Model* modelGoal_ = nullptr;
 
 	WorldTransform worldTransform_;
