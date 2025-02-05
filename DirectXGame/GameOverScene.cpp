@@ -23,8 +23,8 @@ void GameOverScene::Initialise() {
 	titleTexture_ = KamataEngine::TextureManager::Load("gameOver3.png");
 	titleSprite_ = KamataEngine::Sprite::Create(titleTexture_, {0.0f, 0.0f});
 
-	bgmDataHandle_ = audio_->LoadWave("bgm.wav");
-	bgmVoiceHandle_ = audio_->PlayWave(bgmDataHandle_, true, 0.3f);
+	bgmDataHandle_ = audio_->LoadWave("gameover.wav");
+	bgmVoiceHandle_ = audio_->PlayWave(bgmDataHandle_, false, 0.3f);
 
 	buttonDataHande_ = audio_->LoadWave("button.wav");
 

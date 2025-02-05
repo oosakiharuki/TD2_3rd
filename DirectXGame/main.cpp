@@ -179,17 +179,15 @@ void ChangeScene() {
 
     			titleScene = new TitleScene();
     			titleScene->Initialise();
-    		}
-		}
+			} else if (gameScene->IsDead()) {
+    			scene = Scene::kGameOver;
 
-			if (gameScene->IsDead()) {
-			scene = Scene::kTitle;
+	    		delete gameScene;
+    			gameScene = nullptr;
 
-			delete gameOverScene;
-			gameOverScene = nullptr;
-
-			gameOverScene = new GameOverScene();
-			gameOverScene->Initialise();
+    			gameOverScene = new GameOverScene();
+    			gameOverScene->Initialise();
+  			}
 		}
 		break;
 	case Scene::kGameOver:
