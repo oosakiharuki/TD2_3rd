@@ -26,6 +26,7 @@ GameScene::~GameScene() {
 	delete mapchip_;
 	delete modelSwitch1_;
 	delete modelSwitch2_;
+	delete modelBoxSwitch_;
 	delete modelGoal_;
 
 	delete player1_;
@@ -138,6 +139,7 @@ void GameScene::Initialize() {
 	modelBom2 = Model::CreateFromOBJ("bom",true);
 	modelSwitch1_ = Model::CreateFromOBJ("electroSwitch1", true);
 	modelSwitch2_ = Model::CreateFromOBJ("electroSwitch2", true);
+	modelBoxSwitch_ = Model::CreateFromOBJ("boxSwitch", true);
 	modelGoal_ = Model::CreateFromOBJ("goal", true);
 
 	bgmDataHandle_ = audio_->LoadWave("bgm.wav");
@@ -156,10 +158,12 @@ void GameScene::Initialize() {
 	player1_ = new Player();
 	player1_->Initialize(modelPlayer1_, 1);
 	player1_->SetWorldPosition(playerPosition[0]);
+	player1_->SetStarrPosition(playerPosition[0]);
 
 	player2_ = new Player();
 	player2_->Initialize(modelPlayer2_, 2);
 	player2_->SetWorldPosition(playerPosition[1]);
+	player2_->SetStarrPosition(playerPosition[1]);
 	
 	rope_ = new Rope();
     rope_->Initialize(player1_, player2_, input_, modelCarryRope_, modelHopRope_);
@@ -216,6 +220,8 @@ void GameScene::Update() {
 			box->Update();
 			if (input_->TriggerKey(DIK_R) || ((state.Gamepad.wButtons & XINPUT_GAMEPAD_Y) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_Y))) {
 				box->RestPosition();
+				player1_->ResetPosition();
+				player2_->ResetPosition();
 			}
 		}
 	
@@ -236,10 +242,11 @@ void GameScene::Update() {
 
     	cameraController->Update();
 
-		if (input_->TriggerKey(DIK_C) || 
+		/*		if (input_->TriggerKey(DIK_C) || 
 			((state.Gamepad.wButtons & XINPUT_GAMEPAD_X) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_X))) {
 			clear_ = true;
-		}
+		}*/
+
 
 		break;
 	case GameScene::Phase::kFadeIn:
@@ -907,7 +914,9 @@ void GameScene::ChangePhase() {
 
 				GenerateBlocks();
 			    player1_->SetWorldPosition(playerPosition[0]);
+				player1_->SetStarrPosition(playerPosition[0]);
 			    player2_->SetWorldPosition(playerPosition[1]);
+				player2_->SetStarrPosition(playerPosition[1]);
 				rope_->SetBoxes(boxes);
 
 				clear_ = false;
