@@ -103,6 +103,7 @@ private:
 	Model* modelHopRope_ = nullptr;
 	Model* modelSwitch1_ = nullptr;
 	Model* modelSwitch2_ = nullptr;
+	Model* modelBoxSwitch_ = nullptr;
 	Model* modelGoal_ = nullptr;
 
 	WorldTransform worldTransform_;
@@ -183,7 +184,21 @@ private:
 	Goal* goal_ = nullptr;
 	std::list<Goal*> goals_;
 
+
 	std::list<OnBoxSwitch*> onBoxSwitches;
 	std::list<OnBoxSwitch*> onBoxSwitchesList[5];
 	bool OnBox[5];
+
+	uint32_t bgmDataHandle_ = 0;
+	uint32_t buttonDataHande_ = 0;
+	uint32_t selectDataHandle_ = 0;
+	uint32_t menuButtonDataHandle_ = 0;
+	uint32_t clearDataHandle_ = 0;
+
+	uint32_t bgmVoiceHandle_ = 0;
+	uint32_t buttonVoiceHandle_ = 0;
+	uint32_t selectVoiceHandle_ = 0;
+	uint32_t menuButtonVoiceHandle_ = 0;
+	uint32_t clearVoiceHandle_ = 0;
+
 };

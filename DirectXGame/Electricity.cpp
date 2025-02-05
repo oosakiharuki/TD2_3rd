@@ -14,7 +14,7 @@ void Electricity::Initialize(KamataEngine::Model* model, KamataEngine::Model* mo
 	worldTransform_.translation_.y = 5.0f;
 	//
 	
-
+	Flag = false;
 	
 
 	viewProjection_ = viewProjection;

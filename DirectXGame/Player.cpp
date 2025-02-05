@@ -113,6 +113,10 @@ void Player::SetWorldPosition(const KamataEngine::Vector3& position) {
 	worldTransform_.translation_ = position; 
 }
 
+void Player::SetStarrPosition(const KamataEngine::Vector3& position) { 
+	startPosition_ = position; 
+}
+
 AABB Player::GetAABB() {
 	KamataEngine::Vector3 worldPos = worldTransform_.translation_;
 	AABB aabb;

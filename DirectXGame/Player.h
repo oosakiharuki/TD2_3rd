@@ -24,6 +24,9 @@ public:
     KamataEngine::Vector3 GetWorldPosition();
 
 	void SetWorldPosition(const KamataEngine::Vector3& position);
+	void SetStarrPosition(const KamataEngine::Vector3& position);
+
+	void ResetPosition() { worldTransform_.translation_ = startPosition_; }
 	// AABBを取得
 	AABB GetAABB();
 	void OnCollision(const Electricity* electricity);
@@ -39,6 +42,7 @@ private:
 	XINPUT_STATE state, preState;
 
 	KamataEngine::WorldTransform worldTransform_;
+	KamataEngine::Vector3 startPosition_ = {0.0f, 0.0f, 0.0f};
 
 	KamataEngine::Model* model_ = nullptr;
 	float radius_ = 1.0f;
