@@ -1,12 +1,20 @@
 #include "Artillery.h"
 #include "Bullet.h"
 
-void Artillery::Initialize(KamataEngine::Model* model, KamataEngine::Model* model2, KamataEngine::Camera* camera) {
+Artillery::~Artillery() {
+	for (Bullet* bullet : bullets_) {
+		delete bullet;
+	}
+}
+
+void Artillery::Initialize(KamataEngine::Model* model, KamataEngine::Model* model2, KamataEngine::Camera* camera, KamataEngine::Vector3 position) {
 	model_ = model;
 	model2_ = model2;
 	viewProjection_ = camera;
 	worldTransform_.Initialize();
+	worldTransform_.translation_ = position;
 	worldTransform2_.Initialize();
+	worldTransform2_.translation_ = position;
 	objColor.Initialize();
 	Timer_ = 0;
 }
@@ -21,19 +29,18 @@ void Artillery::Update() {
 		return false;
 	});
 	if (!isDead) {
-	Timer_--;
-	if (Timer_ < 0) {
-		Fire();
-		Timer_ = kFireInterval;
-	}
+		Timer_--;
+		if (Timer_ < 0) {
+			Fire();
+			Timer_ = kFireInterval;
+		}
 
-	// ある一定まで行ったらフラグを戻してタイマーも戻す
-	for (Bullet* bullet : bullets_) {
-		bullet->Update();
+		// ある一定まで行ったらフラグを戻してタイマーも戻す
+		for (Bullet* bullet : bullets_) {
+			bullet->Update();
+		}
+		worldTransform_.UpdateMatrix();
 	}
-	worldTransform_.translation_ = {2.0f, 2.0f, 0.0f};
-	worldTransform_.UpdateMatrix();
-}
 }
 
 void Artillery::Draw() {

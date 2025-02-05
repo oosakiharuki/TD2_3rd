@@ -7,8 +7,9 @@
 class Bullet;
 class Artillery {
 public:
+	~Artillery();
 	// 初期化
-	void Initialize(KamataEngine::Model* model, KamataEngine::Model* model2, KamataEngine::Camera* camera);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Model* model2, KamataEngine::Camera* camera, KamataEngine::Vector3 position);
 
 	// 更新
 	void Update();

@@ -3,6 +3,7 @@
 #include <3d/Model.h>
 #include <3d/ObjectColor.h>
 #include <3d/WorldTransform.h>
+#include "AABB.h"
 
 class Box {
 public:
@@ -28,6 +29,7 @@ public:
 	Mode GetNowMode() const { return mode_; }
 
 	KamataEngine::Vector3 GetWorldPosition();
+	AABB GetAABB();
 
 	void RestPosition() { worldTransform_.translation_ = startPos_; }
 
@@ -46,4 +48,8 @@ public:
 	KamataEngine::Vector3 startPos_ = {0.0f, 0.0f, 0.0f};
 
 	Mode mode_ = Mode::Normal;
+
+	// 当たり判定サイズ
+	static inline const float kWidth = 1.0f;
+	static inline const float kHeight = 1.0f;
 };

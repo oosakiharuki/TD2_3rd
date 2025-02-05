@@ -26,6 +26,21 @@ void SelectScene::Initialize() {
 	stage[2] = "Resources/stageCsv/stage03.csv";
 	stage[3] = "Resources/stageCsv/stage04.csv";
 	stage[4] = "Resources/stageCsv/stage05.csv";
+	stage[5] = "Resources/stageCsv/stage06.csv";
+	//stage[6] = "Resources/stageCsv/stage07.csv";
+	//stage[7] = "Resources/stageCsv/stage08.csv";
+	//stage[8] = "Resources/stageCsv/stage09.csv";
+	//stage[9] = "Resources/stageCsv/stage10.csv";
+	//stage[10] = "Resources/stageCsv/stage11.csv";
+	//stage[11] = "Resources/stageCsv/stage12.csv";
+	//stage[12] = "Resources/stageCsv/stage13.csv";
+	//stage[13] = "Resources/stageCsv/stage14.csv";
+	//stage[14] = "Resources/stageCsv/stage15.csv";
+	//stage[15] = "Resources/stageCsv/stage16.csv";
+	//stage[16] = "Resources/stageCsv/stage17.csv";
+	//stage[17] = "Resources/stageCsv/stage18.csv";
+	//stage[18] = "Resources/stageCsv/stage19.csv";
+	//stage[19] = "Resources/stageCsv/stage20.csv";
 
 	textureHandle_ = TextureManager::Load("numbersSheet.png");
 	sprite_ = Sprite::Create(textureHandle_, Vector2(450, 230));

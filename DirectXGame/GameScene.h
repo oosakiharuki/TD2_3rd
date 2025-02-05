@@ -125,16 +125,14 @@ private:
 	std::list<MapWall*> blocks_;
 	std::list<Box*> boxes;
 	
-	std::list<Gate*> gates;
-	std::list<Gate*> gatesList[5];//deleteはいらない
-	bool isGate = false;
 	uint32_t gateCount = 0u;
 	uint32_t maxGate = 5; // とりあえず五個目安
 	uint32_t playerNum = 0u;
 
-	const char* stage[5];
+	const char* stage[20];
 	const char* stageNum;
 	MapChip* mapchip_ = nullptr;
+	const uint32_t maxStage = 5;
 
 	bool isPair = false;
 	// bool isPairVartical = false;
@@ -150,7 +148,7 @@ private:
 	std::list<Door1*> doors;
 	std::list<Door1*> doorsList[5];
 	uint32_t doorCount = 0;
-	Artillery* artillery = nullptr;
+	std::list<Artillery*> artilleries;
 	bool left[5] = {false};
 	bool right[5] = {false};
 	bool openFlag = false;

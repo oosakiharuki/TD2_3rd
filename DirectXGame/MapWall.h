@@ -4,13 +4,7 @@
 #include "3d/WorldTransform.h"
 #include"AABB.h"
 class Player;
-
-struct Rect {
-	KamataEngine::Vector2 leftTop;
-	KamataEngine::Vector2 rightTop;
-	KamataEngine::Vector2 leftBottom;
-	KamataEngine::Vector2 rightBottom;
-};
+class Box;
 
 class MapWall {
 public:
@@ -18,10 +12,13 @@ public:
 	void Initialize(KamataEngine::Model* model, uint32_t texture, KamataEngine::Camera* viewProjection, KamataEngine::Vector3 position);
 	void Update();
 	void Draw();
-	void OnCollision(Player* player,AABB aabb);
 	AABB GetAABB();
-	void SetHeight() { isHeight = true; }
-	void SetWidth() {isWidth = true; }
+	void OnCollisionPlayer(Player* player, AABB aabb);
+	void OnCollisionBox(Box* box, AABB aabb);
+	void SetCorrectionPos(Player* player);
+	KamataEngine::Vector3 GetWorldPosition() { return worldTransform_.translation_; }
+
+	void Resetcorrection() { correctionPos = {0, 0, 0}; }
 
 private:
 	KamataEngine::WorldTransform worldTransform_;
@@ -33,16 +30,7 @@ private:
 	static inline const float kWidth = 1.0f;
 	static inline const float kHeight = 1.0f;
 
-	// 当たり判定用のサイズ
-	float sizeX = 1;
-	float sizeY = 1;
+	KamataEngine::Vector3 correctionPos;
 
 	Rect rect;
-	float left = 0;
-	float right = 0;
-	float top = 0;
-	float bottom = 0;
-
-	bool isHeight = false;
-	bool isWidth = false;
 };
