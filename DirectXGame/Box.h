@@ -7,7 +7,7 @@
 
 class Box {
 public:
-	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection,KamataEngine::Vector3 position);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection, KamataEngine::Vector3 position, KamataEngine::Vector3 startPos);
 
 	void Update();
 
@@ -31,6 +31,8 @@ public:
 	KamataEngine::Vector3 GetWorldPosition();
 	AABB GetAABB();
 
+	void RestPosition() { worldTransform_.translation_ = startPos_; }
+
 	private:
 
 	KamataEngine::Camera* viewProjection_ = nullptr;
@@ -43,6 +45,7 @@ public:
 
 	float radius_ = 1.0f;
 	KamataEngine::Vector3 velocity_ = {0.0f, 0.0f, 0.0f};
+	KamataEngine::Vector3 startPos_ = {0.0f, 0.0f, 0.0f};
 
 	Mode mode_ = Mode::Normal;
 

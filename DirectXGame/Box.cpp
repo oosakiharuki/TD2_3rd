@@ -7,13 +7,14 @@
 
 using namespace KamataEngine::MathUtility;
 
-void Box::Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection, KamataEngine::Vector3 position) {
+void Box::Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection, KamataEngine::Vector3 position, KamataEngine::Vector3 startPos) {
 
 	viewProjection_ = viewProjection;
 	model_ = model;
 	objColor.Initialize();
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
+	startPos_ = startPos;
 }
 
 void Box::Update() {

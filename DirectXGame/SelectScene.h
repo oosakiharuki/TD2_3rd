@@ -88,4 +88,14 @@ private:
     bool menuClosedRecently = false; // メニュー閉じた直後かどうか
 	int menuCloseTimer = 0;          // メニュー閉じた後のカウントダウン
 	const int menuCloseDelay = 10;   // 10フレームの遅延を設定
+
+	uint32_t bgmDataHandle_ = 0;
+	uint32_t buttonDataHande_ = 0;
+	uint32_t selectDataHandle_ = 0;
+	uint32_t menuButtonDataHandle_ = 0;
+
+	uint32_t bgmVoiceHandle_ = 0;
+	uint32_t buttonVoiceHandle_ = 0;
+	uint32_t selectVoiceHandle_ = 0;
+	uint32_t menuButtonVoiceHandle_ = 0;
 };

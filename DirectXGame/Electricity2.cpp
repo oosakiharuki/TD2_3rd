@@ -13,6 +13,8 @@ void Electricity2::Initialize(KamataEngine::Model* model, KamataEngine::Model* m
 	viewProjection_ = viewProjection;
 	objColor.Initialize();
 	objColor.SetColor({1, 0, 0, 1});
+
+	Flag = false;
 }
 
 void Electricity2::Update() {
