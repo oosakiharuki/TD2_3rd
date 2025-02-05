@@ -20,6 +20,7 @@ public:
 	void SetCorrectionPos(Player* player);
 	void Resetcorrection() { correctionPos = {0, 0, 0}; }
 	void SetFlag(bool Flag1, bool Flag2);
+	void SetFlagSwitch(bool Flag);
 	void Vartical();
 
 private:
@@ -32,7 +33,9 @@ private:
 
 	KamataEngine::ObjectColor objColor = {};
 	bool Flag;
-	KamataEngine::Vector3 kSpeed ;
+	bool FlagSwitch;
+	KamataEngine::Vector3 kSpeed;
+	KamataEngine::Vector3 kReturnSpeed;
 	// キャラクターの当たり判定サイズ
 	static inline const float kWidth = 1.0f;
 	static inline const float kHeight = 1.0f;
@@ -41,6 +44,15 @@ private:
 	float sizeX = 0;
 	float sizeY = 0;
 
+	// 当たり判定用のサイズ
+	float sizeXswitch = 0;
+	float sizeYswitch = 0;
+	
 	Rect rect;
 	KamataEngine::Vector3 correctionPos;
+
+	bool isVartical = false;
+	bool CloseFlag = false;
+	//一瞬で押してドアが止まらないようにするFlag
+	bool doorMove = false;
 };

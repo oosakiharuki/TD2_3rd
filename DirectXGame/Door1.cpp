@@ -8,7 +8,8 @@
 
 void Door1::Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewProjection, KamataEngine::Vector3 position, KamataEngine::Vector3 speed) {
 	model_ = model;
-	kSpeed=speed;
+	kSpeed = speed;
+	kReturnSpeed = {0};
 	viewProjection_ = viewProjection;
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
@@ -18,18 +19,43 @@ void Door1::Initialize(KamataEngine::Model* model, KamataEngine::Camera* viewPro
 
 	objColor.Initialize();
 	Flag = false;
-	
+	FlagSwitch = false;
+
 }
 
 void Door1::Update() {
+
 	if (Flag) {
 		worldTransform_.translation_ -= kSpeed;
 		worldTransform_.scale_.x -= 1.0f;
 	}
-	if (worldTransform_.scale_.x <= 0) {
-		worldTransform_.scale_.x = 0;
-		kSpeed = {0};
+
+	if (FlagSwitch) {
+		worldTransform_.translation_ -= kSpeed;
+		worldTransform_.scale_.x -= 1.0f;
+	} else if (CloseFlag) {
+		worldTransform_.translation_ += kReturnSpeed;
+		worldTransform_.scale_.x += 1.0f;
 	}
+
+	if (worldTransform_.scale_.x <= 0 && (FlagSwitch || Flag)) {
+		worldTransform_.scale_.x = 0;
+		kReturnSpeed += kSpeed;
+		kSpeed = {0};
+		doorMove = false;
+	} else if (worldTransform_.scale_.x >= 5 && CloseFlag) {
+		worldTransform_.scale_.x = 5;
+		kSpeed += kReturnSpeed;
+		kReturnSpeed = {0};
+		CloseFlag = false;
+		doorMove = false;
+	}
+
+	if (worldTransform_.scale_.x > 0 && worldTransform_.scale_.x < 5.0f) {
+		doorMove = true;
+	}
+
+
 
 	worldTransform_.UpdateMatrix();
 }
@@ -90,31 +116,55 @@ void Door1::OnCollisionBox(Box* box) {
 	// 衝突判定
 	if (AABB::IsCollision(boxAABB, doorAABB)) {
 		//KamataEngine::Vector3 correction = {0.0f, 0.0f, 0.0f};
-		// 上下の判定
-		if (boxPos.y < worldTransform_.translation_.y - doorHeight) {
-			// プレイヤーがドアの下にいる場合
-			correction.y = doorAABB.min.y - boxAABB.max.y;
-			Bound.y = -0.1f;
-		} else if (boxPos.y > worldTransform_.translation_.y + doorHeight) {
-			// プレイヤーがドアの上にいる場合
-			correction.y = doorAABB.max.y - boxAABB.min.y;
-			Bound.y = 0.1f;
-		} else {
+		if (isVartical) {
 			// 水平位置の調整
-			if (boxPos.x < worldTransform_.translation_.x) {
-				// プレイヤーがドアの左側にいる場合
-				correction.x = doorAABB.min.x - boxAABB.max.x;	
-				Bound.x = 0.1f;
-			} else if (boxPos.x > worldTransform_.translation_.x + doorWidth) {
-				// プレイヤーがドアの右側にいる場合
-				correction.x = doorAABB.max.x - boxAABB.min.x;
+			if (boxPos.x < worldTransform_.translation_.x - doorWidth) {
+				// プレイヤーがドアのにいる場合
+				correction.x = doorAABB.min.x - boxAABB.max.x;
 				Bound.x = -0.1f;
+			} else if (boxPos.x > worldTransform_.translation_.x + doorWidth) {
+				// プレイヤーがドアのにいる場合
+				correction.x = doorAABB.max.x - boxAABB.min.x;
+				Bound.x = 0.1f;
+			} else {
+				// 上下の判定
+				if (boxPos.y > worldTransform_.translation_.y - doorHeight) {	
+					// プレイヤーがドアの上にいる場合
+					correction.x = doorAABB.max.x - boxAABB.min.x;
+					Bound.x = 0.1f;
+				} else if (boxPos.y < worldTransform_.translation_.y + doorHeight) {
+					// プレイヤーがドアの下にいる場合
+					correction.x = doorAABB.min.x - boxAABB.max.x;
+					Bound.x = -0.1f;
+				}
+			}
+		} else { 
+			// 上下の判定
+			if (boxPos.y < worldTransform_.translation_.y - doorHeight) {
+				// プレイヤーがドアの下にいる場合
+				correction.y = doorAABB.min.y - boxAABB.max.y;
+				Bound.y = -0.1f;
+			} else if (boxPos.y > worldTransform_.translation_.y + doorHeight) {
+				// プレイヤーがドアの上にいる場合
+				correction.y = doorAABB.max.y - boxAABB.min.y;
+				Bound.y = 0.1f;
+			} else {
+				// 水平位置の調整
+				if (boxPos.x < worldTransform_.translation_.x) {
+					// プレイヤーがドアの左側にいる場合
+					correction.y = doorAABB.min.y - boxAABB.max.y;
+					Bound.x = 0.1f;
+				} else if (boxPos.x > worldTransform_.translation_.x + doorWidth) {
+					// プレイヤーがドアの右側にいる場合
+					correction.y = doorAABB.max.y - boxAABB.min.y;
+					Bound.x = -0.1f;
+				}
 			}
 		}
 		// プレイヤー位置を修正
 		box->SetWorldPosition(boxPos + correction);
 	}
-
+	
 	correctionPos = correction;
 
 	// ハコ位置を修正
@@ -137,9 +187,30 @@ void Door1::SetFlag(bool Flag1, bool Flag2) {
 	}
 }
 
+void Door1::SetFlagSwitch(bool Flag1) {
+
+	if (!doorMove) {
+		FlagSwitch = Flag1;
+	}
+	if (FlagSwitch) {
+		sizeX = -1;
+		sizeY = -1;
+		CloseFlag = true;
+	} else {
+		if (isVartical) {
+			sizeX = worldTransform_.scale_.y;
+			sizeY = worldTransform_.scale_.x;
+		} else {
+			sizeX = worldTransform_.scale_.x;
+			sizeY = worldTransform_.scale_.y;
+		}
+	}
+}
+
 void Door1::Vartical() { 	
 	float rotate = float(M_PI) / 2.0f;
 	worldTransform_.rotation_ = {0, 0, rotate};
 	sizeX = worldTransform_.scale_.y;
 	sizeY = worldTransform_.scale_.x;
+	isVartical = true;
 }
