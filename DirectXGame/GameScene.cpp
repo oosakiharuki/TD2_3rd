@@ -529,7 +529,7 @@ void GameScene::GenerateBlocks() {
 				artilleries.push_back(artillery);
 			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kBoxSwitch) {
 				OnBoxSwitch* onBoxSwitch = new OnBoxSwitch();
-				onBoxSwitch->Initialize(modelSwitch1_, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
+				onBoxSwitch->Initialize(modelBoxSwitch_, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
 
 				onBoxSwitches.push_back(onBoxSwitch);
 				onBoxSwitchesList[electNum].push_back(onBoxSwitch);
