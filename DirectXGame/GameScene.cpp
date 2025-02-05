@@ -76,6 +76,10 @@ GameScene::~GameScene() {
 	goals_.clear();
 	delete goal_;
 
+	for (OnBoxSwitch* onBoxSwitch : onBoxSwitches) {
+		delete onBoxSwitch;
+	}
+
 	delete cameraController;
 
 	delete fade_;
@@ -111,7 +115,7 @@ void GameScene::Initialize() {
 	worldTransform_.Initialize();
 
 	// ステージ名
-	stage[0] = "Resources/stageCsv/stage01.csv";
+	stage[0] = "Resources/stageCsv/stage10.csv";
 	stage[1] = "Resources/stageCsv/stage02.csv";
 	stage[2] = "Resources/stageCsv/stage03.csv";
 	stage[3] = "Resources/stageCsv/stage04.csv";
@@ -239,6 +243,9 @@ void GameScene::Update() {
 
     	rope_->Update();
 		goal_->Update();
+		for (OnBoxSwitch* onBoxSwitch : onBoxSwitches) {
+			onBoxSwitch->Update();
+		}
 
     	cameraController->Update();
 
@@ -281,6 +288,10 @@ void GameScene::Update() {
 		for (Artillery* artillery : artilleries) {
 			artillery->Update();
 		}
+		for (OnBoxSwitch* onBoxSwitch : onBoxSwitches) {
+			onBoxSwitch->Update();
+		}
+
 		player1_->PlayerUpdateMatrix();
 		player2_->PlayerUpdateMatrix();
 
@@ -358,6 +369,11 @@ void GameScene::Draw() {
 	for (Artillery* artillery : artilleries) {
 		artillery->Draw();
 	}
+
+	for (OnBoxSwitch* onBoxSwitch : onBoxSwitches) {
+		onBoxSwitch->Draw();
+	}
+
 	viewProjection_.matView = cameraController->GetViewProjection().matView;
 	viewProjection_.matProjection = cameraController->GetViewProjection().matProjection;
 	viewProjection_.TransferMatrix();
@@ -508,6 +524,13 @@ void GameScene::GenerateBlocks() {
 				artillery->Initialize(modelBom, modelBom2, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
 
 				artilleries.push_back(artillery);
+			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kBoxSwitch) {
+				OnBoxSwitch* onBoxSwitch = new OnBoxSwitch();
+				onBoxSwitch->Initialize(modelSwitch1_, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
+
+				onBoxSwitches.push_back(onBoxSwitch);
+				onBoxSwitchesList[electNum].push_back(onBoxSwitch);
+				electNum++;
 			}
 		}
 	}
@@ -522,7 +545,7 @@ void GameScene::CheckAllCollision() {
 	aabb2 = player2_->GetAABB();
 
 	for (uint32_t i = 0; i < maxGate; i++) {
-		//左側
+		// 左側
 		for (Electricity* elect : electricitys[i]) {
 			AABB ElectAABB = elect->GetAABB();
 			if (AABB::IsCollision(aabb1, ElectAABB)) {
@@ -535,7 +558,7 @@ void GameScene::CheckAllCollision() {
 		}
 
 		for (Electricity2* elect : electricitys2[i]) {
-			//右側
+			// 右側
 			AABB ElectAABB = elect->GetAABB();
 			if (AABB::IsCollision(aabb2, ElectAABB)) {
 				player2_->OnCollision2(elect);
@@ -546,6 +569,22 @@ void GameScene::CheckAllCollision() {
 			}
 		}
 
+
+		for (OnBoxSwitch* onBoxSwitch : onBoxSwitchesList[i]) {
+			AABB switchAABB = onBoxSwitch->GetAABB();
+		
+			for (Box* box : boxes) {
+				AABB boxAABB= box->GetAABB();
+
+				if (AABB::IsCollision(boxAABB, switchAABB)) {
+					onBoxSwitch->OnCollision();
+					OnBox[i] = true;
+					break;
+				} else {
+					OnBox[i] = false;
+				}
+			}	
+		}
 		for (Door1* door : doorsList[i]) {
 			for (Box* box : boxes) {
 				door->OnCollisionBox(box);
@@ -554,6 +593,7 @@ void GameScene::CheckAllCollision() {
 				door->Resetcorrection();
 			}
 			door->SetFlag(left[i], right[i]);
+			door->SetFlagSwitch(OnBox[i]);
 		}
 	}
 
@@ -998,10 +1038,20 @@ void GameScene::ClearObject() {
 	doors.clear();
 	doorCount = 0;
 
+  
+	for (OnBoxSwitch* onBoxSwitch : onBoxSwitches) {
+		delete onBoxSwitch;
+		onBoxSwitch = nullptr;
+	}
+	onBoxSwitches.clear();
+
 	for (uint32_t i = 0; i < maxGate; i++) {
 		electricitys[i].clear();
 		electricitys2[i].clear();
 		doorsList[i].clear();
+		onBoxSwitchesList[i].clear();
+		onBoxSwitchesList[i].clear();
+		OnBox[i] = false;
 	}
 
 	// Blocksの解放

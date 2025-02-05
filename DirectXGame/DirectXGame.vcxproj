@@ -125,6 +125,7 @@
     <ClCompile Include="makeMath.cpp" />
     <ClCompile Include="MapChip.cpp" />
     <ClCompile Include="MapWall.cpp" />
+    <ClCompile Include="OnBoxSwitch.cpp" />
     <ClCompile Include="SelectScene.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="TitleScene.cpp" />
@@ -226,6 +227,7 @@
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="makeMath.h" />
     <ClInclude Include="MapWall.h" />
+    <ClInclude Include="OnBoxSwitch.h" />
     <ClInclude Include="SelectScene.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="TitleScene.h" />

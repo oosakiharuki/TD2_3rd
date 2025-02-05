@@ -17,6 +17,7 @@
 #include "Door1.h"
 #include "MapWall.h"
 #include "Goal.h"
+#include "OnBoxSwitch.h"
 
 using namespace KamataEngine;
 
@@ -182,6 +183,11 @@ private:
 
 	Goal* goal_ = nullptr;
 	std::list<Goal*> goals_;
+
+
+	std::list<OnBoxSwitch*> onBoxSwitches;
+	std::list<OnBoxSwitch*> onBoxSwitchesList[5];
+	bool OnBox[5];
 
 	uint32_t bgmDataHandle_ = 0;
 	uint32_t buttonDataHande_ = 0;

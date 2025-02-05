@@ -16,6 +16,7 @@ enum class MapChipType {
 	kPlayerPos,    // プレイヤーの初期地点
 	kGoal,         // ゴール
 	kArtillery,    // 大砲
+	kBoxSwitch     // ハコで踏めるスイッチ
 };
 
 struct MapChipData{
