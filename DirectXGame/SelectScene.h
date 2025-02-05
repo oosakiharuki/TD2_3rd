@@ -49,7 +49,7 @@ private:
 
 	bool finished_ = false;
 	int number = 1;
-	int MaxStage = 6;
+	int MaxStage = 10;
 	const char* stage[20];//MaxStageと合わせて変えてね
 
 	const char* nowStage;

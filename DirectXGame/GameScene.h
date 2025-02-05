@@ -134,7 +134,7 @@ private:
 	const char* stage[20];
 	const char* stageNum;
 	MapChip* mapchip_ = nullptr;
-	const uint32_t maxStage = 5;
+	const uint32_t maxStage = 9;
 
 	bool isPair = false;
 	// bool isPairVartical = false;

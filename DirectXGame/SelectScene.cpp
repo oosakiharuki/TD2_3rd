@@ -21,16 +21,16 @@ void SelectScene::Initialize() {
 	audio_ = Audio::GetInstance();
 
 	//ステージ名
-	stage[0] = "Resources/stageCsv/stage09.csv";
+	stage[0] = "Resources/stageCsv/stage01.csv";
 	stage[1] = "Resources/stageCsv/stage02.csv";
 	stage[2] = "Resources/stageCsv/stage03.csv";
 	stage[3] = "Resources/stageCsv/stage04.csv";
 	stage[4] = "Resources/stageCsv/stage05.csv";
 	stage[5] = "Resources/stageCsv/stage06.csv";
-	//stage[6] = "Resources/stageCsv/stage07.csv";
-	//stage[7] = "Resources/stageCsv/stage08.csv";
-	//stage[8] = "Resources/stageCsv/stage09.csv";
-	//stage[9] = "Resources/stageCsv/stage10.csv";
+	stage[6] = "Resources/stageCsv/stage07.csv";
+	stage[7] = "Resources/stageCsv/stage08.csv";
+	stage[8] = "Resources/stageCsv/stage09.csv";
+	stage[9] = "Resources/stageCsv/stage10.csv";
 	//stage[10] = "Resources/stageCsv/stage11.csv";
 	//stage[11] = "Resources/stageCsv/stage12.csv";
 	//stage[12] = "Resources/stageCsv/stage13.csv";
