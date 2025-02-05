@@ -57,5 +57,8 @@ private:
 	KamataEngine::Sprite* titleSprite_ = nullptr;
 
 	uint32_t bgmDataHandle_ = 0;
-	uint32_t bgmVoiceHandle = 0;
+	uint32_t buttonDataHande_ = 0;
+
+	uint32_t bgmVoiceHandle_ = 0;
+	uint32_t buttonVoiceHandle_ = 0;
 };

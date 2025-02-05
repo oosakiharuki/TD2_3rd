@@ -184,4 +184,16 @@ private:
 	Goal* goal_ = nullptr;
 	std::list<Goal*> goals_;
 
+	uint32_t bgmDataHandle_ = 0;
+	uint32_t buttonDataHande_ = 0;
+	uint32_t selectDataHandle_ = 0;
+	uint32_t menuButtonDataHandle_ = 0;
+	uint32_t clearDataHandle_ = 0;
+
+	uint32_t bgmVoiceHandle_ = 0;
+	uint32_t buttonVoiceHandle_ = 0;
+	uint32_t selectVoiceHandle_ = 0;
+	uint32_t menuButtonVoiceHandle_ = 0;
+	uint32_t clearVoiceHandle_ = 0;
+
 };

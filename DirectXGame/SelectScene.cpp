@@ -46,6 +46,13 @@ void SelectScene::Initialize() {
 	menuSprite_ = KamataEngine::Sprite::Create(menuTexture_ , {0.0f, 0.0f});
 	cursorSprite_ = KamataEngine::Sprite::Create(cursorTexture_, selectCursorPos);
 
+	bgmDataHandle_ = audio_->LoadWave("bgm.wav");
+	bgmVoiceHandle_ = audio_->PlayWave(bgmDataHandle_, true, 0.3f);
+
+	buttonDataHande_ = audio_->LoadWave("button.wav");
+	selectDataHandle_ = audio_->LoadWave("select.wav");
+	menuButtonDataHandle_ = audio_->LoadWave("menuButton.wav");
+
 	fade_ = new Fade();
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, fadeTime_);
@@ -81,6 +88,7 @@ void SelectScene::Update() {
     		if (number < MaxStage) {
     			if (input_->TriggerKey(DIK_D) || (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) ||
     			    (state.Gamepad.sThumbLX > deadZone && preState.Gamepad.sThumbLX <= deadZone)) {
+					selectVoiceHandle_ = audio_->PlayWave(selectDataHandle_, false, 0.5f);
     				number++;
      				texLT.x += 368;
     			}
@@ -90,6 +98,7 @@ void SelectScene::Update() {
     		if (number > 1) {
     			if (input_->TriggerKey(DIK_A) || (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT) ||
     			    (state.Gamepad.sThumbLX < -deadZone && preState.Gamepad.sThumbLX >= -deadZone)) {
+					selectVoiceHandle_ = audio_->PlayWave(selectDataHandle_, false);
     				number--;
     				texLT.x -= 368;
     			}
@@ -100,6 +109,8 @@ void SelectScene::Update() {
     		// 決定ボタン
     		if (input_->TriggerKey(DIK_SPACE) || (state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
     			nowStage = stage[number - 1]; // 配列に合わせるため
+				audio_->StopWave(bgmVoiceHandle_);
+				buttonVoiceHandle_ = audio_->PlayWave(buttonDataHande_, false );
     			fade_->Start(Fade::Status::FadeOut, fadeTime_);
     			phase_ = Phase::kFadeOut;
     		}
@@ -169,8 +180,15 @@ void SelectScene::Draw() {
 
 void SelectScene::CheckControl(int deadZone) {
 	if (input_->TriggerKey(DIK_ESCAPE) || (state.Gamepad.wButtons & XINPUT_GAMEPAD_START) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_START)) {
+		menuButtonVoiceHandle_ = audio_->PlayWave(menuButtonDataHandle_, false);
 		if (!menuON) {
     		menuON = true;
+		} else {
+			ctrlOpen = false;
+			ctrl_ = Ctrl::kNone;
+			menuON = false;
+			phase_ = Phase::kMain;
+			selectNum = 1;
 		}
 	}
 
@@ -186,6 +204,7 @@ void SelectScene::CheckControl(int deadZone) {
 
 		if (input_->TriggerKey(DIK_SPACE) || 
 			((state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A))) {
+			buttonVoiceHandle_ = audio_->PlayWave(buttonDataHande_, false, 0.5f);
 			switch (selectNum) {
 			case 1:
 				ctrl_ = Ctrl::kKey;
@@ -209,10 +228,12 @@ void SelectScene::CheckControl(int deadZone) {
 	} else if (ctrlOpen && ctrl_ != Ctrl::kNone) {
 		if (input_->TriggerKey(DIK_SPACE) || 
 			((state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A))) {
+			menuButtonVoiceHandle_ = audio_->PlayWave(menuButtonDataHandle_, false);
 			ctrlOpen = false;
 			ctrl_ = Ctrl::kNone;
 			menuON = false;
 			phase_ = Phase::kMain;
+			selectNum = 1;
 
             // メニュー閉じた直後は入力を受け付けない
 			menuClosedRecently = true;
@@ -226,12 +247,14 @@ void SelectScene::UpdateCursorSelection(int maxNum, int deadZone) {
 	// 下方向への入力処理
 	if (input_->TriggerKey(DIK_S) || ((state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)) ||
 	    (state.Gamepad.sThumbLY < -deadZone && preState.Gamepad.sThumbLY >= -deadZone)) {
+		selectVoiceHandle_ = audio_->PlayWave(selectDataHandle_, false);
 		selectNum++;
 	}
 
 	// 上方向への入力処理
 	if (input_->TriggerKey(DIK_W) || ((state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)) ||
 	    (state.Gamepad.sThumbLY > deadZone && preState.Gamepad.sThumbLY <= deadZone)) {
+		selectVoiceHandle_ = audio_->PlayWave(selectDataHandle_, false);
 		selectNum--;
 	}
 

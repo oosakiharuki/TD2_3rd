@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include <cassert>
 #include "Fade.h"
+#include <unordered_set>
 
 GameScene::GameScene(){};
 GameScene::~GameScene() {
@@ -141,6 +142,14 @@ void GameScene::Initialize() {
 	modelSwitch2_ = Model::CreateFromOBJ("electroSwitch2", true);
 	modelGoal_ = Model::CreateFromOBJ("goal", true);
 
+	bgmDataHandle_ = audio_->LoadWave("bgm.wav");
+	bgmVoiceHandle_ = audio_->PlayWave(bgmDataHandle_, true, 0.3f);
+
+	buttonDataHande_ = audio_->LoadWave("button.wav");
+	selectDataHandle_ = audio_->LoadWave("select.wav");
+	menuButtonDataHandle_ = audio_->LoadWave("menuButton.wav");
+	clearDataHandle_ = audio_->LoadWave("clear.wav");
+
 	GenerateBlocks();
 
 	goal_ = new Goal();
@@ -207,6 +216,9 @@ void GameScene::Update() {
 
 		for (Box* box : boxes) {
 			box->Update();
+			if (input_->TriggerKey(DIK_R) || ((state.Gamepad.wButtons & XINPUT_GAMEPAD_Y) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_Y))) {
+				box->RestPosition();
+			}
 		}
 	
 		for (BrokenBox* brokenBox_ : brokenBoxes) {
@@ -224,9 +236,10 @@ void GameScene::Update() {
     	cameraController->Update();
 
 		if (input_->TriggerKey(DIK_C) || 
-			((state.Gamepad.wButtons & XINPUT_GAMEPAD_Y) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_Y))) {
+			((state.Gamepad.wButtons & XINPUT_GAMEPAD_X) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_X))) {
 			clear_ = true;
 		}
+
 		break;
 	default:
 		for (MapWall* block : blocks_) {
@@ -378,23 +391,23 @@ void GameScene::Draw() {
 }
 
 void GameScene::GenerateBlocks() {
-	playerNum = 0;
-	uint32_t kMapHeight = mapchip_->GetNumVirtical();
-	uint32_t kMapWight = mapchip_->GetNumHorizontal();
 
-  
+
+	uint32_t kMapHeight = mapchip_->GetNumVirtical();
+	uint32_t kMapWidth = mapchip_->GetNumHorizontal();
+
 	for (uint32_t i = 0; i < kMapHeight; ++i) {
-		for (uint32_t j = 0; j < kMapWight; ++j) {
+		for (uint32_t j = 0; j < kMapWidth; ++j) {
 			if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kWall) {
 
 				MapWall* block_ = new MapWall();
-				block_->Initialize(model_, texture, & viewProjection_, mapchip_->GetMapChipPosition(j, i));
+				block_->Initialize(model_, texture, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
 
 				blocks_.push_back(block_);
 			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kBox) {
 
 				Box* box = new Box();
-				box->Initialize(modelBlock_, &viewProjection_, mapchip_->GetMapChipPosition(j, i));
+				box->Initialize(modelBlock_, &viewProjection_, mapchip_->GetMapChipPosition(j, i), mapchip_->GetMapChipPosition(j, i));
 
 				boxes.push_back(box);
 			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kBrokenBox) {
@@ -451,17 +464,17 @@ void GameScene::GenerateBlocks() {
 					}
 					doorsList[doorCount].push_back(door);
 					doorCount++;
-				} 
+				}
 			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kDoorVertical) {
 				Door1* door = new Door1();
 				Vector3 kSpeed = {0.0f, 1.0f, 0.0f};
-				
+
 				door->Initialize(modelWall1_, &viewProjection_, mapchip_->GetMapChipPosition(j, i), kSpeed);
-				door->Vartical();//向きを変える処理
+				door->Vartical(); // 向きを変える処理
 				doors.push_back(door);
 				doorsList[doorCount].push_back(door);
 				doorCount++;
-			}else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kPlayerPos) {
+			} else if (mapchip_->GetMapChipTpeByIndex(j, i) == MapChipType::kPlayerPos) {
 				for (uint32_t num = 0; num < 2; num++) {
 					if (playerNum == num) {
 						playerPosition[num] = mapchip_->GetMapChipPosition(j, i);
@@ -472,6 +485,7 @@ void GameScene::GenerateBlocks() {
 		}
 	}
 }
+
 
 void GameScene::CheckAllCollision() { 
 	#pragma region
@@ -668,12 +682,21 @@ void GameScene::ChangePhase() {
 	case GameScene::Phase::kMain:
 		if (input_->TriggerKey(DIK_ESCAPE) || 
 			(state.Gamepad.wButtons & XINPUT_GAMEPAD_START) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_START)) {
+			menuButtonVoiceHandle_ = audio_->PlayWave(menuButtonDataHandle_, false);
 			phase_ = Phase::kMenu;
+            selectNum = 1;
+
 		} else if (clear_) {
+			audio_->StopWave(bgmVoiceHandle_);
+			clearVoiceHandle_ = audio_->PlayWave(clearDataHandle_, false, 0.5f);
 			phase_ = Phase::kClear;
 		}
 		break;
 	case GameScene::Phase::kMenu: {
+		if (input_->TriggerKey(DIK_ESCAPE) || (state.Gamepad.wButtons & XINPUT_GAMEPAD_START) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_START)) {
+			menuButtonVoiceHandle_ = audio_->PlayWave(menuButtonDataHandle_, false);
+			phase_ = Phase::kMain;
+		}
 		// カーソル位置をテーブルで管理
 		constexpr float cursorPositions[] = {275.0f, 360.0f, 450.0f};
 
@@ -686,14 +709,17 @@ void GameScene::ChangePhase() {
 
 		if (input_->TriggerKey(DIK_SPACE) 
 			|| ((state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A))) {
+			buttonVoiceHandle_ = audio_->PlayWave(buttonDataHande_, false);
 			switch (selectNum) {
 			case 1:
 				select_ = Select::kGoStageSelect;
+				audio_->StopWave(bgmVoiceHandle_);
 				fade_->Start(Fade::Status::FadeOut, fadeTime_);
 				phase_ = Phase::kFadeOut;
 				break;
 			case 2:
 				select_ = Select::kGoTitle;
+				audio_->StopWave(bgmVoiceHandle_);
 				fade_->Start(Fade::Status::FadeOut, fadeTime_);
 				phase_ = Phase::kFadeOut;
 				break;
@@ -727,6 +753,7 @@ void GameScene::ChangePhase() {
 
 		if (input_->TriggerKey(DIK_SPACE) || 
 			((state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A))) {
+			buttonVoiceHandle_ = audio_->PlayWave(buttonDataHande_, false);
 			if (stageNum == stage[4]) {
 				switch (selectNum) {
 				case 1:
@@ -782,6 +809,7 @@ void GameScene::ChangePhase() {
 				phase_ = Phase::kFadeIn;
 				fade_->Start(Fade::Status::FadeIn, fadeTime_);
 				select_ = Select::kNone;
+				bgmVoiceHandle_ = audio_->PlayWave(bgmDataHandle_, true, 0.3f);
 				break;
 			default:
     			finished_ = true;
@@ -797,12 +825,14 @@ void GameScene::UpdateCursorSelection(int maxNum, int deadZone) {
 	// 下方向への入力処理
 	if (input_->TriggerKey(DIK_S) || ((state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)) ||
 	    (state.Gamepad.sThumbLY < -deadZone && preState.Gamepad.sThumbLY >= -deadZone)) {
+		selectVoiceHandle_ = audio_->PlayWave(selectDataHandle_, false);
 		selectNum++;
 	}
 
 	// 上方向への入力処理
 	if (input_->TriggerKey(DIK_W) || ((state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)) ||
 	    (state.Gamepad.sThumbLY > deadZone && preState.Gamepad.sThumbLY <= deadZone)) {
+		selectVoiceHandle_ = audio_->PlayWave(selectDataHandle_, false);
 		selectNum--;
 	}
 
@@ -843,25 +873,71 @@ void GameScene::ClearObject() {
 	}
 	gates.clear();
 
-	// Electricityの解放
+    std::unordered_set<Electricity*> deletedElectricity;
+	std::unordered_set<Electricity2*> deletedElectricity2;
+
+	// `electricity` リストの解放
 	for (Electricity*& electrical : electricity) {
-		delete electrical;
-		electrical = nullptr;
+		if (deletedElectricity.find(electrical) == deletedElectricity.end()) {
+			delete electrical;
+			deletedElectricity.insert(electrical);
+		}
 	}
 	electricity.clear();
 
+	// `electricitys` の解放
+	for (int i = 0; i < 5; i++) {
+		for (Electricity*& electrical : electricitys[i]) {
+			if (deletedElectricity.find(electrical) == deletedElectricity.end()) {
+				delete electrical;
+				deletedElectricity.insert(electrical);
+			}
+		}
+		electricitys[i].clear();
+	}
+
+	// `electricity2` リストの解放
 	for (Electricity2*& electrical2 : electricity2) {
-		delete electrical2;
-		electrical2 = nullptr;
+		if (deletedElectricity2.find(electrical2) == deletedElectricity2.end()) {
+			delete electrical2;
+			deletedElectricity2.insert(electrical2);
+		}
 	}
 	electricity2.clear();
 
-	// Doorの解放
+	// `electricitys2` の解放
+	for (int i = 0; i < 5; i++) {
+		for (Electricity2*& electrical2 : electricitys2[i]) {
+			if (deletedElectricity2.find(electrical2) == deletedElectricity2.end()) {
+				delete electrical2;
+				deletedElectricity2.insert(electrical2);
+			}
+		}
+		electricitys2[i].clear();
+	}
+
+
+    std::unordered_set<Door1*> deletedDoors;
+
+	// `doors` の解放
 	for (Door1*& door : doors) {
-		delete door;
-		door = nullptr;
+		if (deletedDoors.find(door) == deletedDoors.end()) {
+			delete door;
+			deletedDoors.insert(door);
+		}
 	}
 	doors.clear();
+
+	// `doorsList` の解放
+	for (int i = 0; i < 5; i++) { // `i < 5` にする
+		for (Door1*& door : doorsList[i]) {
+			if (deletedDoors.find(door) == deletedDoors.end()) {
+				delete door;
+				deletedDoors.insert(door);
+			}
+		}
+		doorsList[i].clear();
+	}
 
 	// Gateリストの解放
 	for (auto& list : gatesList) {
@@ -885,4 +961,15 @@ void GameScene::ClearObject() {
 		brokenBox_ = nullptr;
 	}
 	brokenBoxes.clear();
+
+	doorCount = 0; // ← `doorCount` を初期化
+
+	playerNum = 0;
+	isPair = false;
+	electNum = 0;
+	doorCount = 0;
+	for (uint32_t i = 0; i < maxGate; i++) {
+		left[i] = false;
+		right[i] = false;
+	}
 }

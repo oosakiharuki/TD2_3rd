@@ -9,7 +9,7 @@ TitleScene::~TitleScene() {
 	delete wallpaperSprite_;
 	delete titleSprite_;
 
-	//audio_->StopWave(bgmVoiceHandle);
+	audio_->StopWave(bgmVoiceHandle_);
 }
 
 void TitleScene::Initialise() {
@@ -24,7 +24,9 @@ void TitleScene::Initialise() {
 	titleSprite_ = KamataEngine::Sprite::Create(titleTexture_, {0.0f, 0.0f});
 
 	bgmDataHandle_ = audio_->LoadWave("bgm.wav");
-	//bgmVoiceHandle = audio_->PlayWave(bgmDataHandle_, true, 0.3f);
+	bgmVoiceHandle_ = audio_->PlayWave(bgmDataHandle_, true, 0.3f);
+
+	buttonDataHande_ = audio_->LoadWave("button.wav");
 
 	fade_ = new Fade();
 	fade_->Initialize();
@@ -45,6 +47,8 @@ void TitleScene::Update() {
 		break;
 	case TitleScene::Phase::kMain:
 		if (input_->TriggerKey(DIK_SPACE) || (state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+			audio_->StopWave(bgmVoiceHandle_);
+			buttonVoiceHandle_ = audio_->PlayWave(buttonDataHande_, false, 0.5f);
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
 			phase_ = Phase::kFadeOut;
 		}
