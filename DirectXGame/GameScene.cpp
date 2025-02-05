@@ -160,6 +160,9 @@ void GameScene::Initialize() {
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, fadeTime_);
 
+	gameOverScene_ = new GameOverScene();
+	gameOverScene_->Initialise();
+
 }
 
 void GameScene::Update() { 
@@ -211,8 +214,13 @@ void GameScene::Update() {
 			((state.Gamepad.wButtons & XINPUT_GAMEPAD_Y) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_Y))) {
 			clear_ = true;
 		}
+		if (player1_->IsGetDead() || player2_->IsGetDead()) {
+			isDead = true;
+		}
 		break;
 	default:
+		
+		
 		for (MapWall* block : blocks_) {
 			block->Update();
 		}
@@ -348,6 +356,8 @@ void GameScene::Draw() {
     		clearSprite_->Draw();
 		}
 		cursorSprite_->Draw();
+	case GameScene::Phase::kGameOver:
+		gameOverScene_->Draw();
 		break;
 	}
 
@@ -616,7 +626,7 @@ void GameScene::ChangePhase() {
 	input_->GetJoystickState(0, state);
 	input_->GetJoystickStatePrevious(0, preState);
 	const int deadZone = 8000;
-
+	gameOverScene_->SetDeasZone(deadZone);
 	switch (phase_) {
 	case GameScene::Phase::kFadeIn:
 		fade_->Update();
@@ -631,7 +641,10 @@ void GameScene::ChangePhase() {
 			phase_ = Phase::kMenu;
 		} else if (clear_) {
 			phase_ = Phase::kClear;
+		} else if (isDead) {
+			phase_ = Phase::kGameOver;
 		}
+
 		break;
 	case GameScene::Phase::kMenu: {
 		// カーソル位置をテーブルで管理
@@ -722,6 +735,41 @@ void GameScene::ChangePhase() {
 			}
 		}
 		break;
+	case GameScene::Phase::kGameOver:
+		if (stageNum == stage[4]) {
+			// 最終ステージ後の選択
+			std::vector<float> cursorPositions = {275.0f, 360.0f};
+			// カーソル移動処理を関数でまとめて呼び出し
+			UpdateCursorSelection(2, deadZone);
+
+			// カーソル位置の更新
+			selectCursorPos.y = cursorPositions[selectNum - 1];
+			cursorSprite_->SetPosition(selectCursorPos);
+		} else {
+			// 通常ステージの選択
+			std::vector<float> cursorPositions = {275.0f, 360.0f, 450.0f};
+			// カーソル移動処理を関数でまとめて呼び出し
+			UpdateCursorSelection(3, deadZone);
+
+			// カーソル位置の更新
+			selectCursorPos.y = cursorPositions[selectNum - 1];
+			cursorSprite_->SetPosition(selectCursorPos);
+		}
+		if (input_->TriggerKey(DIK_SPACE) || ((state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A))) {
+			switch (gameSelectNum) {
+			case 1:
+				
+				break;
+			case 2:
+				select_ = Select::kGoTitle;
+				fade_->Start(Fade::Status::FadeOut, fadeTime_);
+				phase_ = Phase::kFadeOut;
+				break;
+			}
+		}
+		
+		break;
+
 	case GameScene::Phase::kFadeOut:
 		fade_->Update();
 		if (fade_->IsFinished()) {

@@ -33,6 +33,8 @@ public:
 
 	void PlayerUpdateMatrix() { worldTransform_.UpdateMatrix(); }
 	bool IsGetDead() { return IsDead; }
+	void SetHP(int hp) { this->HP = hp;
+	}
 
 private:
 	KamataEngine::Input* input_ = nullptr;

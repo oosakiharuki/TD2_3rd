@@ -12,7 +12,7 @@
 
 #include "Player.h"
 #include "Rope.h"
-
+#include"GameOverScene.h"
 #include "CameraController.h"
 #include "Door1.h"
 #include "MapWall.h"
@@ -28,6 +28,7 @@ public:
 		kMain,
 		kMenu,
 		kClear,
+		kGameOver,
 		kFadeOut,
 	};
 	enum class Select {
@@ -163,6 +164,7 @@ private:
 	Vector2 selectCursorPos = {450.0f, 275.0f};
 
 	int selectNum = 1;
+	int gameSelectNum = 1;
 
 	Rope* rope_ = nullptr;
 	std::list<BrokenBox*> brokenBoxes;
@@ -178,5 +180,7 @@ private:
 	Select select_ = Select::kNone;
 
 	XINPUT_STATE state, preState;
+
+	GameOverScene* gameOverScene_=nullptr;
 
 };

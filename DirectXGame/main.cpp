@@ -3,11 +3,13 @@
 #include "TitleScene.h"
 #include "SelectScene.h"
 
+
 using namespace KamataEngine;
 
 GameScene* gameScene = nullptr;
 TitleScene* titleScene = nullptr;
 SelectScene* selectScene = nullptr;
+
 
 // シーン
 enum class Scene { 
@@ -16,7 +18,7 @@ enum class Scene {
 	kTitle,
 	kSelect,
 	kGame,
-	kGemeOver,
+	
 
 };
 
@@ -119,6 +121,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	delete titleScene;
 	delete selectScene;
 	delete gameScene;
+	
 	// 3Dモデル解放
 	Model::StaticFinalize();
 	audio->Finalize();
@@ -180,8 +183,9 @@ void ChangeScene() {
     			titleScene->Initialise();
     		}
 		}
-
+		
 		break;
+	
 	}
 }
 
@@ -195,6 +199,8 @@ void UpdateScene() {
 		break;
 	case Scene::kGame:
 		gameScene->Update();
+		break;
+	;
 		break;
 	}
 }
@@ -210,5 +216,7 @@ void DrawScene() {
 	case Scene::kGame:
 		gameScene->Draw();
 		break;
+	
+		
 	}
 }
