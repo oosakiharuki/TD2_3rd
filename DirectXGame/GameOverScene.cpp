@@ -4,10 +4,93 @@
 
 GameOverScene::GameOverScene() {}
 
-GameOverScene::~GameOverScene() {}
+GameOverScene::~GameOverScene() {
+	delete fade_;
+	delete wallpaperSprite_;
+	delete titleSprite_;
 
-void GameOverScene::Initialise() {}
+	audio_->StopWave(bgmVoiceHandle_);
+}
 
-void GameOverScene::Update() {}
+void GameOverScene::Initialise() {
+	dxCommon_ = KamataEngine::DirectXCommon::GetInstance();
+	input_ = KamataEngine::Input::GetInstance();
+	audio_ = KamataEngine::Audio::GetInstance();
 
-void GameOverScene::Draw() {}
+	wallpaperTexture_ = KamataEngine::TextureManager::Load("wallpaper.jpg");
+	wallpaperSprite_ = KamataEngine::Sprite::Create(wallpaperTexture_, {0.0f, 0.0f});
+
+	titleTexture_ = KamataEngine::TextureManager::Load("gameOver3.png");
+	titleSprite_ = KamataEngine::Sprite::Create(titleTexture_, {0.0f, 0.0f});
+
+	bgmDataHandle_ = audio_->LoadWave("bgm.wav");
+	bgmVoiceHandle_ = audio_->PlayWave(bgmDataHandle_, true, 0.3f);
+
+	buttonDataHande_ = audio_->LoadWave("button.wav");
+
+	fade_ = new Fade();
+	fade_->Initialize();
+	fade_->Start(Fade::Status::FadeIn, fadeTime_);
+}
+
+void GameOverScene::Update() {
+	input_->GetJoystickState(0, state);
+	input_->GetJoystickStatePrevious(0, preState);
+
+	switch (phase_) {
+	case GameOverScene::Phase::kFadeIn:
+		fade_->Update();
+		if (fade_->IsFinished()) {
+			fade_->Stop();
+			phase_ = Phase::kMain;
+		}
+		break;
+	case GameOverScene::Phase::kMain:
+		if (input_->TriggerKey(DIK_SPACE) || (state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(preState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+			audio_->StopWave(bgmVoiceHandle_);
+			buttonVoiceHandle_ = audio_->PlayWave(buttonDataHande_, false, 0.5f);
+			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+			phase_ = Phase::kFadeOut;
+		}
+		break;
+	case GameOverScene::Phase::kFadeOut:
+		fade_->Update();
+		if (fade_->IsFinished()) {
+			fade_->Stop();
+			finished_ = true;
+		}
+		break;
+	}
+}
+
+void GameOverScene::Draw() {
+	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
+
+#pragma region 背景スプライト描画
+	// 背景スプライト描画前処理
+	KamataEngine::Sprite::PreDraw(commandList);
+
+	/// <summary>
+	/// ここに背景スプライトの描画処理を追加できる
+	/// </summary>
+	wallpaperSprite_->Draw();
+	// スプライト描画後処理
+	KamataEngine::Sprite::PostDraw();
+	// 深度バッファクリア
+	dxCommon_->ClearDepthBuffer();
+#pragma endregion
+
+#pragma region 前景スプライト描画
+	// 前景スプライト描画前処理
+	KamataEngine::Sprite::PreDraw(commandList);
+
+	/// <summary>
+	/// ここに前景スプライトの描画処理を追加できる
+	/// </summary>
+	titleSprite_->Draw();
+	fade_->Draw(commandList);
+	// スプライト描画後処理
+	KamataEngine::Sprite::PostDraw();
+
+#pragma endregion
+}
