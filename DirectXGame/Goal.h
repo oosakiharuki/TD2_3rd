@@ -22,5 +22,5 @@ private:
 	KamataEngine::WorldTransform worldTransform_;
 	KamataEngine::ObjectColor objColor = {};
 
-	float radius_ = 1.0f;
+	float radius_ = 0.5f;
 };

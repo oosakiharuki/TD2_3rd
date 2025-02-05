@@ -967,81 +967,39 @@ void GameScene::ClearObject() {
 	}
 	boxes.clear();
 
-    std::unordered_set<Electricity*> deletedElectricity;
-	std::unordered_set<Electricity2*> deletedElectricity2;
-
-	// `electricity` リストの解放
+	// Electricityの解放
 	for (Electricity*& electrical : electricity) {
-		if (deletedElectricity.find(electrical) == deletedElectricity.end()) {
-			delete electrical;
-			deletedElectricity.insert(electrical);
-		}
+		delete electrical;
+		electrical = nullptr;
 	}
 	electricity.clear();
 
-	// `electricitys` の解放
-	for (int i = 0; i < 5; i++) {
-		for (Electricity*& electrical : electricitys[i]) {
-			if (deletedElectricity.find(electrical) == deletedElectricity.end()) {
-				delete electrical;
-				deletedElectricity.insert(electrical);
-			}
-		}
-		electricitys[i].clear();
-	}
-
-	// `electricity2` リストの解放
 	for (Electricity2*& electrical2 : electricity2) {
-		if (deletedElectricity2.find(electrical2) == deletedElectricity2.end()) {
-			delete electrical2;
-			deletedElectricity2.insert(electrical2);
-		}
+		delete electrical2;
+		electrical2 = nullptr;
 	}
 	electricity2.clear();
 	electNum = 0;
 
-	// `electricitys2` の解放
-	for (int i = 0; i < 5; i++) {
-		for (Electricity2*& electrical2 : electricitys2[i]) {
-			if (deletedElectricity2.find(electrical2) == deletedElectricity2.end()) {
-				delete electrical2;
-				deletedElectricity2.insert(electrical2);
-			}
-		}
-		electricitys2[i].clear();
-	}
-
-
-    std::unordered_set<Door1*> deletedDoors;
-
-	// `doors` の解放
+	// Doorの解放
 	for (Door1*& door : doors) {
-		if (deletedDoors.find(door) == deletedDoors.end()) {
-			delete door;
-			deletedDoors.insert(door);
-		}
+		delete door;
+		door = nullptr;
 	}
 	doors.clear();
 	doorCount = 0;
 
-
-	// `doorsList` の解放
-	for (int i = 0; i < 5; i++) { // `i < 5` にする
-		for (Door1*& door : doorsList[i]) {
-			if (deletedDoors.find(door) == deletedDoors.end()) {
-				delete door;
-				deletedDoors.insert(door);
-			}
-		}
+	for (uint32_t i = 0; i < maxGate; i++) {
+		electricitys[i].clear();
+		electricitys2[i].clear();
 		doorsList[i].clear();
 	}
 
 	// Blocksの解放
 	for (MapWall* block : blocks_) {
 		delete block;
-	}    
-  blocks_.clear();
-
+	}
+	blocks_.clear();
 
 	// BrokenBoxの解放
 	for (BrokenBox*& brokenBox_ : brokenBoxes) {
@@ -1057,14 +1015,5 @@ void GameScene::ClearObject() {
 	}
 	artilleries.clear();
 
-	doorCount = 0; // ← `doorCount` を初期化
-
 	playerNum = 0;
-	isPair = false;
-	electNum = 0;
-	doorCount = 0;
-	for (uint32_t i = 0; i < maxGate; i++) {
-		left[i] = false;
-		right[i] = false;
-	}
 }
