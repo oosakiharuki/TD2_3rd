@@ -280,6 +280,9 @@ void GameScene::Update() {
 		rope_->Update();
 
     	cameraController->Update();
+		if (player1_->IsGetDead() || player2_->IsGetDead()) {
+			isDead = true;
+		}
 		break;
 	default:
 		break;
